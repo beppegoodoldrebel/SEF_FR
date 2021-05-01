@@ -1198,18 +1198,14 @@ exec function Fire()
     {
 		if ( GC.ExtraIntOptions[6] == 1)
 		{	
-			if(!SwatPlayer(Pawn).IsLowReady()) //with MLR fire when the player is not low ready
-			{
+			if(!SwatPlayer(Pawn).IsLowReady()) {
 				Super.Fire();
+				return;
 			}
-			else  //if it's low ready just move to ready
-			{
-				ToggleLowReadyUP();
-			}
-			
+			ToggleLowReadyUP();
+			return;
 		}	
-		else if (GC.ExtraIntOptions[6] == 0)
-			Super.Fire();
+		Super.Fire();
     }
 }
 
