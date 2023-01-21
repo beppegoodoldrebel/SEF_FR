@@ -37,6 +37,10 @@ function bool ShouldStopMovingToOfficer(Pawn MovingPawn)
 	local Pawn CurrentEnemy;
 
 	CurrentEnemy = ISwatEnemy(m_Pawn).GetEnemyCommanderAction().GetCurrentEnemy();
+	
+		// don't stop moving in a doorway
+	if (m_Pawn.Anchor.IsA('Door'))
+		return false;
 
 	// stop if we're supposed to based on distance
 	if (VSize2D(m_Pawn.Location - StartMovingLocation) >= DistanceToTravel)
