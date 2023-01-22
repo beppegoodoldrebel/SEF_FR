@@ -299,6 +299,11 @@ private function Attack(Pawn Enemy, bool bCanSucceedAfterFiring)
 
 	if (CurrentAttackTargetGoal == None)
 	{
+		if ((m_Pawn.IsA('SwatEnemy')) && ((!m_Pawn.IsA('SwatUndercover')) || (!m_Pawn.IsA('SwatGuard'))) && !ISwatEnemy(m_Pawn).IsAThreat() && (m_Pawn.GetActiveItem() != None))
+		{
+			ISwatEnemy(m_Pawn).BecomeAThreat();
+		}
+		
 		CurrentAttackTargetGoal = new class'AttackTargetGoal'(weaponResource(), Enemy);
 		assert(CurrentAttackTargetGoal != None);
 		CurrentAttackTargetGoal.AddRef();
@@ -310,10 +315,6 @@ private function Attack(Pawn Enemy, bool bCanSucceedAfterFiring)
 		}
 
 		CurrentAttackTargetGoal.postGoal(self);
-  	if ((m_Pawn.IsA('SwatEnemy')) && ((!m_Pawn.IsA('SwatUndercover')) || (!m_Pawn.IsA('SwatGuard'))) && !ISwatEnemy(m_Pawn).IsAThreat() && (m_Pawn.GetActiveItem() != None))
-  	{
-  		ISwatEnemy(m_Pawn).BecomeAThreat();
-  	}
 	}
 }
 
@@ -471,6 +472,8 @@ protected latent function TakeCover()
 	{
 		SwapInFullBodyTakeCoverAnimations();
 	}
+
+	SwapInFullBodyTakeCoverAnimations();
 
 	MoveToTakeCover(CoverResult.coverLocation);
 

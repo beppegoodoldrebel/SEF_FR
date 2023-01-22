@@ -13,6 +13,9 @@ import enum EnemySkill from ISwatEnemy;
 
 var private EscapePoint					EscapeDestination;
 
+var private float TimeBeforeRegroup;
+const kTimeToMove = 5.0;
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Init & cleanup
@@ -180,6 +183,20 @@ Begin:
 	{
 		if ( CurrentMoveToActorGoal == None ) //dont attack if escape as already started 
 			AttackWhileFleeing();
+			
+		TimeBeforeRegroup = Level.TimeSeconds + ( kTimeToMove ) ;
+		
+		while (	Level.TimeSeconds < TimeBeforeRegroup )
+		   yield();
+	   
+		if (CurrentAttackTargetGoal != None)
+		{
+			CurrentAttackTargetGoal.Release();
+			CurrentAttackTargetGoal = None;
+		}
+		
+		ISwatAI(m_pawn).UnlockAim();
+		SwapInFullBodyFleeAnimations();
 	}
 	else 
 	{

@@ -32,6 +32,9 @@ var private DistanceToOfficersSensor	DistanceToOfficersSensor;
 var private bool						bUseDistanceToOfficersSensor;
 var config private float ThreatCooldown;
 
+var private float TimeBeforeRegroup;
+const kTimeToMove = 5.0;
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Init & cleanup
@@ -280,7 +283,7 @@ function bool ShouldAttackWhileFleeing()
     return true;
 }
 
-function AttackWhileFleeing()
+latent function AttackWhileFleeing()
 {
   	local Pawn Enemy;
 
@@ -289,13 +292,14 @@ function AttackWhileFleeing()
 	    return;
 	}
 
+	ISwatEnemy(m_Pawn).BecomeAThreat();
+	yield();
+
 	CurrentAttackTargetGoal = new class'AttackTargetGoal'(weaponResource(), Enemy);
     assert(CurrentAttackTargetGoal != None);
 	CurrentAttackTargetGoal.AddRef();
 
 	CurrentAttackTargetGoal.postGoal(self);
-
-	ISwatEnemy(m_Pawn).BecomeAThreat();
 }
 
 
@@ -441,6 +445,20 @@ Begin:
 	{
 		if ( CurrentMoveToActorGoal == None ) //dont attack if fleeing as already started 
 			AttackWhileFleeing();
+			
+		TimeBeforeRegroup = Level.TimeSeconds + ( kTimeToMove ) ;
+		
+		while (	Level.TimeSeconds < TimeBeforeRegroup )
+		   yield();
+	   
+		if (CurrentAttackTargetGoal != None)
+		{
+			CurrentAttackTargetGoal.Release();
+			CurrentAttackTargetGoal = None;
+		}
+		ISwatAI(m_pawn).UnlockAim();
+		SwapInFullBodyFleeAnimations();	
+			
 	}
 	else
 	{

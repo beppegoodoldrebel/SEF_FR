@@ -28,6 +28,9 @@ var config private float				MaxAggressiveRegroupPercentageChance;
 var private DistanceToOfficersSensor	DistanceToOfficersSensor;
 var private bool						bUseDistanceToOfficersSensor;
 
+var private float TimeBeforeRegroup;
+const kTimeToMove = 5.0;
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Init
@@ -277,7 +280,7 @@ function bool ShouldAttackWhileRegrouping()
     return true;
 }
 
-function AttackWhileRegrouping()
+latent function AttackWhileRegrouping()
 {
   local Pawn Enemy;
 
@@ -285,6 +288,9 @@ function AttackWhileRegrouping()
   if(Enemy == None) {
     return;
   }
+
+	ISwatEnemy(m_Pawn).BecomeAThreat();
+	yield();
 
 	CurrentAttackTargetGoal = new class'AttackTargetGoal'(weaponResource(), Enemy);
     assert(CurrentAttackTargetGoal != None);
@@ -447,7 +453,21 @@ Begin:
 
 	if (ShouldAttackWhileRegrouping())
 	{
-		AttackWhileRegrouping();
+		if ( CurrentMoveToActorGoal == None ) //dont attack if regroup as already started 
+			AttackWhileRegrouping();
+			
+		TimeBeforeRegroup = Level.TimeSeconds + ( kTimeToMove ) ;
+		
+		while (	Level.TimeSeconds < TimeBeforeRegroup )
+		   yield();
+	   
+		if (CurrentAttackTargetGoal != None)
+		{
+			CurrentAttackTargetGoal.Release();
+			CurrentAttackTargetGoal = None;
+		}
+		ISwatAI(m_pawn).UnlockAim();
+		SwapInFullBodyFleeAnimations();
 	}
 	else
 	{
