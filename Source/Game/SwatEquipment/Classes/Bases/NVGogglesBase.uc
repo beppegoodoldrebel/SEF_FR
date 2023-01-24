@@ -3,8 +3,8 @@ class NVGogglesBase extends Engine.ProtectiveEquipment
 	native;
 
 var protected bool Active;
-var protected config StaticMesh ActivatedMesh;
-var() protected config StaticMesh DeactivatedMesh			"Staticmesh to use when goggles deactivated (use StaticMesh field for activated)";
+var(Mesh) protected config StaticMesh ActivatedMesh;
+var(Mesh) protected config StaticMesh DeactivatedMesh			"Staticmesh to use when goggles deactivated (use StaticMesh field for activated)";
 var protected DynamicLightEffect Light;
 
 var protected float TransitionStart;
@@ -100,7 +100,7 @@ simulated function ActivateEffect()
 			SwatGamePlayerController(P.Controller).RefreshCameraEffects(SwatPlayer(P));
 	}
 
-	SetStaticMesh(ActivatedMesh);
+	SetNVGMesh(true);
 	UpdateLight();
 }
 
@@ -119,8 +119,16 @@ simulated function DeactivateEffect()
 			SwatGamePlayerController(P.Controller).RefreshCameraEffects(SwatPlayer(P));
 	}
 
-	SetStaticMesh(DeactivatedMesh);
+	SetNVGMesh(false);
 	UpdateLight();
+}
+
+simulated function SetNVGMesh( bool Activation )
+{
+	if (Activation )
+		SetStaticMesh(ActivatedMesh);
+	else
+		SetStaticMesh(DeactivatedMesh);
 }
 
 simulated function ToggleActive()

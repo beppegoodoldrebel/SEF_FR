@@ -1797,6 +1797,11 @@ local IVisionEnhancement CurrentVision;
 	}
 }
 
+simulated function bool HasInstructorMesh()  //overridden in SwatPlayer and SwatOfficer
+{
+	return false;
+}
+
 simulated function UpdateFlashlight()
 {
     local FiredWeapon CurrentWeapon;

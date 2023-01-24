@@ -256,6 +256,10 @@ public function UpdateOfficerLOD()
 		}	
 		
 	}
+	
+		//Alternative Mesh for headgear when player have "InstructorMesh" 
+	if ( LoadOut.HasLevelIIArmor() || LoadOut.HasInstructorArmor())
+		Headgear(Loadout.GetItemAtPocket(Pocket_HeadArmor)).UseAltMesh();
 
 }
 
@@ -1550,41 +1554,13 @@ simulated function OnLightstickKeyFrame()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-/*
-function AdjustOfficerMovementSpeed() {
-  local float OriginalFwd, OriginalBck, OriginalSde;
-  local float ModdedFwd, ModdedBck, ModdedSde;
-  local float TotalWeight;
-
-  local AnimationSetManager AnimationSetManager;
-  local AnimationSet setObject;
-
-  AnimationSetManager = SwatRepo(Level.GetRepo()).GetAnimationSetManager();
-  setObject = AnimationSetManager.GetAnimationSet(GetMovementAnimSet());
-
-  OriginalFwd = setObject.AnimSpeedForward;
-  OriginalBck = setObject.AnimSpeedBackward;
-  OriginalSde = setObject.AnimSpeedSidestep;
-
-  ModdedFwd = OriginalFwd;
-  ModdedBck = OriginalBck;
-  ModdedSde = OriginalSde;
-
-  ModdedFwd *= LoadOut.GetWeightMovementModifier();
-  ModdedBck *= LoadOut.GetWeightMovementModifier();
-  ModdedSde *= LoadOut.GetWeightMovementModifier();
-
-  AnimSet.AnimSpeedForward = ModdedFwd;
-  AnimSet.AnimSpeedBackward = ModdedBck;
-  AnimSet.AnimSpeedSidestep = ModdedSde;
-
-  TotalWeight = LoadOut.GetTotalWeight();
+simulated function bool HasInstructorMesh()
+{
+	if (Loadout != None )
+		return LoadOut.HasLevelIIArmor() || LoadOut.HasInstructorArmor();
+	
+	return false;
 }
-
-simulated function Tick(float dTime) {
-	if (!isLowReady())
-		AdjustOfficerMovementSpeed();
-}*/
 
 simulated function GivenEquipmentFromPawn(class<HandheldEquipment> Equipment)
 {

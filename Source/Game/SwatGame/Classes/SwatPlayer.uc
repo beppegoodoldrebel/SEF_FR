@@ -617,6 +617,11 @@ simulated function ReceiveLoadOut(OfficerLoadOut inLoadOut)
 			
 	}
 	
+	//Alternative Mesh for headgear when player have "InstructorMesh" 
+	if ( LoadOut.HasLevelIIArmor() || LoadOut.HasInstructorArmor())
+		Headgear(Loadout.GetItemAtPocket(Pocket_HeadArmor)).UseAltMesh();
+
+	
 	// make sure we have the correct animations to go with our loadout
 	ChangeAnimation();
 
@@ -4811,6 +4816,14 @@ function vector GetLWSLocOffset()
 	offset.z=0;	
   
 	return offset;
+}
+
+simulated function bool HasInstructorMesh()
+{
+	if( Loadout != None )
+		return LoadOut.HasLevelIIArmor() || LoadOut.HasInstructorArmor();
+	
+	return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
