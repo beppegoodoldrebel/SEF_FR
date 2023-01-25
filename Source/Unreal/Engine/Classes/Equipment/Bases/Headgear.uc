@@ -20,6 +20,8 @@ var() public config bool PlayerUsable;
 var(ArmorPenetration) config ProtectionLevel ArmorProtection "What level of armor I represent?";
 var int ProtectionType "Internal measure to know the BulletClass";
 
+var(Mesh) StaticMesh AlternativeMesh; //alt. mesh based on player mesh
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 // IHaveWeight implementation
@@ -89,4 +91,12 @@ simulated function int GetProtectionType()
 			ProtectionType = 1;
 		}
 	return ProtectionType;
+}
+
+simulated function UseAltMesh()
+{
+	log("Headgear: " $ string(AlternativeMesh) );
+	
+	if ( AlternativeMesh != None )
+		self.SetStaticMesh( StaticMesh( DynamicLoadObject( string(AlternativeMesh), class'StaticMesh' ) ) ) ;
 }
