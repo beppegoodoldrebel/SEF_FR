@@ -6,6 +6,8 @@ var(Mesh) protected config StaticMesh AltDeactivatedMesh;
 
 simulated function SetNVGMesh( bool Activation )
 {
+	SetLocation( Pawn(Owner).Location ); //sound effects location fix
+	
 	if (Activation )
 	{	
 		if ( SwatPlayer(Owner).HasInstructorMesh() && AltActivatedMesh != None)
