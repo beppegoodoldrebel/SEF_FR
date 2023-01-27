@@ -2673,6 +2673,11 @@ simulated function InternalMelee(optional bool UseMeleeOnly, optional bool UseCh
 				return;
 			}
 	    }
+		else if(SpecialInteractionsDisabled && UseCheckLockOnly && Candidate.IsA('DoorModel'))
+		{
+			if(CheckDoorLock(DoorModel(Candidate).Door) )
+				return;
+		}
 	}
 
 	if(UseCheckLockOnly || UseGiveItemOnly)
