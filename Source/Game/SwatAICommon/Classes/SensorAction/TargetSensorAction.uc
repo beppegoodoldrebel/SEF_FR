@@ -46,7 +46,7 @@ function TestCanHitTarget()
 	{
 		TargetSensor.NotifyCannotHitTarget();
 	}
-	else if (!TargetSensor.bCanHitTarget && bCanHitTarget && m_pawn.CanShootTarget(TargetSensor.Target))
+	else if (!TargetSensor.bCanHitTarget && bCanHitTarget)
 	{
 		TargetSensor.NotifyCanHitTarget();
 	}

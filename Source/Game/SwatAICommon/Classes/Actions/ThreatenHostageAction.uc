@@ -334,6 +334,7 @@ latent function MoveTowardsHostage()
 	if ((m_Pawn.IsA('SwatEnemy')) && ((!m_Pawn.IsA('SwatUndercover')) || (!m_Pawn.IsA('SwatGuard'))) && !ISwatEnemy(m_Pawn).IsAThreat() && (m_Pawn.GetActiveItem() != None))
 	{
 		ISwatEnemy(m_Pawn).BecomeAThreat();
+		yield();
 	}
     WaitForGoal(CurrentMoveToOpponentGoal);
     CurrentMoveToOpponentGoal.unPostGoal(self);
@@ -344,16 +345,19 @@ latent function MoveTowardsHostage()
 
 latent function AimAtHostage()
 {
+	if ((m_Pawn.IsA('SwatEnemy')) && ((!m_Pawn.IsA('SwatUndercover')) || (!m_Pawn.IsA('SwatGuard'))) && !ISwatEnemy(m_Pawn).IsAThreat() && (m_Pawn.GetActiveItem() != None))
+	{
+		ISwatEnemy(m_Pawn).BecomeAThreat();
+		yield();
+	}
+	
 	CurrentAimAtTargetGoal = new class'AimAtTargetGoal'(weaponResource(), achievingGoal.priority, Hostage);
 	assert(CurrentAimAtTargetGoal != None);
 	CurrentAimAtTargetGoal.AddRef();
 
 	// post the aim at target goal
 	CurrentAimAtTargetGoal.postGoal(self);
-	if ((m_Pawn.IsA('SwatEnemy')) && ((!m_Pawn.IsA('SwatUndercover')) || (!m_Pawn.IsA('SwatGuard'))) && !ISwatEnemy(m_Pawn).IsAThreat() && (m_Pawn.GetActiveItem() != None))
-	{
-		ISwatEnemy(m_Pawn).BecomeAThreat();
-	}
+
 }
 
 latent function ShootHostage()
