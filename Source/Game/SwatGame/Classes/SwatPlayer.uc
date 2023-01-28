@@ -722,7 +722,8 @@ if ( Level.NetMode == NM_StandAlone && inloadout.CustomSkinSpec != "None" )
 		
 		}
 		
-
+		Skins[2] = inLoadOut.GetNameMaterial();
+		Skins[3] = inLoadOut.GetVestMaterial();
 	}
 	else
 	{

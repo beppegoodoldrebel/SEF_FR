@@ -714,15 +714,17 @@ local class<SwatCustomSkin> SCS;
 	else if ( LoadOut.HasInstructorArmor() )
 	{
 		if (self.IsA('OfficerBlueOne') )
-			Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_BlueOneFleshShader",class'Material'));
+			Skins[1] = Material(DynamicLoadObject("SWATinstructorTex.SI_BlueOneFleshShader",class'Material'));
 		else if (self.IsA('OfficerBlueTwo') )
-			Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_BlueTwoFleshShader",class'Material'));
+			Skins[1] = Material(DynamicLoadObject("SWATinstructorTex.SI_BlueTwoFleshShader",class'Material'));
 		else if (self.IsA('OfficerRedOne') )
-			Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_RedOneFleshShader",class'Material'));
+			Skins[1] = Material(DynamicLoadObject("SWATinstructorTex.SI_RedOneFleshShader",class'Material'));
 		else if (self.IsA('OfficerRedTwo') )
-			Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_RedTwoFleshShader",class'Material'));
+			Skins[1] = Material(DynamicLoadObject("SWATinstructorTex.SI_RedTwoFleshShader",class'Material'));
 		
-		Skins[1] = LoadOut.GetPantsMaterial();
+		Skins[0] = LoadOut.GetPantsMaterial();
+		Skins[2] = LoadOut.GetNameMaterial();
+		Skins[3] = LoadOut.GetVestMaterial();
 	}
 	else
 	{
