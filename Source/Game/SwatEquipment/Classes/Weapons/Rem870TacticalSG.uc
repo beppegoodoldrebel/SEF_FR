@@ -1,0 +1,1 @@
+class Rem870TacticalSG extends Shotgun config(SwatEquipment);
