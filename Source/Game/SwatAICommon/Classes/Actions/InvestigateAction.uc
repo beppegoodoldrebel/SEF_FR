@@ -28,6 +28,7 @@ var private Timer					InvestigateTimeoutTimer;
 
 // copied from our goal
 var(parameters) vector				InvestigateLocation;
+var(parameters) vector				OriginalLocation;
 var(parameters) bool				bShouldWalkToInvestigate;
 
 const kMinLookAtInvestigateDistance = 100.0;
@@ -113,6 +114,22 @@ latent function MoveToInvestigationDestination()
     CurrentMoveToLocationGoal.postGoal(self);
 }
 
+latent function MoveToOriginalLocation()
+{
+	
+    CurrentMoveToLocationGoal = new class'MoveToLocationGoal'(movementResource(), achievingGoal.Priority, OriginalLocation);
+    assert(CurrentMoveToLocationGoal != None);
+	CurrentMoveToLocationGoal.AddRef();
+
+	CurrentMoveToLocationGoal.SetRotateTowardsFirstPoint(true);
+	CurrentMoveToLocationGoal.SetRotateTowardsPointsDuringMovement(true);
+	CurrentMoveToLocationGoal.SetAcceptNearbyPath(true);
+	CurrentMoveToLocationGoal.SetShouldWalkEntireMove(bShouldWalkToInvestigate);
+
+    // post the move to goal
+    CurrentMoveToLocationGoal.postGoal(self);
+}
+
 latent function AimAtInvestigationLocation()
 {
 	// first, remove the aim around goal, if it's around
@@ -183,7 +200,7 @@ Begin:
 		ISwatEnemy(m_Pawn).GetEnemySpeechManagerAction().TriggerInvestigateSpeech();
 	}
 
-	StartInvestigateTimeoutTimer();
+	//StartInvestigateTimeoutTimer();
 
 	CheckWeaponStatus();
 
@@ -193,6 +210,8 @@ Begin:
 
 	// aim around while we move to our investigation destination
     AimAround(45.0, 60.0, true);
+	
+	OriginalLocation = m_pawn.location; //store starting point
     MoveToInvestigationDestination();
 
 	UseResources(class'AI_Resource'.const.RU_ARMS);
@@ -207,12 +226,23 @@ Begin:
 
 	AimAtInvestigationLocation();
 
-	pause();
+	while ( vsize (m_pawn.Location - InvestigateLocation ) > (frand()*500 + 200 ) )
+		yield();
 
     // aim around again
     AimAround(180.0, 360.0, false);
 
 	sleep(RandRange(kMinInvestigateTime, kMaxInvestigateTime));
+	
+	// aim around while we move to our investigation destination
+	AimAround(45.0, 60.0, true);
+	
+	MovetoOriginalLocation();
+	
+	UseResources(class'AI_Resource'.const.RU_ARMS);
+	while ( vsize (m_pawn.Location - OriginalLocation ) > 200 )
+		yield();
+	
 	succeed();
 }
 
