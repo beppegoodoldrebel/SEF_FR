@@ -9,14 +9,12 @@ class RestrainedFloorAction extends LookAtOfficersActionBase;
 // Variables
 var(parameters)	Pawn	Restrainer;	// pawn that we will be working with
 
-
-
 // behaviors we use
 var private RotateTowardRotationGoal	CurrentRotateTowardRotationGoal;
 var private bool FoundRotation;
 
 // config variables
-const kPostRestrainedGoalPriority      = 94;
+const kPostRestrainedGoalPriority      = 90;
 
 function cleanup()
 {
@@ -40,19 +38,24 @@ latent function PlayFloorAnimation()
 {
 	local int IdleChannel;
 	
-	IdleChannel = m_Pawn.AnimPlaySpecial('CuffedFloor', 0.2);    
+	if ( ISwatAI(m_Pawn).GetIdleCategory() != 'RestrainedFloor')
+	{
+		IdleChannel = m_Pawn.AnimPlaySpecial('CuffedFloor', 0.0);    
 	
-	if ( frand() < 0.5 )
+		if ( frand() < 0.5 )
 		ISwatAI(m_Pawn).GetSpeechManagerAction().TriggerRestrainedSpeech();
 	
-	m_Pawn.FinishAnim(IdleChannel);
+		m_Pawn.FinishAnim(IdleChannel);
+		
+		ISwatAI(m_Pawn).SetIdleCategory('RestrainedFloor');
 	
-	ISwatAI(m_Pawn).SetIdleCategory('RestrainedFloor');
+		// swap in the restrained anim set
+		ISwatAI(m_Pawn).SwapInRestrainedFloorAnimSet();
 	
-	// swap in the restrained anim set
-	ISwatAI(m_Pawn).SwapInRestrainedFloorAnimSet();
+		//m_Pawn.ChangeAnimation();
+	}
 	
-	m_Pawn.ChangeAnimation();
+
 	
 	StopLookingAtOfficers();
 	

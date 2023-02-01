@@ -57,6 +57,23 @@ function name GetRecoveryAnimation()
 {
 	return ISwatAI(m_Pawn).GetGasRecoveryAnimation();
 }
+
+function ExtendBeingStunned(float AdditionalStunnedTime)
+{
+	// affect morale again, if we should
+	if (ShouldAffectMoraleAgain())
+	{
+		AffectMorale();
+	}
+
+	// extend the time we are affected
+	AddAdditionalStunnedTime(AdditionalStunnedTime);
+
+	if (m_Pawn.logAI)
+		log("AdditionalStunnedTime is: " $ AdditionalStunnedTime $ " EndTime is now: " $ EndTime $ " Level.TimeSeconds: " $ Level.TimeSeconds $ " ");
+ 
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 defaultproperties
 {

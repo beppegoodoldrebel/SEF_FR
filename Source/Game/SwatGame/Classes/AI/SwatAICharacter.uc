@@ -913,21 +913,25 @@ function ReactToCSGas(Actor GasContainer, float Duration, float SPPlayerProtecti
     local float DistanceEffect;
 	
 	Distance = VSize(Location - GasContainer.Location);
-	DistanceEffect = (800 - Distance)/(600);
+	DistanceEffect = (800 - Distance)/(800);
 	
-    if ( HasProtection( 'IProtectFromCSGas' ) )
+    if ( HasProtection( 'IProtectFromCSGas' ) || ( !IsArrestedOnFloor() && isgassed() ) )
     {
         return;
     }
 	
     if(DistanceEffect > 1.0)
-    {
         DistanceEffect = 1.0;
-    }
+    else if (DistanceEffect < 0.1)
+		DistanceEffect = 0.1;
+	
     DistanceEffect *= FRand();
     Duration *= DistanceEffect;
+	
+	if ( Duration <= 0.0 ) //to no let the UpdatePeriod joke on us
+		Duration = 0.1;
 
-	if (IsConscious() && Duration > 0.5)
+	if (IsConscious() && Duration > 0.0)
 	{
 		LastTimeGassed = Level.TimeSeconds;
 		GassedDuration = Duration;

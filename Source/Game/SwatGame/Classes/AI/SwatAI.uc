@@ -990,7 +990,10 @@ function SwapInCompliantAnimSet()
 
 function SwapInRestrainedAnimSet()
 {
-	AnimSwapInSet(kAnimationSetRestrained);
+	if ( !IsArrestedOnFloor() )
+		AnimSwapInSet(kAnimationSetRestrained);
+	else
+		AnimSwapInSet(kAnimationSetCuffedFloor);
 }
 
 function SwapInRestrainedFloorAnimSet()

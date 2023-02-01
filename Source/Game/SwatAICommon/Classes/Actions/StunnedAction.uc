@@ -147,7 +147,7 @@ private function DistributeEmpathyMoraleModifications(float MoraleModification)
 	}
 }
 
-private function AffectMorale()
+protected function AffectMorale()
 {
 	local float MoraleModification;
 
@@ -194,7 +194,10 @@ function cleanup()
 	UnTriggerStunnedSpeech();
 
     // Guarentee collision avoidance is back on
-    m_Pawn.EnableCollisionAvoidance();
+	if (!ISwatAI(m_Pawn).IsArrestedOnFloor())
+		m_Pawn.EnableCollisionAvoidance();
+	else
+		m_Pawn.DisableCollisionAvoidance();
 
 	// stop any animations on the special channel if we have played an animation
 	if (bPlayedAnimation && !ISwatAI(m_Pawn).IsArrested())
@@ -205,6 +208,11 @@ function cleanup()
 	{
 		ISwatAI(m_Pawn).SetIdleCategory('Restrained');
 		ISwatAI(m_Pawn).SwapInRestrainedAnimSet();
+	}
+	else if(ISwatAI(m_Pawn).IsArrested() && ISwatAI(m_Pawn).IsArrestedOnFloor())
+	{
+		ISwatAI(m_Pawn).SetIdleCategory('RestrainedFloor');
+		ISwatAI(m_Pawn).SwapInRestrainedFloorAnimSet();
 	}
 }
 
@@ -242,7 +250,8 @@ function ExtendBeingStunned(float AdditionalStunnedTime)
 	if (bRecovering)
 	{
 		bRecovering = false;
-		gotostate('Running', 'Begin');
+		if( !ISwatAI(m_Pawn).IsArrestedOnFloor())
+			gotostate('Running', 'Begin');
 	}
 }
 
@@ -565,18 +574,25 @@ function name GetAffectedAnimation()
 latent function PlayAffectedAnimation()
 {
 	local int AnimSpecialChannel;
+	local bool onfloor;
 
 	bPlayedAnimation = true;
+	
+	onfloor =  ISwatAI(m_Pawn).IsArrestedOnFloor();
 
 	AnimSpecialChannel = m_Pawn.AnimLoopSpecial(GetAffectedAnimation(), 0.1);
 
 	// wait until we're supposed to be done
-	while (Level.TimeSeconds < EndTime && !ISwatAI(m_Pawn).IsArrestedOnFloor())
+	while (Level.TimeSeconds < EndTime && 
+	        ( ( !OnFloor && !ISwatAI(m_Pawn).IsArrestedOnFloor()) || ( onfloor ) ) //we are not interrupted by onfloor state
+		  )
 	{
 		yield();
 	}
-
-	if ( !ISwatAI(m_Pawn).IsArrestedOnFloor() )
+	
+	if ( !OnFloor && ISwatAI(m_Pawn).IsArrestedOnFloor()) 
+		ISwatAI(m_Pawn).AnimStopSpecial();
+	else if ( !ISwatAI(m_Pawn).IsArrestedOnFloor() )
 		m_Pawn.FinishAnim(AnimSpecialChannel);
 
 	bPlayedAnimation = false;
@@ -657,7 +673,8 @@ Begin:
 		TriggerStunnedSpeech();
 
     // This will swap in an effect-specific animation set
-    m_Pawn.ChangeAnimation();
+	if ( !ISwatAI(m_Pawn).IsArrestedOnFloor() )
+		m_Pawn.ChangeAnimation();
 
 	if (! bPlayedReaction)
 	{
@@ -665,16 +682,12 @@ Begin:
 
 		m_Pawn.DisableCollisionAvoidance();
 		PlayReactionAnimation();
-		m_Pawn.EnableCollisionAvoidance();
 		
-		/* REMOVED
-		//forced arrest after the first issued comply
-		if (ISwatAICharacter(m_Pawn) != None  && !ISwatAICharacter(m_Pawn).isa('SwatOfficer') )
-		{
-			ISwatAICharacter(m_Pawn).SetCanBeArrested(true);
-		}
-		*/
-
+		if ( !ISwatAI(m_Pawn).IsArrestedOnFloor() )
+			m_Pawn.EnableCollisionAvoidance();
+		else
+			m_Pawn.DisableCollisionAvoidance();
+		
 		if(FindFleeDestination() && CanGetOutOfRoomSafely() && bComplexFlee && ISwatOfficer(m_Pawn) == None)
 		{
 			Flee();
@@ -701,15 +714,9 @@ Begin:
 		// duration has ended
 		m_Pawn.ChangeAnimation();
 	}
+	else
+		m_Pawn.DisableCollisionAvoidance();
 	
-	/* REMOVED
-	//forced arrest after the first issued comply
-	if (ISwatAICharacter(m_Pawn) != None  && !ISwatAICharacter(m_Pawn).isa('SwatOfficer') )
-	{
-		ISwatAICharacter(m_Pawn).SetCanBeArrested(false);
-	}
-	*/
-
     succeed();
 
  WaitToAchieve:
