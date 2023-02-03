@@ -52,7 +52,7 @@ latent function PlayFloorAnimation()
 		// swap in the restrained anim set
 		ISwatAI(m_Pawn).SwapInRestrainedFloorAnimSet();
 	
-		//m_Pawn.ChangeAnimation();
+		m_Pawn.ChangeAnimation();
 	}
 	
 
