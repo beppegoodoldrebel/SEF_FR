@@ -317,6 +317,19 @@ function goalNotAchievedCB( AI_Goal goal, AI_Action child, ACT_ErrorCodes errorC
 		CurrentMoveToActorGoal.Release();
 		CurrentMoveToActorGoal = None;
 	}
+	
+	// Make sure we go back to the idle!
+	if(ISwatAI(m_Pawn).IsArrested() && !ISwatAI(m_Pawn).IsArrestedOnFloor())
+	{
+		ISwatAI(m_Pawn).SetIdleCategory('Restrained');
+		ISwatAI(m_Pawn).SwapInRestrainedAnimSet();
+	}
+	else if(ISwatAI(m_Pawn).IsArrested() && ISwatAI(m_Pawn).IsArrestedOnFloor())
+	{
+		ISwatAI(m_Pawn).SetIdleCategory('RestrainedFloor');
+		ISwatAI(m_Pawn).SwapInRestrainedFloorAnimSet();
+	}
+	
 
 	// we shouldn't run from the stunning device now.
 	bShouldRunFromStunningDevice                            = false;
