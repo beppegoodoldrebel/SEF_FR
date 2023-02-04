@@ -695,9 +695,13 @@ if ( Level.NetMode == NM_StandAlone && inloadout.CustomSkinSpec != "None" )
 	{
 		if ( Level.NetMode == NM_Standalone ) //in SP give Lead face
 		{
-			Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_ElementLeadFleshShader",class'Material'));
+			Skins[1] = Material(DynamicLoadObject("SWATinstructorTex.SI_ElementLeadFleshShader",class'Material'));
 			
-				Skins[1] = Material(DynamicLoadObject("SWATinstructorTex.SI_blackbdu_shader",class'Material'));
+				//Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_blackbdu_shader",class'Material'));
+			if( inLoadOut.GetPantsMaterial() != None && inLoadOut.GetPantsMaterial() != SwatDefaultPants) //get only custom skins
+				Skins[0] = inLoadOut.GetPantsMaterial();
+			else
+				Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_blackbdu_shader",class'Material'));
 			
 		}
 		else // in MP give random face
@@ -705,20 +709,20 @@ if ( Level.NetMode == NM_StandAlone && inloadout.CustomSkinSpec != "None" )
 			MPFace=FRand();
 			
 			if ( MPFace < 0.2 )
-				Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_ElementLeadFleshShader",class'Material'));
+				Skins[1] = Material(DynamicLoadObject("SWATinstructorTex.SI_ElementLeadFleshShader",class'Material'));
 			else if (  MPFace >= 0.2 && MPFace < 0.4  )
-				Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_BlueOneFleshShader",class'Material'));
+				Skins[1] = Material(DynamicLoadObject("SWATinstructorTex.SI_BlueOneFleshShader",class'Material'));
 			else if ( MPFace >= 0.4 && MPFace < 0.6 )
-				Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_BlueTwoFleshShader",class'Material'));
+				Skins[1] = Material(DynamicLoadObject("SWATinstructorTex.SI_BlueTwoFleshShader",class'Material'));
 			else if ( MPFace >= 0.6 && MPFace < 0.8)
-				Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_RedOneFleshShader",class'Material'));
+				Skins[1] = Material(DynamicLoadObject("SWATinstructorTex.SI_RedOneFleshShader",class'Material'));
 			else if ( MPFace >= 0.8 && MPFace <= 1 )
-				Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_RedTwoFleshShader",class'Material'));
+				Skins[1] = Material(DynamicLoadObject("SWATinstructorTex.SI_RedTwoFleshShader",class'Material'));
 			
 		if( inLoadOut.GetPantsMaterial() != None && inLoadOut.GetPantsMaterial() != SwatDefaultPants) //get only custom skins
-			Skins[1] = inLoadOut.GetPantsMaterial();
+			Skins[0] = inLoadOut.GetPantsMaterial();
 		else
-			Skins[1] = Material(DynamicLoadObject("SWATinstructorTex.SI_blackbdu_shader",class'Material'));
+			Skins[0] = Material(DynamicLoadObject("SWATinstructorTex.SI_blackbdu_shader",class'Material'));
 		
 		}
 		
