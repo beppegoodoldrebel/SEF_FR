@@ -239,7 +239,7 @@ Begin:
 	
 	MovetoOriginalLocation();
 	
-	UseResources(class'AI_Resource'.const.RU_ARMS);
+	//UseResources(class'AI_Resource'.const.RU_ARMS);
 	while ( vsize (m_pawn.Location - OriginalLocation ) > 200 )
 		yield();
 	
