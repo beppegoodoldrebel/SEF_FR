@@ -192,6 +192,9 @@ simulated static final function bool StaticRejectFocus(
 		if (CandidateActor.Owner.IsA('Hands') )
 			return true;
     }
+	
+	if (CandidateActor.IsA('ShieldEquip'))
+		return true;
 
     return false;
 }
