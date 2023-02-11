@@ -76,14 +76,15 @@ simulated function PostUpdate(SwatGamePlayerController Player)
 	
 	GC = SwatRepo(Level.GetRepo()).GuiConfig;
 	
+	
+	
 		//always low-ready in certain conditions:
-	    if(
+    if  (
             (
                 Player.ActiveViewport != None           //controlling a viewport
             &&  Player.bControlViewport != 0            //its an external viewport (not including the Optiwand)
             )
-		||
-          (
+        ||  (
                 Level.NetMode != NM_Standalone
             &&  PlayerPawn.CanBeArrestedNow()           //can be arrested
             )
@@ -94,8 +95,7 @@ simulated function PostUpdate(SwatGamePlayerController Player)
             )
         )
         ShouldLowReady = true;
-	
-	
+
     // If we shouldn't low ready, make sure the reason name is NULL'd out
     if (!ShouldLowReady)
         LowReadyReason = '';
@@ -106,10 +106,10 @@ simulated function PostUpdate(SwatGamePlayerController Player)
 	}
 	else
 	{
-		if (LowReadyReason == 'Obstruction' &&  ( !ActiveItem.isa('ShieldHandgun') || !ActiveItem.isa('TaserShield') ) )
+		if (LowReadyReason == 'Obstruction')
 		{
 			if(Player.WantsZoom && Player.WantedZoom )
-				Player.ToggleZoomMLR();
+				Player.ToggleZoom();
 			
 			PlayerPawn.SetLowReady(true, LowReadyReason);	
 		}
@@ -118,7 +118,7 @@ simulated function PostUpdate(SwatGamePlayerController Player)
 			PlayerPawn.SetLowReady( Player.WantsLowReady , LowReadyReason);
 			
 			if(Player.WantedZoom != Player.WantsZoom)
-				Player.ToggleZoomMLR();
+				Player.ToggleZoom();
 			
 		}
 	}
@@ -168,7 +168,7 @@ simulated function bool SpecialCondition_LowReadyPawn(SwatPlayer Player, Actor T
 	}
 	else
 	{
-			return Player.IsLowReady();
+		return Player.IsLowReady();
 	}
 }
 
