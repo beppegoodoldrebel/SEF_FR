@@ -665,6 +665,13 @@ function SetIdleCategory(name inIdleCategory)
 	if (logTyrion)
 		log("SetIdleCategory changed to: " $ inIdleCategory);
 
+	//forcing idle category back 
+	if ( isArrested () && !IsArrestedOnFloor() )
+		inIdleCategory = 'Restrained';
+	else if ( isArrested () && IsArrestedOnFloor() )
+		inIdleCategory = 'RestrainedFloor';
+
+
 	// only reset idling if the idle category changes
 	if (IdleCategory != inIdleCategory)
 	{
@@ -1347,6 +1354,10 @@ function name GetStungAffectedAnimation()
 	{
 		RandomIndex = Rand(StungRestrainedAffectedAnimations.Length);
 		return StungRestrainedAffectedAnimations[RandomIndex];
+	}
+	else if (IsArrested()  && IsArrestedOnFloor())
+	{
+		return 'CuffedFloorFidget';
 	}
 	else if (IsCompliant())
 	{

@@ -707,7 +707,7 @@ function bool IsRestrainedGoalRunning()
 function ResetIdling()
 {
 	// if the current idle goal is not none, it could be none because the AI is dying or incapacitated
-	if (CurrentIdleGoal != None)
+	if (CurrentIdleGoal != None &&  !ISwatAI(m_Pawn).IsArrested()  ) //dont reset if restrained 
 	{
 		if (CurrentIdleGoal.achievingAction != None)
 		{
