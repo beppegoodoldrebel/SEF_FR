@@ -3314,6 +3314,7 @@ simulated function OnUsed(Pawn Other)
 		{
 			SetArrestedOnFloor( true);
 			GetCommanderAction().NotifyArrestFloor(Other);
+			SetPhysics(PHYS_None); //dont move, ever egain...
 		}
 	}
 		

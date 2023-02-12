@@ -814,22 +814,21 @@ function OnHeardNoise()
 		if ( isDeadlyNoise(SoundCategory))
 		{
 			
-			if ((HeardPawn != None) && ISwatAI(m_Pawn).IsOtherActorAThreat(HeardPawn) )
+			if ((HeardPawn != None) && ISwatAI(m_Pawn).IsOtherActorAThreat(HeardPawn) && !m_Pawn.IsA('SwatGuard') )
 			{
 				
 				if ( m_Pawn.LineOfSightTo(HeardPawn) || DoWeKnowAboutPawn(HeardPawn) )
 				{//		log(m_Pawn.Name $ " going to encounter enemy");
 					
-						ISwatAI(m_pawn).GetKnowledge().UpdateKnowledgeAboutPawn(HeardPawn);
-						EncounterEnemy(HeardPawn);
+					ISwatAI(m_pawn).GetKnowledge().UpdateKnowledgeAboutPawn(HeardPawn);
+					EncounterEnemy(HeardPawn);
 				}
 				else
 				{
-					if ( frand () < GetInvestigateSoundChance()  && ( Distance < 800 ) )
+					if (frand () < GetInvestigateSoundChance() )
 						BecomeSuspicious(SoundOrigin,false,true); 
 					else
 						RotateToFaceNoise(HeardPawn);
-					
 				}
 			}
 				
@@ -903,7 +902,10 @@ private function BecomeSuspicious(vector SuspiciousEventOrigin, optional bool bO
 		// if we're already invesgigating or barricading, and can fast trace to the point specified, look at the point
 		if ( ( bInvestigate || bOnlyInvestigate ) && !bOnlyBarricade && ((CurrentInvestigateGoal == None) || CurrentInvestigateGoal.hasCompleted()))
 		{
-			CreateInvestigateGoal(SuspiciousEventOrigin);
+			if ( ( Vsize( SuspiciousEventOrigin - m_Pawn.Location ) < 800 ) )
+				CreateInvestigateGoal(SuspiciousEventOrigin);
+			else
+				RotateToRotation(rotator(SuspiciousEventOrigin - m_Pawn.Location), kRotateToSuspiciousNoisePriority);
 		}
 		else if ((bOnlyBarricade || bBarricade) && ((CurrentBarricadeGoal == None) || CurrentBarricadeGoal.hasCompleted()))
 		{

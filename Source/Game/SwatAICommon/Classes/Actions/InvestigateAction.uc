@@ -5,8 +5,8 @@
 class InvestigateAction extends SuspiciousAction;
 ///////////////////////////////////////////////////////////////////////////////
 
-const kMinInvestigateTime = 8.0;
-const kMaxInvestigateTime = 15.0;
+const kMinInvestigateTime = 5.0;
+const kMaxInvestigateTime = 10.0;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -23,6 +23,7 @@ var config float					MaxInvestigateDelayTime;
 var config float					ReactionSpeechChance;
 var config float					MinInvestigateTime;
 var config float					MaxInvestigateTime;
+var config float                    DistanceToStop;
 
 var private Timer					InvestigateTimeoutTimer;
 
@@ -226,8 +227,16 @@ Begin:
 
 	AimAtInvestigationLocation();
 
-	while ( vsize (m_pawn.Location - InvestigateLocation ) > (frand()*500 + 200 ) )
+	DistanceToStop = 200;//frand()*500 + 200;
+
+	while ( Vsize( InvestigateLocation - m_pawn.Location ) > (DistanceToStop) )
 		yield();
+	
+	if (CurrentMoveToLocationGoal != None)
+	{
+		CurrentMoveToLocationGoal.Release();
+		CurrentMoveToLocationGoal = None;
+	}
 
     // aim around again
     AimAround(180.0, 360.0, false);
@@ -236,7 +245,7 @@ Begin:
 	
 	// aim around while we move to our investigation destination
 	AimAround(45.0, 60.0, true);
-	
+
 	MovetoOriginalLocation();
 	
 	//UseResources(class'AI_Resource'.const.RU_ARMS);

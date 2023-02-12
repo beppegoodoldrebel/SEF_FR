@@ -53,8 +53,9 @@ var config float				AimAtClosestDoorTime;
 var config float				MinTimeBeforeClosingDoor;
 var config float				MaxTimeBeforeClosingDoor;
 
-var private float TimePulse;
+
 var private bool OutForThreat;
+var private Pawn BarricadeThreat;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -576,15 +577,33 @@ private latent function CloseOpenedDoor()
 	LockDoor(DoorOpening);
 }
 
+private latent function AimAtThreat()
+{
+	assert(DoorOpening != None);
+
+	CurrentAimAtTargetGoal = new class'AimAtTargetGoal'(weaponResource(), BarricadeThreat);
+	assert(CurrentAimAtTargetGoal != None);
+	CurrentAimAtTargetGoal.AddRef();
+
+	CurrentAimAtTargetGoal.SetAimOnlyWhenCanHitTarget(true);
+
+	CurrentAimAtTargetGoal.postGoal(self);
+
+}
+
+
 private function bool ThreatIsNear()
 {
 	local Pawn SO;
 		
-		ForEach level.AllActors(class'Pawn', SO )
+		ForEach m_pawn.VisibleCollidingActors(class'Pawn', SO, 800 )
 		{
 			if ( SO.isa('SwatPlayer') || SO.isa('SwatOfficer') )
 				if (m_Pawn.LineOfSightTo(SO))
+				{
+					BarricadeThreat = SO;
 					return true;
+				}
 		}
 	
 	return false;	
@@ -643,22 +662,16 @@ Begin:
 		m_Pawn.ShouldCrouch(true);
 	}
 
-	TimePulse = Level.TimeSeconds;
-
 	while( !OutForThreat )
 	{
-		/*if (  ( TimePulse - Level.TimeSeconds ) > 1 )
-		{
-			TimePulse = Level.TimeSeconds;*/
-			if (ThreatIsNear() )
-				OutForThreat = true;
-		/*}
-		else*/
-			yield();
+		if (ThreatIsNear() )
+			OutForThreat = true;
 		
-		
+		yield();
 	}
 	
+	if ( BarricadeThreat != None)
+		AimAtThreat();
 	
 	succeed();
 	/*

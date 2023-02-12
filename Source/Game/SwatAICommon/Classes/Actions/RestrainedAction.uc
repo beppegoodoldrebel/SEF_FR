@@ -181,6 +181,9 @@ state Running
     }
 
  Begin:
+	//sanity check
+	ISwatEnemy(m_Pawn).UnbecomeAThreat();
+ 
 	if (! ISwatAI(m_Pawn).IsArrested())
 	{
 		useResources(class'AI_Resource'.const.RU_ARMS);
