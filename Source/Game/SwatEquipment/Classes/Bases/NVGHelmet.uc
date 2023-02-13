@@ -6,18 +6,18 @@ var(Mesh) protected config StaticMesh AltDeactivatedMesh;
 
 simulated function SetNVGMesh( bool Activation )
 {
-	SetLocation( Pawn(Owner).Location ); //sound effects location fix
+	Pawn(Owner).AttachToBone(self, AttachmentBone); //sound effects location fix
 	
 	if (Activation )
 	{	
-		if ( SwatPlayer(Owner).HasInstructorMesh() && AltActivatedMesh != None)
+		if ( SwatPawn(Owner).HasInstructorMesh() && AltActivatedMesh != None)
 			SetStaticMesh(AltActivatedMesh);
 		else	
 			SetStaticMesh(ActivatedMesh);
 	}
 	else
 	{
-		if ( SwatPlayer(Owner).HasInstructorMesh() && AltDeactivatedMesh != None)
+		if ( SwatPawn(Owner).HasInstructorMesh() && AltDeactivatedMesh != None)
 			SetStaticMesh(AltDeactivatedMesh);
 		else	
 			SetStaticMesh(DeactivatedMesh);
