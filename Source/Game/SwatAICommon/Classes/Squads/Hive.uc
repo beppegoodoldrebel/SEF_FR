@@ -508,8 +508,7 @@ function OfficerSawPawn(Pawn OfficerViewer, Pawn Seen)
 		if (! Blackboard.HasAIBeenEncountered(Seen))
 		{
 			
-			if (Seen.LineOfSightTo(OfficerViewer) ) //OfficerViewer.FastTrace( Seen.Location ,OfficerViewer.Location) ) 
-				
+			if (Seen.LineOfSightTo(OfficerViewer) ) //OfficerViewer.FastTrace( Seen.Location ,OfficerViewer.Location) ) 	
 			{
 				if (Seen.IsA('SwatEnemy'))
 				{
@@ -531,7 +530,7 @@ function OfficerSawPawn(Pawn OfficerViewer, Pawn Seen)
 		if (! ISwatAI(Seen).IsCompliant() && 
 			! ISwatAI(Seen).IsArrested() && 
 			! Seen.IsIncapacitated() &&
-			(Seen.IsAThreat() || ! ISwatAI(Seen).GetCommanderAction().IsIgnoringComplianceOrders()) &&
+			(Seen.IsAThreat() || ISwatAI(Seen).HasFiredWeaponEquipped()|| !ISwatAI(Seen).GetCommanderAction().IsIgnoringComplianceOrders()) &&
 			CanAssignAnyOfficerToTarget(Seen))
 		{
 			// this may need to be moved because this will be called every time we see a Enemy or Hostage 
