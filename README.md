@@ -11,6 +11,22 @@ https://discord.gg/Vu4r7sv7uF
 
 # FEATURE LIST: #
 
+#### V0.67 Stable ####
+WEAPONS: 
+			 - Remingtom M870 Tactical
+GEAR:
+             - PASGT + Goggles and chinstraps to many helmets ( thx to TargetAquired )
+			 - reworked Kevlar Armor(No Sleeves) now support full skins and nametags ( thx to TargetAquired )
+AI: 
+			 - Minimum Time to Shoot reduced for Low/Medium Skill Suspects
+			 - reworked Hearing Sensor for Suspects/Officers
+			 - reworked Flee/Flush/Regroup/Escape actions to avoid bad behaviors on "attack while moving".
+			 - reworked InvestigateAction to not make suspect standing without tasks.
+SOUNDS:
+			 - various replaced sounds effects  ( thx to Crusoe )
+FIXED:      
+             - fixed some wierd animation behaviors when "Restrained On Floor".
+
 #### V0.67 Beta 3 ####
 ADDED: 
 	WEAPONS: 

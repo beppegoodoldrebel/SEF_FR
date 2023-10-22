@@ -14,58 +14,15 @@ https://discord.gg/Vu4r7sv7uF
 FEATURE LIST: 
 ==============
 
-
-#### V0.67 Beta 2 ####
-ADDED: 
-    GAMEPLAY:
-			 - Medical System: 
-			            - healing gives 100% health
-						- added "HEAL ME" AI command
-						- new HEAL voice command lines ( i.e. "Gold , heal me" will result in AI heal you ) 
-						
-             - "CHECK CORNER" command 
-			            - AI can move to corners and check whats behind that
-						- command trigger on mirror points
-						
-             - WeaponBob activated 
-			            - player's camera is moving during walk to give a more dynamic feeling
-						
-			 - restored Optiwand "under-door" capability 
-			 - revised player speed 
-			 - Fallen door chance after a blast or a breach is depending on door material
-		
-    AI: 
-	         - revised AI reaction iteration and timings 
-						- AI reaction times are dependent on suspect rotation to its target 
-						
-			 - AI aim and shoot behavior being reworked to be more consistent and dangerous
-				
-FIXED: 
-             - fixed many deadlocks in suspect AI actions that were making them idle for no reason 
-			 - improved AI pepperspray and taser shooting (not perfect but more consistent )
-	
-
-
-#### V0.67 HOTFIX 1 ####			
-FIXED:      
-            - SP Shield penetrations 
-			- MP shield penetration 
-			- Shield as Primary Weapon for SWAT AI 
-			- Taser probes collision on player shield 
-			- Blasted doors with wedges bad behavior 
-			- 5th slot bug 
-			- double shield equip , shield now are only secondary equip. 
-			- round in chamber when quick reload 
-			- Removed Forced Arrest
-			- Blasted doors desync in MP
-			- Suspect weapon dropping after arrest
-			- Removed Optiwand sharing to fix equip bug
-			
-#### V0.67 Beta 1 ####
-
-ADDED: 
-    GAMEPLAY:
-	        - The Shield: combined pistols (or taser) with a Level3A rated tactical shield. 
+#### V0.67 ####
+WEAPONS: 
+			 - Remingtom M870 Tactical
+			 - M16A2 with Surefire M500 weaponlight
+GEAR:
+             - PASGT + Goggles and chinstraps to many helmets ( thx to TargetAquired )
+			 - reworked Kevlar Armor(No Sleeves) now support full skins and nametags ( thx to TargetAquired )
+GAMEPLAY:
+			- The Shield: combined pistols (or taser) with a Level3A rated tactical shield. 
 			            
 						Can be equipped by AI officers and they can move in formation with it ( MOVE-TO command for example ).
 						
@@ -79,16 +36,47 @@ ADDED:
             - Quick Reload: pressing Hold Command (CTRL default) + Reload permits you to quick change magazine at the cost of losing it.
 			
 			- Breached Door Falling: Doors can now detach from the frame after a C2 explosion (for the maximum cinematic effect)
-            - Forced Arrest: you can arrest anyone who is stunned/gassed/etc at the price of a little penalty (-2)
             - Blasted Doors with shotgun have now chance to be opened immediatly after the shot			
-	AI:     
-            - Hostages can possibly comply by just seeing the officers.
-			
+			- Restrained On Floor: 
+			            - after reporting you can put anyone to floor by simply interacting again with the restrained.
+            - First Responders Campaign mode : 
+			            - no unlocks 
+						- only FR weapons
+						- no optiwand   :P
+			- Damage values reworked for penetrating ammos. 			
+			- Medical System: 
+			            - healing gives 100% health
+						- added "HEAL ME" AI command
+						- new HEAL voice command lines ( i.e. "Gold , heal me" will result in AI heal you ) 
+						
+             - "CHECK CORNER" command 
+			            - AI can move to corners and check whats behind that
+						- command trigger on mirror points
+						
+             - WeaponBob activated 
+			            - player's camera is moving during walk to give a more dynamic feeling
+						
+			 - restored Optiwand "under-door" capability 
+			 - revised player speed 
+			 - Fallen door chance after a blast or a breach is depending on door material		
+GUI:
+	         - Added selectable Custom Skins for Single Player mode.			 
+AI: 
+			 - fixed istances of AI shooting from impossible rotations
+			 - minimum time to shoot is now respected
+             - fixed many deadlocks in suspect AI actions that were making them idle for no reason
+			 - Hostages can possibly comply by just seeing the officers.
+			 - Minimum Time to Shoot reduced for Low/Medium Skill Suspects
+			 - reworked Hearing Sensor for Suspects/Officers
+			 - reworked Flee/Flush/Regroup/Escape actions to avoid bad behaviors on "attack while moving".
+			 - reworked InvestigateAction to not make suspect standing without tasks.
+SOUNDS:
+			 - various replaced sounds effects  ( thx to Crusoe )
 FIXED:      
-            - Barricade suspects behavior is working as intended
-			- Suspect Threat detection is now activated just before they start to aim to avoid delays (particularly in MP) and bad ROE detection
-			- Reduced Suspects and Officers punch chance to avoid fist fight "exploitation" 
-			- Fixed bad istances where suspects are still holding a gun after been arrested
+			 - Suspect Threat detection is now activated just before they start to aim to avoid delays (particularly in MP) and bad ROE detection
+             - fixed some wierd animation behaviors when "Restrained On Floor".
+			 - Weapon image not loading on Loadout GUI on some campaign conditions
+			 - improved animation manager
 
 
 #### V0.66 ####
