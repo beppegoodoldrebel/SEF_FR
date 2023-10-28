@@ -659,8 +659,11 @@ function NotifyBeginArrest(Pawn inRestrainer)
 
 function NotifyArrestFloor(Pawn inRestrainer)
 {
-local RestrainedFloorGoal	    CurrentRestrainedFloorGoal;	
+	local RestrainedFloorGoal	    CurrentRestrainedFloorGoal;	
 	
+	if (!ISwatAI(inRestrainer).IsArrestedOnFloor() )
+	{
+		
 	if (CurrentRestrainedGoal != None)
 	{
 		CurrentRestrainedGoal.unPostGoal(self);
@@ -673,6 +676,8 @@ local RestrainedFloorGoal	    CurrentRestrainedFloorGoal;
 	CurrentRestrainedFloorGoal.AddRef();
 
 	CurrentRestrainedFloorGoal.postGoal(self);
+	
+	}
 		
 }
 
@@ -707,7 +712,19 @@ function bool IsRestrainedGoalRunning()
 function ResetIdling()
 {
 	// if the current idle goal is not none, it could be none because the AI is dying or incapacitated
-	if (CurrentIdleGoal != None &&  !ISwatAI(m_Pawn).IsArrested()  ) //dont reset if restrained 
+	if (CurrentIdleGoal != None &&   ( !ISwatAI(m_Pawn).IsArrested() || ISwatAI(m_Pawn).IsArrestedOnFloor() ) ) //dont reset if restrained 
+	{
+		if (CurrentIdleGoal.achievingAction != None)
+		{
+			CurrentIdleGoal.achievingAction.instantSucceed();
+		}
+	}
+}
+
+function ForceResetIdling()
+{
+	// if the current idle goal is not none, it could be none because the AI is dying or incapacitated
+	if (CurrentIdleGoal != None ) 
 	{
 		if (CurrentIdleGoal.achievingAction != None)
 		{
