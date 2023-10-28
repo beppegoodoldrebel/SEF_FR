@@ -3325,13 +3325,13 @@ function bool CheckObstacleInFront()
 		return false; //no go
 	
 	
-	Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(0,255,0));
+	//Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(0,255,0));
 	
 	//second trace at floor level
 	StartVect.Z=StartVect.Z-50;
 	EndVect.Z=EndVect.Z-90;
 	
-	Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(255,0,0));
+	//Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(255,0,0));
 	if ( FastTrace(EndVect,StartVect) ) //we need floor in front of restrained
 		return false; //no go
 	
