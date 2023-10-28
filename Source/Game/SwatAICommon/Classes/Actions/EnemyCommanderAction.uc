@@ -660,8 +660,8 @@ function OnPawnEncounteredVisionNotification()
 {
 	local Pawn Enemy;
 	
-	assert( m_pawn.CanHitTarget(VisionSensor.LastPawnSeen) );
-
+	//assert( m_pawn.CanHitTarget(VisionSensor.LastPawnSeen) );
+	
 	if (VisionSensor.LastPawnSeen != None)
 	{
 		Enemy = VisionSensor.LastPawnSeen;
@@ -678,7 +678,9 @@ function OnPawnEncounteredVisionNotification()
 	if (m_Pawn.logAI)
 		log(m_Pawn.Name $ " OnPawnEncounteredVisionNotification - VisionSensor.LastPawnSeen: " $ VisionSensor.LastPawnSeen $ " LostPawnTimer: " $ LostPawnTimer $ " CurrentEnemy: " $CurrentEnemy);
 
-	EncounterEnemy(Enemy);
+	
+	if( m_pawn.CanSee(Enemy) )
+		EncounterEnemy(Enemy);
 }
 
 function OnPawnLostVisionNotification()
@@ -814,10 +816,13 @@ function OnHeardNoise()
 		if ( isDeadlyNoise(SoundCategory))
 		{
 			
-			if ((HeardPawn != None) && ISwatAI(m_Pawn).IsOtherActorAThreat(HeardPawn) && !m_Pawn.IsA('SwatGuard') )
+			if ((HeardPawn != None)  //ISwatAI(m_Pawn).IsOtherActorAThreat(HeardPawn) 
+				&& ( m_Pawn.IsA('SwatPlayer') || m_Pawn.IsA('SwatOfficer') )
+				&& !m_Pawn.IsA('SwatGuard')
+				)
 			{
 				
-				if ( m_Pawn.LineOfSightTo(HeardPawn) || DoWeKnowAboutPawn(HeardPawn) )
+				if ( m_Pawn.CanSee(HeardPawn) || DoWeKnowAboutPawn(HeardPawn) )
 				{//		log(m_Pawn.Name $ " going to encounter enemy");
 					
 					ISwatAI(m_pawn).GetKnowledge().UpdateKnowledgeAboutPawn(HeardPawn);
@@ -833,10 +838,12 @@ function OnHeardNoise()
 			}
 				
 		}
-		else
+		else	
 		{
 			//
-			if ((HeardPawn != None) && ISwatAI(m_Pawn).IsOtherActorAThreat(HeardPawn) && m_Pawn.LineOfSightTo(HeardPawn) &&
+			if ((HeardPawn != None) && ISwatAI(m_Pawn).IsOtherActorAThreat(HeardPawn) && 
+			( m_Pawn.CanSee(HeardPawn) || Distance < 800  ) //sound sixth sense
+			&&
 			(DoesSoundCauseUsToKnowAboutPawn(SoundCategory) || DoWeKnowAboutPawn(HeardPawn)))
 			{
 				//		log(m_Pawn.Name $ " going to encounter enemy");
@@ -1220,7 +1227,7 @@ private function bool ShouldEncounterNewEnemy(Pawn NewEnemy)
 
 		if (((DistanceToNewEnemy < DistanceToCurrentEnemy) && (DistanceToNewEnemy < class'EnemyCommanderActionConfig'.default.DeltaDistanceToSwitchEnemies)) ||
 			//(! m_Pawn.CanHit(CurrentEnemy) && m_Pawn.CanHit(NewEnemy)))
-			(! m_Pawn.LineOfSightTo(CurrentEnemy) && m_Pawn.LineOfSightTo(NewEnemy)))
+			(! m_Pawn.CanSee(CurrentEnemy) && m_Pawn.CanSee(NewEnemy)))
 		{
 			return true;
 		}
@@ -1249,9 +1256,11 @@ private function bool ShouldEncounterEnemy(Pawn Enemy)
 	// returns true if the Enemy is concious, and we're not dealing with someone else,
 	// or if the new enemy is close enough that we should take another enemy
 	return (class'Pawn'.static.checkConscious(Enemy) && !m_Pawn.IsCompliant() && !m_Pawn.IsArrested() &&
-			((CurrentEnemy == None) ||
-			 ((CurrentInitialReactionGoal == None) && (CurrentEngageOfficerGoal == None)) ||
-			 ShouldEncounterNewEnemy(Enemy)));
+			(
+			(CurrentEnemy == None) ||   													//true if no enemy
+			((CurrentInitialReactionGoal == None) && (CurrentEngageOfficerGoal == None)) || //true if no business
+		    ShouldEncounterNewEnemy(Enemy))											        //true if distance is ko
+			 );
 }
 
 // another class can ask us to encounter an enemy
@@ -1715,8 +1724,8 @@ function FindBetterEnemy()
 	
 	if (CurrentEnemy != None)
 	{
-		//if (! m_Pawn.CanHitTarget(CurrentEnemy))
-	    if (! m_Pawn.LineOfSightTo(CurrentEnemy))
+		//if (! m_Pawn.LineOfSightTo(CurrentEnemy))
+	    if (! m_Pawn.CanSee(CurrentEnemy))
 		{
 			NewEnemy = VisionSensor.GetVisibleConsciousPawnClosestTo(m_Pawn.Location);
 
@@ -1764,7 +1773,7 @@ latent function FinishedEngagingEnemies()
 
 function FinishedMovingEngageBehavior()
 {
-	if (!class'Pawn'.static.checkConscious(CurrentEnemy) || !m_Pawn.LineOfSightTo(CurrentEnemy))
+	if (!class'Pawn'.static.checkConscious(CurrentEnemy) || !m_Pawn.CanSee(CurrentEnemy))
 	{
 		SetCurrentEnemy(None);
 	}
