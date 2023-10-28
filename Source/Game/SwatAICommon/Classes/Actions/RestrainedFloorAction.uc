@@ -10,22 +10,34 @@ class RestrainedFloorAction extends LookAtOfficersActionBase;
 var(parameters)	Pawn	Restrainer;	// pawn that we will be working with
 
 // behaviors we use
-var private RotateTowardRotationGoal	CurrentRotateTowardRotationGoal;
-var private bool FoundRotation;
+//var private RotateTowardRotationGoal	CurrentRotateTowardRotationGoal;
+//var private bool FoundRotation;
+//var private Rotator DesiredRestrainRotation;
 
 // config variables
 const kPostRestrainedGoalPriority      = 90;
+
+function initAction(AI_Resource r, AI_Goal goal)
+{
+	super.initAction(r, goal);
+}
+
+function goalNotAchievedCB( AI_Goal goal, AI_Action child, ACT_ErrorCodes errorCode )
+{
+	super.goalNotAchievedCB(goal, child, errorCode);
+
+	if (m_Pawn.logTyrion)
+		log(goal.name $ " was not achieved.  failing.");
+
+	// just fail
+	InstantFail(errorCode);
+}
+
 
 function cleanup()
 {
 	super.cleanup();
 	
-	if (CurrentRotateTowardRotationGoal != None)
-	{
-		CurrentRotateTowardRotationGoal.unPostGoal(self);
-		CurrentRotateTowardRotationGoal.Release();
-		CurrentRotateTowardRotationGoal = None;
-	}
 }
 
 
@@ -38,46 +50,45 @@ latent function PlayFloorAnimation()
 {
 	local int IdleChannel;
 	
-	if ( ISwatAI(m_Pawn).GetIdleCategory() != 'RestrainedFloor')
-	{
-		IdleChannel = m_Pawn.AnimPlaySpecial('CuffedFloor', 0.0);    
+	//if ( ISwatAI(m_Pawn).GetIdleCategory() != 'RestrainedFloor')
+	//{		
+		IdleChannel = m_Pawn.AnimPlaySpecial('CuffedFloor', 0.1 , '', 0.8);    
 	
 		if ( frand() < 0.5 )
 		ISwatAI(m_Pawn).GetSpeechManagerAction().TriggerRestrainedSpeech();
 	
-		m_Pawn.FinishAnim(IdleChannel);
+		//m_Pawn.FinishAnim(IdleChannel);
+		m_pawn.AnimFinishSpecial();
+		m_Pawn.AnimStopSpecial();
 		
-		ISwatAI(m_Pawn).SetIdleCategory('RestrainedFloor');
-	
 		// swap in the restrained anim set
-		ISwatAI(m_Pawn).SwapInRestrainedFloorAnimSet();
-	
-		m_Pawn.ChangeAnimation();
-	}
-	
-
+		if (ISwatAI(m_Pawn).GetIdleCategory() != 'RestrainedFloor' )
+		{
+			ISwatAI(m_Pawn).SetIdleCategory('RestrainedFloor');
+			ISwatAI(m_Pawn).SwapInRestrainedFloorAnimSet();
+		}
+		
+		
+		//m_Pawn.ChangeAnimation();
+	//}
 	
 	StopLookingAtOfficers();
 	
-	while (class'Pawn'.static.checkConscious(m_Pawn))
-	{
-		sleep(1.0);
-		// don't move while being restrained
-		m_Pawn.DisableCollisionAvoidance();
-	}
 }
 
+/*
+
 // rotate to the rotation that is the opposite of the restrainer's rotation
-function RotateToRestrainablePosition()
+latent function RotateToRestrainablePosition()
 {
-	local Rotator DesiredRestrainRotation;
 	local vector StartVect,EndVect;
 	local rotator GoodRot;
-	local int YawRot;
-	 
-	while ( YawRot < 65536 && !FoundRotation) 
+	local int YawRot , MaxIter;
+	 	 
+	while ( YawRot < 65536 && !FoundRotation && MaxIter < 10) 
 	{
-		GoodRot = m_Pawn.Rotation;
+		MaxIter= MaxIter + 1;
+		GoodRot = m_pawn.Rotation;
 		GoodRot.Yaw = GoodRot.Yaw + YawRot;
 		
 		StartVect= m_Pawn.Location;
@@ -85,20 +96,20 @@ function RotateToRestrainablePosition()
 		
 	    if ( m_pawn.FastTrace(EndVect,StartVect) )
 		{
-			//Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(255,0,0));
+			Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(255,0,0));
 			
 			//second trace at floor level
 			StartVect.Z=StartVect.Z-50;
 			EndVect.Z=EndVect.Z-50;
 			if ( m_pawn.FastTrace(EndVect,StartVect) )
 			{
-				//Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(255,0,0));
+				Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(255,0,0));
 				
 				//third trace for stairs
 				EndVect.Z=EndVect.Z-40;
 				if ( !m_pawn.FastTrace(EndVect,StartVect) ) //if I catch something it's good
 				{
-					//Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(255,0,0));
+					Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(255,0,0));
 					FoundRotation = true;
 				}
 			}
@@ -108,55 +119,72 @@ function RotateToRestrainablePosition()
 	}
 	FoundRotation = true; //make sure to end anyway!
 	
-	DesiredRestrainRotation = GoodRot; 
-	//DesiredRestrainRotation.Yaw += GoodRot.Yaw; 
+	Level.GetLocalPlayerController().myHUD.AddDebugLine(m_pawn.Location, m_pawn.Location + vector(GoodRot)*80 , class'Engine.Canvas'.Static.MakeColor(0,255,0));
+	DesiredRestrainRotation = rotator ( m_pawn.Location  - ( m_pawn.Location + vector(GoodRot)*80 ) ) ; 
 	
+	if (CurrentRotateTowardRotationGoal != None)
+	{
 	
-		
-	CurrentRotateTowardRotationGoal = new class'RotateTowardRotationGoal'(movementResource(), achievingGoal.Priority, DesiredRestrainRotation);
+	CurrentRotateTowardRotationGoal = new class'RotateTowardRotationGoal'(movementResource(),achievingGoal.priority, DesiredRestrainRotation);
 	assert(CurrentRotateTowardRotationGoal != None);
 	CurrentRotateTowardRotationGoal.AddRef();
 
 	CurrentRotateTowardRotationGoal.postGoal(self);
-
-	// make sure the rotation is set and lock it
-	ISwatAI(m_Pawn).AimToRotation(DesiredRestrainRotation);
-	ISwatAI(m_Pawn).LockAim();
 	
+	WaitForGoal(CurrentRotateTowardRotationGoal);
+	}
+	
+	if (CurrentRotateTowardRotationGoal != None)
+	{
+	CurrentRotateTowardRotationGoal.unPostGoal(self);
+	CurrentRotateTowardRotationGoal.Release();
+	CurrentRotateTowardRotationGoal = None;
+	}
 }
 
+function CheckObstacleInFront()
+{
+	local vector StartVect,EndVect;
+	
+	StartVect= m_Pawn.Location;
+	EndVect= StartVect + vector(m_pawn.Rotation)*100;
+	
+	Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(255,0,0));
+	
+	if ( !m_pawn.FastTrace(EndVect,StartVect) )
+	{
+		//muoviti indietro
+		m_pawn.SetCollisionSize(200,20);
+	}
+	
+}
+*/
 
 state Running
 {
  Begin:
-	 
-	// don't move while being restrained
-	m_Pawn.DisableCollisionAvoidance();
+	 	
 		
-	if (achievingGoal.priority != kPostRestrainedGoalPriority)
+	if (ISwatAI(m_Pawn).GetIdleCategory() != 'RestrainedFloor' )//sanitize
 	{
-		// set the priority lower now so that any higher priority goal 
-		// (incapacitation, stunned, injury) will take over
-		achievingGoal.changePriority(kPostRestrainedGoalPriority);
-		ClearDummyGoals();
-	}
-	 
-	while (! resource.requiredResourcesAvailable(achievingGoal.priority, achievingGoal.priority))
-		yield();
-
-	useResources(class'AI_Resource'.const.RU_ARMS | class'AI_Resource'.const.RU_LEGS);
+		
+	// don't move while being restrained
+	m_Pawn.DisableCollisionAvoidance();	
+		
+	m_Pawn.AnimStopSpecial();
 	
-	if (!FoundRotation)
-		RotateToRestrainablePosition();
-
 	PlayFloorAnimation();
+	m_Pawn.SetPhysics(PHYS_Karma); //dont move, ever egain...
 	
-	if (CurrentRotateTowardRotationGoal != None)
-	{
-		CurrentRotateTowardRotationGoal.unPostGoal(self);
-		CurrentRotateTowardRotationGoal.Release();
-		CurrentRotateTowardRotationGoal = None;
 	}
+	
+	while (class'Pawn'.static.checkConscious(m_Pawn))
+	{
+		sleep(10.0);
+		// don't move while being restrained
+		m_Pawn.DisableCollisionAvoidance();
+	}
+	
 	
 	succeed();
 	

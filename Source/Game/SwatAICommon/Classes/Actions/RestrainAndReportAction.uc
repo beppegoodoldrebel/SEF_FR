@@ -222,6 +222,27 @@ latent function ReportTarget()
 		CurrentReportGoal.Release();
 		CurrentReportGoal = None;
 	}
+	
+	//restrained on floor randomizer
+	if (frand() < 0.5 )
+	{
+		sleep(1.0); //wait a little
+		
+		if (target.CanBeUsedNow())
+		{
+			CurrentReportGoal = new class 'ReportGoal'(characterResource(), target, m_Pawn.controller);
+			assert(CurrentReportGoal != None);
+			CurrentReportGoal.AddRef();
+
+			CurrentReportGoal.postGoal(self);
+			WaitForGoal(CurrentReportGoal);
+			CurrentReportGoal.unPostGoal(self);
+
+			CurrentReportGoal.Release();
+			CurrentReportGoal = None;
+		}
+		
+	}
 }
 
 private function TriggerReassuranceSpeech()

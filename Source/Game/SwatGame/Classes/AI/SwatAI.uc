@@ -3307,11 +3307,39 @@ simulated function bool CanBeUsedNow()
 {
 	//arrested on floor
 	if (IsArrested() && bHasBeenReportedToTOC && !IsArrestedOnFloor() )
-			return true;
+		   return CheckObstacleInFront();   
 	
 //log( self$"::CanBeUsedNow() ... bHasBeenReportedToTOC = "$bHasBeenReportedToTOC$", class.static.checkConscious(self) = "$class.static.checkConscious(self)$", IsArrested() = "$IsArrested() );
     return !bHasBeenReportedToTOC && (!class.static.checkConscious(self) || IsArrested());
 }
+
+function bool CheckObstacleInFront()
+{
+	
+	local vector StartVect,EndVect;
+	
+	StartVect= self.Location;
+	EndVect= StartVect + vector(self.Rotation)*100;
+	
+	if ( !FastTrace(EndVect,StartVect) )
+		return false; //no go
+	
+	
+	Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(0,255,0));
+	
+	//second trace at floor level
+	StartVect.Z=StartVect.Z-50;
+	EndVect.Z=EndVect.Z-90;
+	
+	Level.GetLocalPlayerController().myHUD.AddDebugLine(StartVect, EndVect, class'Engine.Canvas'.Static.MakeColor(255,0,0));
+	if ( FastTrace(EndVect,StartVect) ) //we need floor in front of restrained
+		return false; //no go
+	
+	
+	return true; //go
+	
+}
+
 
 simulated function OnUsed(Pawn Other)
 {
@@ -3325,7 +3353,6 @@ simulated function OnUsed(Pawn Other)
 		{
 			SetArrestedOnFloor( true);
 			GetCommanderAction().NotifyArrestFloor(Other);
-			SetPhysics(PHYS_None); //dont move, ever egain...
 		}
 	}
 		

@@ -53,7 +53,7 @@ function cleanup()
 	}
 
 	// only swap in the compliance animations if we're not arrested yet
-	if (! ISwatAI(m_Pawn).IsArrested())
+	if (! ISwatAI(m_Pawn).IsArrested() && ! ISwatAI(m_Pawn).IsArrestedOnFloor())
 	{
 		ISwatAI(m_Pawn).SwapInCompliantAnimSet();
 		ISwatAI(m_Pawn).SetIdleCategory('Compliant');
@@ -184,7 +184,7 @@ state Running
 	//sanity check
 	ISwatEnemy(m_Pawn).UnbecomeAThreat();
  
-	if (! ISwatAI(m_Pawn).IsArrested())
+	if (! ISwatAI(m_Pawn).IsArrested() && !ISwatAI(m_Pawn).IsArrestedOnFloor())
 	{
 		useResources(class'AI_Resource'.const.RU_ARMS);
 
@@ -210,11 +210,21 @@ state Running
 	SwatAIRepository(m_Pawn.Level.AIRepo).GetHive().NotifyAIBecameRestrained(m_Pawn);
 	ISwatAI(m_Pawn).GetCommanderAction().NotifyRestrained();
 		
-	// set our idle category
-	ISwatAI(m_Pawn).SetIdleCategory('Restrained');
+	
 
 	// swap in the restrained anim set
-	ISwatAI(m_Pawn).SwapInRestrainedAnimSet();
+	if (!ISwatAI(m_Pawn).IsArrestedOnFloor())
+	{
+		// set our idle category
+		ISwatAI(m_Pawn).SetIdleCategory('Restrained');
+		ISwatAI(m_Pawn).SwapInRestrainedAnimSet();
+	}
+	/*else
+	{   
+		// set our idle category
+		ISwatAI(m_Pawn).SetIdleCategory('RestrainedFloor');
+		ISwatAI(m_Pawn).SwapInRestrainedFloorAnimSet();
+	}*/
 
 	if (achievingGoal.priority != kPostRestrainedGoalPriority)
 	{
