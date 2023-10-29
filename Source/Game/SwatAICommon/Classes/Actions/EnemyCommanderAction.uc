@@ -816,8 +816,8 @@ function OnHeardNoise()
 		if ( isDeadlyNoise(SoundCategory))
 		{
 			
-			if ((HeardPawn != None)  //ISwatAI(m_Pawn).IsOtherActorAThreat(HeardPawn) 
-				&& ( m_Pawn.IsA('SwatPlayer') || m_Pawn.IsA('SwatOfficer') )
+			if ((HeardPawn != None)  //
+				&& ISwatAI(m_Pawn).IsOtherActorAThreat(HeardPawn) 
 				&& !m_Pawn.IsA('SwatGuard')
 				)
 			{
@@ -841,16 +841,24 @@ function OnHeardNoise()
 		else	
 		{
 			//
-			if ((HeardPawn != None) && ISwatAI(m_Pawn).IsOtherActorAThreat(HeardPawn) && 
-			( m_Pawn.CanSee(HeardPawn) || Distance < 800  ) //sound sixth sense
-			&&
+			if ((HeardPawn != None) && ISwatAI(m_Pawn).IsOtherActorAThreat(HeardPawn) &&
 			(DoesSoundCauseUsToKnowAboutPawn(SoundCategory) || DoWeKnowAboutPawn(HeardPawn)))
 			{
-				//		log(m_Pawn.Name $ " going to encounter enemy");
-
-				ISwatAI(m_pawn).GetKnowledge().UpdateKnowledgeAboutPawn(HeardPawn);
-
-				EncounterEnemy(HeardPawn);
+				
+				if ( m_Pawn.CanSee(HeardPawn) || Distance < 200  ) //sound sixth sense in close range
+				{
+					//		log(m_Pawn.Name $ " going to encounter enemy");
+					ISwatAI(m_pawn).GetKnowledge().UpdateKnowledgeAboutPawn(HeardPawn);
+					EncounterEnemy(HeardPawn);
+				}
+				else 
+				{
+					if ( Distance < 400 )
+					{
+					  ISwatAI(m_pawn).GetKnowledge().UpdateKnowledgeAboutPawn(HeardPawn);
+					  RotateToFaceNoise(HeardPawn);
+					}
+				}
 			}
 		}
 
