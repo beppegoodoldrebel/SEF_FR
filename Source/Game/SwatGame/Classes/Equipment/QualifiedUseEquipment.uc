@@ -18,6 +18,7 @@ function PostBeginPlay()
 simulated function float GetQualifyDuration() { assert(false); return 0; }   //TMC TODO remove this... it is here to work-around bug 79
 
 simulated function float GetQualifyModifier() {
+/*
   local IAmAffectedByWeight SP;
 
 if (Level.NetMode == NM_Standalone )
@@ -27,6 +28,7 @@ if (Level.NetMode == NM_Standalone )
   return SP.GetBulkQualifyModifier();
 }
 else
+*/
 	return 1.0;
 
 }
@@ -98,12 +100,12 @@ simulated latent protected function DoUsingHook()
 
     if (QualifiedUseFirstPersonModel != None)
     {
-        QualifiedUseFirstPersonModel.PlayBeginQualify(UseAlternate, 1.0f / GetQualifyModifier());
+        QualifiedUseFirstPersonModel.PlayBeginQualify(UseAlternate, 1.0f);// / GetQualifyModifier());
         QualifiedUseFirstPersonModel.TriggerEffectEvent('QualifyBegan');
     }
     if (QualifiedUseThirdPersonModel != None)
     {
-        QualifiedUseThirdPersonModel.PlayBeginQualify(UseAlternate, 1.0f / GetQualifyModifier());
+        QualifiedUseThirdPersonModel.PlayBeginQualify(UseAlternate, 1.0f);// / GetQualifyModifier());
         QualifiedUseThirdPersonModel.TriggerEffectEvent('QualifyBegan');
     }
 
@@ -125,12 +127,12 @@ simulated latent protected function DoUsingHook()
 
     if (QualifiedUseFirstPersonModel != None)
     {
-        QualifiedUseFirstPersonModel.PlayQualifyLoop(UseAlternate, 1.0f / GetQualifyModifier());
+        QualifiedUseFirstPersonModel.PlayQualifyLoop(UseAlternate, 1.0f );// / GetQualifyModifier());
         QualifiedUseFirstPersonModel.TriggerEffectEvent('Qualifying');
     }
     if (QualifiedUseThirdPersonModel != None)
     {
-        QualifiedUseThirdPersonModel.PlayQualifyLoop(UseAlternate, 1.0f / GetQualifyModifier());
+        QualifiedUseThirdPersonModel.PlayQualifyLoop(UseAlternate, 1.0f );// / GetQualifyModifier());
         QualifiedUseThirdPersonModel.TriggerEffectEvent('Qualifying');
     }
 
