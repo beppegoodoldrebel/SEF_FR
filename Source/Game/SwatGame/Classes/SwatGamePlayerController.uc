@@ -1233,6 +1233,7 @@ local IEvidence Evidence;
 local HandHeldEquipmentModel EvidenceModel;
 local String HighlightTextureName;
 local int mat_count;
+local Material HighlightMat;
 local Actor SEvidence;
 local bool FirstPass;
 local SwatPlayer SP;
@@ -1243,6 +1244,9 @@ local SwatOfficer SO;
  else
      HighlightTextureName = "" ;
  
+	
+	HighlightMat = Material(DynamicLoadObject( HighlightTextureName, class'Material'));
+ 
  
     foreach DynamicActors(class'IEvidence', Evidence) 
     {
@@ -1252,9 +1256,9 @@ local SwatOfficer SO;
 			
 			if ( !FirstPass &&  bEnable) //first time eh?
 			{
-				log("EH skin 0=" $ String(EvidenceModel.Skins[0]) $ ".");
+				//log("EH skin 0=" $ String(EvidenceModel.Skins[0]) $ ".");
 				FirstPass = true;
-				if( EvidenceModel.Skins[0] == Material(DynamicLoadObject( HighlightTextureName, class'Material')) && bEnable) //then 99,9% we are already highlighting evidence
+				if( EvidenceModel.Skins[0] == HighlightMat && bEnable) //then 99,9% we are already highlighting evidence
 					return; //ragequit
 			
 			}	
@@ -1280,17 +1284,17 @@ local SwatOfficer SO;
 					
 			}
 			
-            EvidenceModel.Skins[0] = Material(DynamicLoadObject( HighlightTextureName, class'Material'));  
+            EvidenceModel.Skins[0] = HighlightMat;
             
             mat_count=0;
             while(mat_count < 10 )
             {
-                EvidenceModel.Skins[mat_count] = Material(DynamicLoadObject( HighlightTextureName, class'Material'));     
+                EvidenceModel.Skins[mat_count] = HighlightMat;
 				mat_count = mat_count + 1;
             }
 			
 			SEvidence = Actor(Evidence);
-			SEvidence.skins[0] = Material(DynamicLoadObject( HighlightTextureName, class'Material'));  
+			SEvidence.skins[0] = HighlightMat;
 			
 		}
     }
