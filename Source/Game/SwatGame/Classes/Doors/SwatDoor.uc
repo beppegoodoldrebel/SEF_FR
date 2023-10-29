@@ -1338,6 +1338,7 @@ simulated function bool PositionIsBlocked(DoorPosition TestPosition)  //TMC TODO
 	{
 		// only concious AIs can block doors
         if (class'Pawn'.static.checkConscious(Candidate) &&
+		    !SwatPawn(Candidate).IsArrestedOnFloor() &&
 			LocationIsInSweep(PivotLocation, Candidate.Location, Candidate.CollisionRadius, TestSide))
 		{
             BlockingPawns[BlockingPawns.Length] = Candidate;
