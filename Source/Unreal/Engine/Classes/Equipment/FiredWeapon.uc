@@ -108,12 +108,12 @@ var private float  FlashlightProjection_CurrentBrightnessAlpha;         // From 
 #define ENABLE_FLASHLIGHT_PROJECTION_VISIBILITY_TESTING 1
 
 //------- Flashlight lighting parameters ----------
-var(Flashlight) private config class<Light> FlashlightSpotLightClass   "Type of Spotlight to spawn for this weapon's flashlight";
-var(Flashlight) private config class<Light> FlashlightPointLightClass  "Type of Pointlight to spawn for this weapon's flashlight";
-var(Flashlight) private config class<Light> FlashlightCoronaLightClass "Type of CoronaLight to spawn for this weapon's flashlight";
-var(Flashlight) private config float PointLightDistanceFraction     "Where to place the pointlight along the line to the nearest object (0 = at flashlight, 1=at object intersection)";
-var(Flashlight) private config float PointLightRadiusScale          "How much to scale the pointlight radius with distance from the nearest object";
-var(Flashlight) private config float PointLightDistanceFadeRate     "How fast will the pointlight incorporate new distance values";
+var(Flashlight) config class<Light> FlashlightSpotLightClass   "Type of Spotlight to spawn for this weapon's flashlight";
+var(Flashlight) config class<Light> FlashlightPointLightClass  "Type of Pointlight to spawn for this weapon's flashlight";
+var(Flashlight) config class<Light> FlashlightCoronaLightClass "Type of CoronaLight to spawn for this weapon's flashlight";
+var(Flashlight) config float PointLightDistanceFraction     "Where to place the pointlight along the line to the nearest object (0 = at flashlight, 1=at object intersection)";
+var(Flashlight) config float PointLightRadiusScale          "How much to scale the pointlight radius with distance from the nearest object";
+var(Flashlight) config float PointLightDistanceFadeRate     "How fast will the pointlight incorporate new distance values";
 var Light  FlashlightDynamicLight;                 // The actual light spawned for this weapon's flashlight
 var private Actor  FlashlightReferenceActor;             // Reference point for the flashlight's position; this is where the flashlight appears to originate from (where the corona appears, and where traces are done from when using a moving pointlight on low end cards to approximate a spotlight)
 var(Debug) config  bool   DebugDrawFlashlightDir               "If true, draw the trace lines and sprites for the flashlight lights";
@@ -123,9 +123,9 @@ var(Flashlight) config  float  MinFlashlightRadius                   "The bright
 var(Flashlight) config  float  FlashlightFirstPersonDistance         "Distance to pointlight in non-fancy mode, 1st person";
 var(Flashlight) config  float  MaxFlashlightDistance                 "The brightness at the max distance of the flashlight";
 var(Flashlight) config  float  ThirdPersonFlashlightRadiusPenalty    "The radius penalty on flishlights for 3rd person flashlights so that they do not take away from the limited lighting resources of static meshes.";
-var private bool   bHighEndGraphicsBoard;                // determines which type of lights are used in the flashlights
-var private float  BaseFlashlightBrightness;             // The base level brightness that will be scaled with distance
-var private float  BaseFlashlightRadius;                 // radius specified in the flashlight's light source
+var bool   bHighEndGraphicsBoard;                // determines which type of lights are used in the flashlights
+var float  BaseFlashlightBrightness;             // The base level brightness that will be scaled with distance
+var float  BaseFlashlightRadius;                 // radius specified in the flashlight's light source
 
 //FireModes indicate whether a FiredWeapon is set to automatically fire subsequent shots if the owning Pawn wants to continue firing
 //(in the case of a Player, the player indicates that s/he wants to continue firing by holding down the fire button.  AIs
@@ -2123,7 +2123,7 @@ simulated function UpdateAimError(float dTime)
 //
 
 // Is this weapon flashlight-capable?
-simulated final function bool HasFlashlight()
+simulated function bool HasFlashlight()
 {
     return HasAttachedFlashlight;
 }
@@ -2206,7 +2206,7 @@ simulated function UpdateFlashlightState()
 {
     local bool PawnWantsFlashlightOn;
 
-    if (! HasAttachedFlashlight)
+    if (!HasAttachedFlashlight)
     {
 		//Log("[ckline]: Weapon "$self$" on "$Owner$" is not flashlight-equipped, so can't toggle its state.");
 		return;
@@ -2387,7 +2387,7 @@ simulated function UpdateFlashlightLighting(optional float dTime)
 // Sets up any additional rendering resources necessary to create the
 // flashlight effect. Should only be called once during the lifetime of the
 // weapon.
-simulated private function InitFlashlight()
+simulated function InitFlashlight()
 {
     local HandheldEquipmentModel WeaponModel;
     local Vector PositionOffset;
@@ -2572,7 +2572,7 @@ native protected function bool IsFlashlightProjectionVisible();
 // of the flashlight don't hang around when the weapon is not equipped (for
 // example, so we don't have multiple flashlight Lights attached to
 // the first-person viewport).
-private function DestroyFlashlight(float SecondsBeforeDestroying)
+function DestroyFlashlight(float SecondsBeforeDestroying)
 {
     local float delay;
 
