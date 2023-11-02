@@ -77,6 +77,8 @@ private function ActivateComplianceSensor()
 
 private latent function SetOrderComplianceAim()
 {
+	assert(TargetPawn != None);
+	
 	ISwatAI(m_Pawn).SetUpperBodyAnimBehavior(kUBAB_AimWeapon, kUBABCI_OrderComplianceAction);
 
 	// @HACK: See comments in ISwatAI::LockAim for more info.

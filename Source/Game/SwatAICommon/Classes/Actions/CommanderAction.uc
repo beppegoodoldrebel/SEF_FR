@@ -456,14 +456,14 @@ function OnComplianceIssued(Pawn ComplianceIssuer)
 			if ( (ComplianceIssuer.isA('SwatOfficer') || ComplianceIssuer.IsA('SwatPlayer')) && ISwatPawn(ComplianceIssuer).GetFlashlightState() ) 
 			{
 				RandomChance = RandomChance + FlashlightOnChanceModifier;
-				log("Compliance + flashlight modifier");
+				//log("Compliance + flashlight modifier");
 			}
 			
 			//if the ComplianceIssuer Officer has shield equipped 
 			if ( (ComplianceIssuer.isA('SwatOfficer') || ComplianceIssuer.IsA('SwatPlayer')) && ComplianceIssuer.HasActiveShield() ) 
 			{
 				RandomChance = RandomChance + ShieldOnChanceModifier;
-				log("Compliance + shield modifier");
+				//log("Compliance + shield modifier");
 			}
 			
 			//if team is full and near pawn drop all the morale! 10mts approx
@@ -520,9 +520,22 @@ function OnComplianceIssued(Pawn ComplianceIssuer)
 		{
 			// we're ignoring another compliance order
 			++ComplianceOrdersIgnored;
+			
+			//if team is full and near pawn drop all the morale! 10mts approx
+			foreach m_pawn.VisibleCollidingActors( class'ISwatPawn', Off, 660.0  )
+			{
+				if (Off.isa('SwatPlayer') || Off.isa('SwatOfficer'))
+					totOff++;
+			}
+			
+			if (totOff > 4)
+			{
+				bListeningForCompliance = true;
+				RandomChance = RandomChance + 0.6; //massive morale drop!
+			}
 
 			// let the hive know if we've had enough (heh heh, it's supposed to look like the officer has had enough...)
-			if (IsIgnoringComplianceOrders())
+			if (IsIgnoringComplianceOrders() || !bListeningForCompliance )
 			{
 				SwatAIRepository(Level.AIRepo).GetHive().NotifyAIIgnoringOfficers(m_Pawn);
 			}
