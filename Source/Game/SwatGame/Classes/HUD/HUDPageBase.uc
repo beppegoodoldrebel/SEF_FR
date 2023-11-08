@@ -19,6 +19,7 @@ var(HUD) EditInline GUIAmmoStatusBase                   AmmoStatus              
 var(HUD) EditInline GUIOverlay                          Overlay                     "An image that should be the size of the screen, and obstructs the view for sniper scope, gas mask, etc.";
 var(HUD) EditInline GUIProgressBar                      Progress                    "A multi-purpose progress bar.";
 var(HUD) EditInline GUIReticle                          Reticle                     "The reticle.";
+var(HUD) EditInline GUIQuickInfo                        QuickInfo                    "Quick Info image";
 var(HUD) EditInline GUILabel                            WeightIndicator             "The text that shows the amount of weight that you are carrying.";
 var(HUD) EditInline GUILabel                            ArmorProtectionIndicator    "The text that shows your armor protection level.";
 
@@ -79,6 +80,7 @@ function OnConstruct(GUIController MyController)
     Overlay = GUIOverlay(AddComponent("SwatGame.GUIOverlay", "HUDPage_overlay"));
     Progress = GUIProgressBar(AddComponent("GUI.GUIProgressBar", "HUDPage_Progress"));
     Reticle = GUIReticle(AddComponent("SwatGame.GUIReticle", "HudReticle"));
+	QuickInfo = GUIQuickInfo(AddComponent("SwatGame.GUIQuickInfo", "HudQuickInfo"));
     ClassicCommandInterface = GUIClassicCommandInterfaceContainer(AddComponent("SwatGame.GUIClassicCommandInterfaceContainer", "HUDPage_ClassicCommandInterface"));
     GraphicCommandInterface = GUIGraphicCommandInterface(AddComponent("SwatGame.GUIGraphicCommandInterface", "HUDPage_GraphicCommandInterface"));
     DefaultCommand = GUIDefaultCommandIndicator(AddComponent("SwatGame.GUIDefaultCommandIndicator", "HUDPage_defaultcommand"));
@@ -184,6 +186,16 @@ function OnTick( float Delta )
   {
     Reticle.Show();
   }
+  
+  if(QuickInfo.CenterPreviewImage != None) // is pointing at a 'hotspot' on a door
+  {
+      QuickInfo.Show();
+  }
+  else
+  {
+    QuickInfo.Hide();
+  } 
+  
 
 	if (NumTicks >= 0)
 	{
@@ -223,10 +235,13 @@ function OnTick( float Delta )
 	else
 		DamageIndicator.Show();
 	
+	//QuickInfo.Hide();
+	
 	WeightIndicator.Hide();
   }
   else
   {
+	//QuickInfo.Show();  
 	DamageIndicator.Show(); 
 	Updateweight();
   }
@@ -397,6 +412,8 @@ function CloseGenericComponents()
     Progress.Reposition('down');
     assert( Reticle != None );
     Reticle.Hide();
+	assert( QuickInfo != None );
+    QuickInfo.Hide();
     assert(ArmorProtectionIndicator != None);
     ArmorProtectionIndicator.Hide();
 }
@@ -455,6 +472,9 @@ function OpenGenericComponents()
 
     assert( Reticle != None );
     Reticle.Show();
+	
+	assert( QuickInfo != None );
+    QuickInfo.Show();
 
 	NVGogglesTransitionOverlay.Show();
 	NVGogglesTransitionOverlay.WinTop = -NVGogglesTransitionOverlay.WinHeight;

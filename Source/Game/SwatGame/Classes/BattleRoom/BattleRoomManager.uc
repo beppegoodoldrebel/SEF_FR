@@ -7,6 +7,7 @@ var ColorModifier   ColorBar;
 var GUIBattleRoom   GUIParent;
 var Texture         PauseTex;
 var Texture         BarTex;
+var bool            isOpen;
 
 function Open()
 {
@@ -16,6 +17,17 @@ function Open()
     //GUIParent.ScreenCanvas.OnRightClick = RightClickBattleRoom;
     GUIParent.FillOwner();
     GUIParent.Open();
+	isOpen=true;
+}
+
+function bool isOpenNow()
+{
+	return isOpen;
+}
+
+function CloseBattleroom()
+{
+	isOpen=false;
 }
 
 function bool IsSelected(Pawn inPawn, out int index)
@@ -161,9 +173,10 @@ function RenderAIInfo(Canvas inCanvas, SwatAI AiPawn, Vector inPawnScreen)
     local name anim;
     local float frame, rate;
 
+	
     if ( !AiPawn.bDisplayBattleDebug )
     {
-       return;
+    //   return;
     }
 
     PawnLeft = inPawnScreen.X - 50;

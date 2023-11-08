@@ -536,9 +536,18 @@ simulated function bool SpecialCondition_Shield(SwatPlayer Player, Actor Target)
 	foreach Player.VisibleCollidingActors(class'SwatPawn',ShieldGuy,150.0)
 	{
 		if (ShieldGuy.HasActiveShield() && ShieldGuy != Player )
+		{
+			if (Vsize(Shieldguy.location - player.location) <= 75.0 )
+				SwatGamePlayerController(Level.GetLocalPlayerController()).GetHUDPage().QuickInfo.ShieldQuickInfo();
+			else
+				SwatGamePlayerController(Level.GetLocalPlayerController()).GetHUDPage().QuickInfo.ClearShieldQuickInfo();
+			
 			return true;
+		}
 	}
 	
+	
+	SwatGamePlayerController(Level.GetLocalPlayerController()).GetHUDPage().QuickInfo.ClearShieldQuickInfo();
 	return false; 
 }
 
@@ -3223,7 +3232,7 @@ defaultproperties
     Enabled=true
     DefaultCommandEnabled=true
 	ValidateCommandFocus=true
-
+	
     AlwaysAddDoor=true
     GaveCommandString=": "
 }

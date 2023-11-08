@@ -314,7 +314,7 @@ replication
         ClientAITriggerEffectEvent, ClientAIDroppedAllWeapons, ClientAIDroppedActiveWeapon, ClientAIDroppedAllEvidence,
         ClientInterruptAndGotoState, ClientInterruptState, ClientSetObjectiveVisibility, ClientReportableReportedToTOC,
         ClientAddPrecacheableMaterial, ClientAddPrecacheableMesh, ClientAddPrecacheableStaticMesh, ClientPrecacheAll,
-        ClientViewFromLocation, ClientForceObserverCam, ReplicatedObserverCamTarget, ReplicatedViewportTeammate;
+        ClientViewFromLocation, ClientForceObserverCam, ReplicatedObserverCamTarget, ReplicatedViewportTeammate , ClientReceieveLoveTap;
 
     // replicated functions sent to server by owning client
     reliable if( Role < ROLE_Authority )
@@ -327,7 +327,7 @@ replication
         ServerViewportActivate, ServerViewportDeactivate,
         ServerHandleViewportFire, ServerHandleViewportReload,
 		ServerDisableSpecialInteractions, ServerMPCommandIssued,
-		ServerDiscordTest, ServerDiscordTest2, ServerGiveItem ,PullDoor ,PartialDoorPush, PartialDoorPull;
+		ServerDiscordTest, ServerDiscordTest2, ServerGiveItem ,PullDoor ,PartialDoorPush, PartialDoorPull, ServerRequestLoveTap;
 		
 }
 
@@ -1864,7 +1864,7 @@ ignores ActivateViewport;
 
     exec function OpenGraphicCommandInterface()
     {
-        if ( ActiveViewport.CanIssueCommands() )
+        if ( ActiveViewport.CanIssueCommands() && !BattleRoomManager.IsOpenNow() )
             Global.OpenGraphicCommandInterface();
     }
 
@@ -2038,7 +2038,7 @@ simulated state ControllingOptiwandViewport
 
     exec function OpenGraphicCommandInterface()
     {
-        if ( ActiveViewport.CanIssueCommands() )
+        if ( ActiveViewport.CanIssueCommands() && !BattleRoomManager.IsOpenNow() )
             Global.OpenGraphicCommandInterface();
     }
 
@@ -4108,6 +4108,55 @@ exec function PartialDoorPull()
 }
 
 
+exec function LoveTap()
+{
+	local actor HitActor;
+    local vector HitNormal, HitLocation;
+	
+	if (Pawn == None) return; 
+	if ( !CanIssueCommand() )return; //timer to avoid spam
+	
+	StartIssueCommandTimer();  //start timer
+	
+	HitActor = Trace(HitLocation, HitNormal, ViewTarget.Location + 150 * vector(Rotation),ViewTarget.Location, true);
+	
+	if ( HitActor == None ) return;
+	if( !HitActor.isa('SwatPlayer') ) return;
+	if( !Pawn(HitActor).IsConscious()) return;
+	
+	ClientMessage("[c=FFFFFF]You tapped " $ PlayerController(HitActor).PlayerReplicationInfo.PlayerName $ " !", 'SpeechManagerNotification');
+	ServerRequestLoveTap(Pawn(HitActor));  //asking server for permission
+	
+}
+
+function ServerRequestLoveTap(Pawn TappedPlayer)
+{
+	local Controller i;
+	local Controller theLocalPlayerController;
+    local SwatGamePlayerController current;
+	
+	Assert( Level.NetMode != NM_Client );//server only
+	
+	theLocalPlayerController = Level.GetLocalPlayerController();
+    for ( i = Level.ControllerList; i != None; i = i.NextController )
+    {
+        current = SwatGamePlayerController( i );
+        if ( current != None &&
+		    (current != self) &&              
+			(current != theLocalPlayerController) &&
+			current.Pawn == TappedPlayer
+		)
+            current.ClientReceieveLoveTap(); //Sending Love....Tap... maybe...no homo
+    }
+	
+}
+
+simulated function ClientReceieveLoveTap()
+{
+	Assert( Level.NetMode != NM_DedicatedServer );
+	self.GetHUDPage().QuickInfo.LoveTapQuickInfo();
+	ClientMessage("[c=FFFFFF]You have been tapped by another player. GO!", 'SpeechManagerNotification');
+}
 
 
 function DoSetEndRoundTarget( Actor Target, string TargetName, bool TargetIsOnSWAT )
@@ -4675,7 +4724,8 @@ exec function BattleRoom()
 
 state BattleRooming extends BaseSpectating
 {
-    ignores Fire;
+    // ignores Fire;
+
 
     function InputOffset(out float aForward, out float aStrafe)
     {
@@ -4798,14 +4848,33 @@ state BattleRooming extends BaseSpectating
         log("Alt fire!!");
         BattleRoomManager.RightClickBattleRoom();
     }
+	
+	exec function Fire()
+    {
+	 GetHudPage().bActiveInput = true;
+     GetHudPage().BattleRoom.Activate();	
+     BattleRoomManager.RightClickBattleRoom();
+    }
+
+    exec function AltFire()
+    {
+		GetHudPage().bActiveInput = true;
+        GetHudPage().BattleRoom.Activate();
+        BattleRoomSelect();
+    }
+	
+	
 
     function EndState()
     {
+		BattleRoomManager.CloseBattleroom();
         GetHudPage().BattleRoom.Hide();
         GetHudPage().Deactivate();
         bBehindView = false;
         Level.bPlayersOnly = false;
         bGodMode = false;
+		GetHudPage().bActiveInput = false;
+		GetHudPage().bHideMouseCursor = true;
         log("Ending battleroom!!");
     }
 }
@@ -5761,6 +5830,9 @@ exec function OpenGraphicCommandInterface()
 
     if (Pawn == None || class'Pawn'.static.CheckDead(Pawn))
         return;
+	
+	if (BattleRoomManager.isOpenNow())
+		return;
 
     GCI = GraphicCommandInterface(GetCommandInterface());
     assert(GCI != None);    //since Repo.GUIConfig.CurrentCommandInterfaceStyle==CommandInterface_Graphic, GetCommandInterface() should be the GraphicCommandInterface
@@ -6944,6 +7016,12 @@ exec function GUICloseMenu()
 {
 //log( "dkaplan .......... "$self$"::GUICloseMenu()... Repo = "$Repo$", Repo.GUIController = "$Repo.GUIController );
     SwatGUIControllerBase(Repo.GUIController).ShowGamePopup( true );
+	
+	if (BattleRoomManager.isOpenNow())
+	{
+		GetHudPage().bActiveInput = true;
+		GetHudPage().BattleRoom.Activate();	
+	}
 }
 
 // open the swap weapon page
@@ -7135,4 +7213,7 @@ defaultproperties
 
     CommandTime=1.0
     ComplianceTime=1.5
+	
+	bBattleRoomControl=1
+	bBattleRoomRotation=1
 }

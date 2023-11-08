@@ -40,11 +40,11 @@ function InitComponent(GUIComponent Owner)
     log("menu owner="$MenuOwner);
     for (ct=0; ct<MAX_MENU_ITEMS; ++ct)
     {
-        BattleRoomMenu[ct].Style = Style;
+        BattleRoomMenu[ct].Style = Controller.GetStyle("STY_lunarblue");
         BattleRoomMenu[ct].bBoundToParent = false;
         BattleRoomMenu[ct].bScaleToParent = false;
         BattleRoomMenu[ct].WinWidth = 0.1;
-        BattleRoomMenu[ct].WinHeight = 0.01;
+        BattleRoomMenu[ct].WinHeight = 0.05;
         BattleRoomMenu[ct].SetCaption( MenuOptions[ct] );
         BattleRoomMenu[ct].Hide();
     }
@@ -115,8 +115,8 @@ function OpenMenu(Pawn inPawn)
 
     bMenuOpen = true;
     Controller.ActiveControl = self;
-    bSavedMenuPause = Controller.ViewportOwner.Actor.Level.bPlayersOnly;
-    Controller.ViewportOwner.Actor.Level.bPlayersOnly = true;
+    //bSavedMenuPause = Controller.ViewportOwner.Actor.Level.bPlayersOnly;
+    //Controller.ViewportOwner.Actor.Level.bPlayersOnly = true;
 }
 
 function MenuReposition()
@@ -135,6 +135,7 @@ function MenuReposition()
         Position.WinWidth = 0.11;
         Position.WinHeight = 0.05;
         Position.TransitionTime = 0;
+		
         Position.KeyName = 'Temp';
 
         BattleRoomMenu[ct].bBoundToParent = false;
@@ -143,6 +144,7 @@ function MenuReposition()
         BattleRoomMenu[ct].WinHeight = 0.05;
 
         BattleRoomMenu[ct].RepositionTo(Position);
+		BattleRoomMenu[ct].Transparency = 1.0;
      }
 }
 
@@ -164,8 +166,9 @@ function CloseMenu()
 
     Controller.ActiveControl = self;
     bMenuOpen = false;
-    if ( !bSavedMenuPause )
-        Controller.ViewportOwner.Actor.Level.bPlayersOnly = false;
+	
+    //if ( !bSavedMenuPause )
+    //    Controller.ViewportOwner.Actor.Level.bPlayersOnly = false;
 }
 
 function Close()
