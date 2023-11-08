@@ -118,7 +118,7 @@ latent function MoveOfficersToDestination()
 */
 	ShieldOfficer = GetFirstShieldOfficer();
 	if ( ShieldOfficer == None )
-			ShieldOfficer = GetClosestOfficerTo(ClosestPointToDestination);
+			ShieldOfficer = GetClosestOfficerTo(ClosestPointToDestination,false,true);
 	
 	ClearFormation = new class'Formation'(ShieldOfficer);
 	ClearFormation.AddRef();
@@ -137,7 +137,7 @@ latent function MoveOfficersToDestination()
 		MoveToGoals[MoveToIndex].PostGoal(self);
 		++MoveToIndex;
 		
-		while ( ShieldOfficer != GetClosestOfficerTo(ClosestPointToDestination, false, false) )
+		while ( ShieldOfficer != GetClosestOfficerTo(ClosestPointToDestination, false, true) )
 			sleep(1.0); //give shield officer time to move upfront
 	}
 	

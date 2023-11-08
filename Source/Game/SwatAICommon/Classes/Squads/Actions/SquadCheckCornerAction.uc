@@ -128,7 +128,7 @@ latent function MoveOfficersToDestination()
 	
 	ShieldOfficer = GetFirstShieldOfficer();
 	if ( ShieldOfficer == None )
-		ShieldOfficer = GetClosestOfficerTo(TargetMirrorPoint, false, false);
+		ShieldOfficer = GetClosestOfficerTo(TargetMirrorPoint, false, true);
 	
 	ClearFormation = new class'Formation'(ShieldOfficer);
 	ClearFormation.AddRef();
@@ -152,7 +152,7 @@ latent function MoveOfficersToDestination()
 		MoveToGoals[MoveToIndex].PostGoal(self);
 		++MoveToIndex;
 		
-		while ( ShieldOfficer != GetClosestOfficerTo(TargetMirrorPoint, false, false) )
+		while ( ShieldOfficer != GetClosestOfficerTo(TargetMirrorPoint, false, true) )
 			sleep(1.0); //give shield officer time to move upfront
 	}
 	
@@ -209,7 +209,7 @@ latent function CheckAroundCorner()
 	local int PawnIterIndex;
 	local Pawn Officer,PawnIter;
 	
-	Officer = GetClosestOfficerTo(TargetMirrorPoint, false, false);
+	Officer = GetClosestOfficerTo(TargetMirrorPoint, false, true);
 	assert(Officer != None);
 	
 	for(PawnIterIndex=0; PawnIterIndex<squad().pawns.length; ++PawnIterIndex)

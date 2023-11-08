@@ -317,13 +317,16 @@ latent function ShootWeaponAt(Actor Target)
 		{		
 			if (m_Pawn.IsA('SwatOfficer') ) 
 			{
-				if ( !CurrentWeapon.IsLessLethal() ) //no need to punch when less lethal
+				if (! SwatAIRepository(Level.AIRepo).IsOfficerMovingAndClearing(m_Pawn)) //when clearing just shoot , too late for hands!
 				{
-					if (FRand() < 0.1 ) //chance of meleeing
+					if ( !CurrentWeapon.IsLessLethal() ) //no need to punch when less lethal
 					{
-						CurrentWeapon.Melee();
-						sleep(2.0); //wait for melee to finish
-						return; //officers always just melee instead of shooting , as trained professionals!
+						if (FRand() < 0.1 ) //chance of meleeing
+						{
+							CurrentWeapon.Melee();
+							sleep(2.0); //wait for melee to finish
+							return; //officers always just melee instead of shooting , as trained professionals!
+						}
 					}
 				}
 			}
