@@ -41,6 +41,9 @@ function cleanup()
 		CurrentRotateTowardRotationGoal = None;
 	}
 
+	// make sure the fired weapon is re-equipped
+	ISwatOfficer(m_Pawn).InstantReEquipFiredWeapon();
+		
     // Guarentee collision avoidance is back on
     m_Pawn.EnableCollisionAvoidance();
 }

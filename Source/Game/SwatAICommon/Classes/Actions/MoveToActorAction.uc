@@ -53,6 +53,7 @@ latent function MoveToActor()
     local Actor destination;
 	local Actor currentDestination;
 	local bool bCloseFromLeft;
+	
 
     // Perform santity checks and cache variables we'll need
 
@@ -108,7 +109,7 @@ latent function MoveToActor()
                     // (because of the inaccuracies of movement)
                     bCloseFromLeft = ! ISwatDoor(currentDestination).PointIsToMyLeft(m_Pawn.Location);
 
-                    //if (m_Pawn.logTyrion)
+                    if (m_Pawn.logTyrion)
                         log(m_Pawn.Name $ " calling NavigateThroughDoor - MovetoActorAction - bCloseFromLeft is: " $ bCloseFromLeft);
 
                     NavigateThroughDoor(Door(currentDestination));

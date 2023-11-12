@@ -476,7 +476,7 @@ private latent function AttackTarget(Pawn Target)
 		log(m_Pawn.Name $ " is going to attack " $ Target.Name);
 
 	// If we're just moving to the destination, just attack.
-	if ( (GetHive().IsMovingTo(self.m_Pawn) || GetHive().IsFallingIn(self.m_Pawn) || GetHive().IsMovingInFormation(self.m_Pawn)) || 
+	if ( (GetHive().IsMovingTo(self.m_Pawn) || GetHive().IsFallingIn(self.m_Pawn) || GetHive().IsMovingInFormation(self.m_Pawn) || SwatAIRepository(Level.AIRepo).IsOfficerMovingAndClearing(m_Pawn) ) || 
 	    ( Vsize(Target.Location - m_Pawn.Location )  > 500 )) //stay in formation if target less than 15
 	{
 		log("SwatOfficer: "$self.m_Pawn$" should now be attacking "$Target.name);
@@ -549,7 +549,7 @@ private function bool ShouldAttackUsingLessLethal(Pawn target)
 		return false;
 	}
 
-	if(GetHive().IsMovingTo(self.m_Pawn) || GetHive().IsFallingIn(self.m_Pawn))
+	if(GetHive().IsMovingTo(self.m_Pawn) || GetHive().IsFallingIn(self.m_Pawn) || SwatAIRepository(Level.AIRepo).IsOfficerMovingAndClearing(m_Pawn) )
 	{	// The AI is trained to attack on the move in this state; we don't want them to walk up to people and start beaning them.
 		return true;
 	}

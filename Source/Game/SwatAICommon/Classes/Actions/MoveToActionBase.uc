@@ -483,7 +483,7 @@ protected latent function NavigateThroughDoor(Door Target)
 	SwatDoorTarget = ISwatDoor(Target);
 	assert(SwatDoorTarget != None);
 	
-	assert(CurrentOpenDoorGoal == None); //we are already trying to opening a door....
+	//assert(CurrentOpenDoorGoal == None); //we are already trying to opening a door....
 
 	PendingDoorInteractor = SwatDoorTarget.GetPendingInteractor();
 

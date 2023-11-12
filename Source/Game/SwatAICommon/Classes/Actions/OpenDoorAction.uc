@@ -60,8 +60,13 @@ function bool ShouldContinueToOpenDoor()
 
 	PendingDoorInteractor = SwatDoorTarget.GetPendingInteractor();
 	
-	return ( TargetDoor.IsClosed() && /*!SwatDoorTarget.IsBroken() &&*/ !TargetDoor.IsOpening() && !TargetDoor.IsClosing() && 
-		((PendingDoorInteractor == None) || (PendingDoorInteractor == m_Pawn)));
+	
+	return (
+           (
+	       ( TargetDoor.IsClosed()  && /*!SwatDoorTarget.IsBroken() &&*/ !TargetDoor.IsOpening() && !TargetDoor.IsClosing() )
+     	   || ISwatDoor(TargetDoor).isPartialOpen()
+		   ) &&
+		   ((PendingDoorInteractor == None) || (PendingDoorInteractor == m_Pawn)));
 }
 
 private function UpdateDoorKnowledge()
@@ -144,10 +149,8 @@ latent function OpenDoor()
 		}
 	}
 	
-	log("Door partial " $ ISwatDoor(TargetDoor).isPartialOpen() $ ".");
-	
 	// only try and open closed doors
-	if (ShouldContinueToOpenDoor() || ISwatDoor(TargetDoor).isPartialOpen() )
+	if (ShouldContinueToOpenDoor())
 	{
 		// set the door in the pawn
 		ISwatAI(m_pawn).SetPendingDoor(TargetDoor);
@@ -163,7 +166,7 @@ latent function OpenDoor()
 		RotateAndLockToDoorUsageRotation();
 
 		// make sure we should commit to playing the open door animation
-		if (ShouldContinueToOpenDoor() || ISwatDoor(TargetDoor).isPartialOpen() )
+		if (ShouldContinueToOpenDoor())
 		{
 			// save off whether the door is blocked right now
 			bIsDoorBlockedBeforeOpen = SwatDoorTarget.IsBlockedFor(m_Pawn);

@@ -831,7 +831,7 @@ private event bool CanAssignOfficerToTarget(Pawn Officer, Pawn Target)
 	assert(class'Pawn'.static.checkConscious(Officer));
 
 	if (Target.IsA('SwatEnemy'))
-		bIsTargetAThreat = ISwatEnemy(Target).IsAThreat();
+		bIsTargetAThreat = ISwatEnemy(Target).IsAThreat() ||  ISwatEnemy(Target).HasUsableWeapon();
 
 	if(IsOfficerDeployingNonLethal(Officer) || IsOfficerBreaching(Officer))
 	{
