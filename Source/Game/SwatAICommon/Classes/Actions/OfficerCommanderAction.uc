@@ -182,7 +182,7 @@ function OnPawnEncounteredVisionNotification()
 {
 	local Pawn Enemy;
 
-	assert( m_pawn.CanHitTarget(VisionSensor.LastPawnSeen) );
+	//assert( m_pawn.CanHitTarget(VisionSensor.LastPawnSeen) );
 		
 	if (VisionSensor.LastPawnSeen != None)
 	{
@@ -448,7 +448,7 @@ private latent function EngageTargetForCompliance(Pawn Target)
 	if (m_Pawn.logAI)
 		log(m_Pawn.Name $ " is going to engage " $ Target.Name $ " for compliance");
 
-	if(GetHive().IsMovingTo(self.m_Pawn))
+	if(GetHive().IsMovingTo(self.m_Pawn) || GetHive().IsMovingInFormation(self.m_Pawn)  || GetHive().IsMovingAndClearing(self.m_Pawn) ) 
 	{
 		CurrentEngageForComplianceGoal = new class'EngageForComplianceWhileMovingToGoal'(characterResource(), Target, 
 			GetHive().GetMoveToGoalForOfficer(self.m_Pawn).Destination,

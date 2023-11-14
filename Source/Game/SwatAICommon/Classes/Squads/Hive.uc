@@ -505,24 +505,21 @@ function OfficerSawPawn(Pawn OfficerViewer, Pawn Seen)
 	}
 	else
 	{
-		if (! Blackboard.HasAIBeenEncountered(Seen))
+		if (! Blackboard.HasAIBeenEncountered(Seen) )
 		{
-			
-			if (Seen.LineOfSightTo(OfficerViewer) ) //OfficerViewer.FastTrace( Seen.Location ,OfficerViewer.Location) ) 	
+		
+			if (Seen.IsA('SwatEnemy'))
 			{
-				if (Seen.IsA('SwatEnemy'))
-				{
-					OfficerSawEnemy(OfficerViewer, Seen);
-				}
-				else
-				{
-					// sanity check
-					assert(Seen.IsA('SwatHostage'));
-
-					OfficerSawHostage(OfficerViewer, Seen);
-				}
+				OfficerSawEnemy(OfficerViewer, Seen);
 			}
-		}
+			else
+			{
+				// sanity check
+				assert(Seen.IsA('SwatHostage'));
+
+				OfficerSawHostage(OfficerViewer, Seen);
+			}
+		}	
 
 		// if the officer doesn't have a current assignment
 		// we only want to engage Seen if they aren't compliant, restrained, or incapacitated, 
@@ -538,7 +535,7 @@ function OfficerSawPawn(Pawn OfficerViewer, Pawn Seen)
 			// this may need to be moved because this will be called every time we see a Enemy or Hostage 
 			// (then it will be called too often I think)
 			UpdateOfficerAssignments();
-		}	
+		}		
 	}
 }
 
@@ -949,6 +946,11 @@ function bool IsMovingInFormation(Pawn Officer)
 		return true;
 	}
 	return false;
+}
+
+function bool IsMovingAndClearing(Pawn Officer)
+{
+	return SwatAIRepo.IsOfficerMovingAndClearing(Officer);
 }
 
 function SquadMoveToGoal GetMoveToGoalForOfficer(Pawn Officer)

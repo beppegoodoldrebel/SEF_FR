@@ -145,3 +145,8 @@ function bool IsMovingTo()
 		return SwatAIRepo.GetBlueSquad().IsMovingTo();
 	}
 }
+
+function bool IsMovingAndClearing()
+{	
+	return SwatAIRepository(m_Pawn.Level.AIRepo).IsOfficerMovingAndClearing(m_Pawn);
+}
