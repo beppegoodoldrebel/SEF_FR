@@ -27,7 +27,7 @@ private function bool RenderReticle(canvas Canvas)
     Canvas.Style = ImageRenderStyle;
     Canvas.DrawColor = TickColor;
 
-	log ("RenderReticle CenterPreviewImage : " $  CenterPreviewImage $ " LoveTapTimer " $ LoveTapTimer $ " ");
+	//log ("RenderReticle CenterPreviewImage : " $  CenterPreviewImage $ " LoveTapTimer " $ LoveTapTimer $ " ");
 	
 	if (CenterPreviewImage != None) // is pointing at a 'hotspot' on a door
     {

@@ -4113,7 +4113,8 @@ exec function LoveTap()
 	local actor HitActor;
     local vector HitNormal, HitLocation;
 	
-	if (Pawn == None) return; 
+	if ( Level.NetMode == NM_Standalone )return; //MP Only!	
+	if (Pawn == None) return;       
 	if ( !CanIssueCommand() )return; //timer to avoid spam
 	
 	StartIssueCommandTimer();  //start timer
