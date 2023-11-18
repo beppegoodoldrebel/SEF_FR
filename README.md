@@ -10,6 +10,31 @@ https://discord.gg/Vu4r7sv7uF
 
 
 # FEATURE LIST: #
+#### V0.67 Patch 1 ####
+WEAPONS:    
+			- Added dedicated flashlight to Shield
+HUD:
+            - New QUICK INFO hud icon
+			       - SHIELD when near a shield guy the icon appears to indicate the shield formation command ( MOVE TO )
+	               - LOVETAP when another player is tapping you the icon will appear for 4 seconds
+MULTIPLAYER:
+            - LOVETAP 
+			       New function that let players tapping each others. When another player is tapped an Icon will appear on his screen. 
+				   This will improve non-verbal communication between players.
+				   
+				   You can find the dedicated keybind in Multiplayer section of Game Control options.
+AI:
+            - reworked "Restrain on Floor" behavior to be stable and consistent 
+			            Now arrested has to have free space in front to be put on the floor.
+		    - reworked open-door behavior to avoid AI deadlock before opening the door
+			- reworked Officer AI reactions
+			             - improved sensors (Vision and Hearing ) to react on Suspect threats
+						 - better behavior while "moving and clearing" dont let Officers disperse while clearing
+						 - reduced time-to-shoot to have edge on suspects
+			- non compliant Suspects/Hostages will return to listen compliance if many officers are around them ( more than 4 in 10 meters around them )
+FIXED:
+            - double equipment model on hands after using cuffs
+			- Evidence Highlight fps loss when switching highlight on/off 
 
 #### V0.67 Stable ####
 WEAPONS: 
