@@ -25,11 +25,11 @@ GAMEPLAY:
 			- The Shield: combined pistols (or taser) with a Level3A rated tactical shield. 
 			            
 						Can be equipped by AI officers and they can move in formation with it ( MOVE-TO command for example ).
-						
+						- Added dedicated flashlight to Shield
 						
 			- Medical System: bandages that can heal the limping player or AI Officer.
 			            - single bandage 
-						- Medic Kit with 5 bendages
+						- Medic Kit with 5 bandages
 						
 						Press K (default key) to equip and Left Mouse buttun to use while near a wounded officer.
 						
@@ -39,6 +39,7 @@ GAMEPLAY:
             - Blasted Doors with shotgun have now chance to be opened immediatly after the shot			
 			- Restrained On Floor: 
 			            - after reporting you can put anyone to floor by simply interacting again with the restrained.
+						  Arrested has to have free space in front to be put on the floor.
             - First Responders Campaign mode : 
 			            - no unlocks 
 						- only FR weapons
@@ -59,17 +60,32 @@ GAMEPLAY:
 			 - restored Optiwand "under-door" capability 
 			 - revised player speed 
 			 - Fallen door chance after a blast or a breach is depending on door material		
+MULTIPLAYER:
+            - LOVETAP 
+			       New function that let players tapping each others. When another player is tapped an Icon will appear on his screen. 
+				   This will improve non-verbal communication between players.
+				   
+				   You can find the dedicated keybind in Multiplayer section of Game Control options.
 GUI:
-	         - Added selectable Custom Skins for Single Player mode.			 
+	         - Added selectable Custom Skins for Single Player mode.	
+			 - New QUICK INFO hud icon
+			       - SHIELD when near a shield guy the icon appears to indicate the shield formation command ( MOVE TO )
+	               - LOVETAP when another player is tapping you the icon will appear for 4 seconds
 AI: 
 			 - fixed istances of AI shooting from impossible rotations
 			 - minimum time to shoot is now respected
              - fixed many deadlocks in suspect AI actions that were making them idle for no reason
+			 - reworked open-door behavior to avoid AI deadlock before opening the door
 			 - Hostages can possibly comply by just seeing the officers.
 			 - Minimum Time to Shoot reduced for Low/Medium Skill Suspects
 			 - reworked Hearing Sensor for Suspects/Officers
+			 - reworked Officer AI reactions
+			             - improved sensors (Vision and Hearing ) to react on Suspect threats
+						 - better behavior while "moving and clearing" dont let Officers disperse while clearing
+						 - reduced time-to-shoot to have edge on suspects
 			 - reworked Flee/Flush/Regroup/Escape actions to avoid bad behaviors on "attack while moving".
 			 - reworked InvestigateAction to not make suspect standing without tasks.
+			 - non compliant Suspects/Hostages will return to listen compliance if many officers are around them ( more than 4 in 10 meters around them )
 SOUNDS:
 			 - various replaced sounds effects  ( thx to Crusoe )
 FIXED:      
@@ -77,7 +93,6 @@ FIXED:
              - fixed some wierd animation behaviors when "Restrained On Floor".
 			 - Weapon image not loading on Loadout GUI on some campaign conditions
 			 - improved animation manager
-
 
 #### V0.66 ####
 

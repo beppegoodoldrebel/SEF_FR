@@ -113,19 +113,6 @@ latent function MoveOfficersToDestination()
 
 	SwatAIRepo = SwatAIRepository(Level.AIRepo);
 
-	/*	
-	DestinationRoomName       = SwatAIRepo.GetClosestRoomNameToPoint(TargetMirrorPoint, CommandGiver);
-	yield();
-
-	// find the closest navigation point, but don't use any doors
-	ClosestPointToDestination = SwatAIRepo.GetClosestNavigationPointInRoom(DestinationRoomName, Destination,,,'Door');
-	assert(ClosestPointToDestination != None);
-	yield();
-
-	if (resource.pawn().logTyrion)
-		log(Name $ " - DestinationRoomName is: " $ DestinationRoomName $ " ClosestPointToDestination: " $ ClosestPointToDestination $ " Destination: " $ Destination);
-	*/
-	
 	ShieldOfficer = GetFirstShieldOfficer();
 	if ( ShieldOfficer == None )
 		ShieldOfficer = GetClosestOfficerTo(TargetMirrorPoint, false, true);
@@ -133,8 +120,6 @@ latent function MoveOfficersToDestination()
 	ClearFormation = new class'Formation'(ShieldOfficer);
 	ClearFormation.AddRef();
 	ISwatOfficer(ShieldOfficer).SetCurrentFormation(ClearFormation);
-	
-	log( "SquadCheckCornerGoal Move");
 	
 	if ( ShieldOfficer != None )
 	{
@@ -258,6 +243,22 @@ function TriggerSpeech()
 	}
 }
 
+function bool IsSquadMovingForCover()
+{
+local int PawnIterIndex;
+local Pawn PawnIter;	
+	
+	for(PawnIterIndex=0; PawnIterIndex<squad().pawns.length; ++PawnIterIndex)
+	{
+		PawnIter = squad().pawns[PawnIterIndex];
+		
+		if ( VSize2D(PawnIter.Velocity) > 0)
+			return true;
+	}
+	
+	return false;
+	
+}
 
 state Running
 {
@@ -270,6 +271,9 @@ Begin:
 
 	TriggerCoverReplySpeech();
 	CheckAroundCorner();
+	
+	while(IsSquadMovingForCover())
+		yield();
 	
     succeed();
 }

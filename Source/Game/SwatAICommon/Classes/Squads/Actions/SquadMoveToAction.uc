@@ -215,6 +215,23 @@ function TriggerCompletedMoveToSpeech()
 	ISwatOfficer(GetFirstOfficer()).GetOfficerSpeechManagerAction().TriggerCompletedMoveToSpeech();
 }
 
+function bool IsSquadMovingTo()
+{
+local int PawnIterIndex;
+local Pawn PawnIter;	
+	
+	for(PawnIterIndex=0; PawnIterIndex<squad().pawns.length; ++PawnIterIndex)
+	{
+		PawnIter = squad().pawns[PawnIterIndex];
+		
+		if ( VSize2D(PawnIter.Velocity) > 0)
+			return true;
+	}
+	
+	return false;
+	
+}
+
 state Running
 {
 Begin:
@@ -228,6 +245,10 @@ Begin:
 	MoveOfficersToDestination();
 
 	TriggerCompletedMoveToSpeech();
+	
+	while(IsSquadMovingTo())
+		yield();
+	
     succeed();
 }
 

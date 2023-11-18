@@ -11,3 +11,8 @@ protected function ConstructCharacterAIHook(AI_Resource characterResource)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+function BecomeAThreat()
+{
+	//dont become a threat for some SwatEnemy father class reason
+}
