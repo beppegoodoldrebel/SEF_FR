@@ -233,7 +233,9 @@ latent function AttackTarget()
 	}
 
   // wait until we can hit the target (make sure the target is still conscious too!)
-  while(!bSuppressiveFire && !m_Pawn.CanHitTarget(Target) && !m_Pawn.CanShootTarget(Target) &&((TargetPawn == None) || class'Pawn'.static.checkConscious(TargetPawn)))
+  while(!bSuppressiveFire && !m_Pawn.CanHitTarget(Target) 
+	     //    && !m_Pawn.CanShootTarget(Target) 
+		&&((TargetPawn == None) || class'Pawn'.static.checkConscious(TargetPawn)))
   {		
 		if (m_Pawn.logTyrion)
 			log(m_Pawn.Name $ " is waiting to be able to hit target " $ TargetPawn);
@@ -381,8 +383,8 @@ protected latent function AimAndFireAtTarget(FiredWeapon CurrentWeapon)
 	}
 	else
 	{	// SWAT need perfect aim!
-		//SWAT reaction is random between 0.4/0.8
-		LatentAimAtActor(Target, frand()/2 + 0.2 );
+		//SWAT reaction is random between 0.2/0.53
+		LatentAimAtActor(Target, frand()/3 + 0.2 );
 	}
 
 

@@ -194,14 +194,14 @@ final latent function LatentAimAtActor(Actor Target, optional float MaxWaitTime)
     if (ISwatAI(m_Pawn).AnimCanAimAtDesiredActor(Target) && HasWeaponEquipped())
     {
 		// added here so server can spread information on suspect intentions before even aiming.
-		if ( Level.NetMode != NM_Standalone )
-		{
+//		if ( Level.NetMode != NM_Standalone )
+//		{
 			if( m_pawn.isa('SwatEnemy') )
 			{
 				UpdateThreatToTarget(Target);
 				yield();
 			}
-		}
+//		}
 		//////////////////////////////
 		
         //ISwatAI(m_pawn).AimAtActor(Target);
@@ -214,20 +214,23 @@ final latent function LatentAimAtActor(Actor Target, optional float MaxWaitTime)
 			fDot =  ViewDirectionNoZ Dot TargetDirection;
 			//log (m_pawn.name $ " attacking " $ target.name $ " fdot is: " $ fdot );
 			
-			if ( fdot > 0.707 &&  m_pawn.isa('SwatEnemy') )
+			if ( m_pawn.isa('SwatEnemy') )
 			{
-				//log ( m_pawn.name $ " quick scope added time on target 0.8" );
-				MaxWaitTime = MaxWaitTime + 1.2;
-			}
-			else if ( fdot > 0.0 && fdot <= 0.707 &&  m_pawn.isa('SwatEnemy') )
-			{
-				//log ( m_pawn.name $ " quick scope added time on target 0.4" );
-				MaxWaitTime = MaxWaitTime + 0.8;
-			}
-			else if ( fdot > -0.707 && fdot <= 0.0 &&  m_pawn.isa('SwatEnemy') )
-			{
-				//log ( m_pawn.name $ " quick scope added time on target 0.2" );
-				MaxWaitTime = MaxWaitTime + 0.6;
+				if ( fdot > 0.707 )
+				{
+					//log ( m_pawn.name $ " quick scope added time on target 0.8" );
+					MaxWaitTime = MaxWaitTime + 1.2;
+				}
+				else if ( fdot > 0.0 && fdot <= 0.707 )
+				{
+					//log ( m_pawn.name $ " quick scope added time on target 0.4" );
+					MaxWaitTime = MaxWaitTime + 0.8;
+				}
+				else if ( fdot > -0.707 && fdot <= 0.0 )
+				{
+					//log ( m_pawn.name $ " quick scope added time on target 0.2" );
+					MaxWaitTime = MaxWaitTime + 0.6;
+				}
 			}
 		}
 	    

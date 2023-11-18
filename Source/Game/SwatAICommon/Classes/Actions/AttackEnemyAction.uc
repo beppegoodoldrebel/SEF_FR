@@ -30,7 +30,7 @@ const kMaxAttackEnemyUpdateTime = 0.25;
 
 function float selectionHeuristic( AI_Goal goal )
 {
-	if(IsFallingIn())
+	if(IsMovingTo() || IsFallingIn() || IsMovingAndClearing())
 	{
 		return 0.0;
 	}
