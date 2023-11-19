@@ -4125,7 +4125,7 @@ exec function LoveTap()
 	if( !HitActor.isa('SwatPlayer') ) return;
 	if( !Pawn(HitActor).IsConscious()) return;
 	
-	ClientMessage("[c=FFFFFF]You tapped " $ PlayerController(HitActor).PlayerReplicationInfo.PlayerName $ " !", 'SpeechManagerNotification');
+	ClientMessage("[c=FFFFFF]You tapped a player!", 'SpeechManagerNotification');
 	ServerRequestLoveTap(Pawn(HitActor));  //asking server for permission
 	
 }
