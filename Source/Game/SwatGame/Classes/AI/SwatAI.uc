@@ -3313,7 +3313,7 @@ simulated function bool CanBeUsedNow()
     return !bHasBeenReportedToTOC && (!class.static.checkConscious(self) || IsArrested());
 }
 
-function bool CheckObstacleInFront()
+simulated function bool CheckObstacleInFront()
 {
 	
 	local vector StartVect,EndVect;
