@@ -354,13 +354,13 @@ latent function ShootWeaponAt(Actor Target)
 		if (m_pawn.IsA('SwatOfficer') )
 		{
 			EndTrace = Target.Location;
-			if (CurrentWeapon.WillOfficerAvoidBadShot(Target, !CurrentWeapon.bIsLessLethal, EndTrace) ) //make sure Officers will avoid unintended casualties as trained professionals
+			if (CurrentWeapon.WillOfficerAvoidBadShot(Target, !CurrentWeapon.bIsLessLethal, EndTrace , true) ) //make sure Officers will avoid unintended casualties as trained professionals
 			{ 
 			  ISwatAI(m_Pawn).SetWeaponTarget(Target);
 			  CurrentWeapon.LatentUse();
 			}
 			//else
-			//  Level.GetLocalPlayerController().myHUD.AddDebugLine(m_pawn.GetEyeLocation(),Pawn(Target).GetChestLocation(),	class'Engine.Canvas'.Static.MakeColor(255,0,0), 3.0);
+			//  Level.GetLocalPlayerController().myHUD.AddDebugLine(m_pawn.GetEyeLocation(),Pawn(Target).GetChestLocation(),	class'Engine.Canvas'.Static.MakeColor(255,0,0), 15.0);
 		}
 		else
 		{

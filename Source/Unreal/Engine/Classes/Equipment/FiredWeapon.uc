@@ -537,11 +537,11 @@ simulated function bool WillOfficerAvoidBadShot(Actor Target, bool MomentumMatte
         }
 		else if (Victim.isa('ShieldEquip'))
 		{
-			continue;
+			continue; //ignore shields , we care about what is behind it
 		}
 		else if(Victim.IsA('SwatOfficer') || Victim.IsA('SwatPlayer') )
 		{
-			return false;
+			return false; //no go
 		}
         else if(Victim != Target)
         {
@@ -550,16 +550,21 @@ simulated function bool WillOfficerAvoidBadShot(Actor Target, bool MomentumMatte
             // We hit something that isn't our target
             if(Victim.IsA('SwatHostage') || Victim.IsA('SwatGuard')  || Victim.IsA('SwatUndercover'))
             {
-				return false;
+				return false; // no go
             }
+			else if (Victim.IsA('SwatEnemy') )
+			{
+				if ( Pawn(Victim).IsArrested() || Pawn(Victim).IsCompliant() )
+					return false; //ok...but no go
+			}
 			continue;
         }
         else
         {
-            return true;
+            return true; //go
         }
     }
-    return true;
+    return true; //might be a LevelInfo , missed shot but still a go , officers can miss a shot
 }
 
 // Used by the AI - whether a bullet fired from this weapon will hit the intended target with no interruptions.
