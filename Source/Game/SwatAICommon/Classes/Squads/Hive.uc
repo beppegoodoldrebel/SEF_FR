@@ -528,7 +528,7 @@ function OfficerSawPawn(Pawn OfficerViewer, Pawn Seen)
 			! ISwatAI(Seen).IsArrested() && 
 			! Seen.IsIncapacitated() &&
 			(Seen.IsAThreat() || 
-			ISwatAI(Seen).HasUsableWeapon() || 
+			( ISwatAI(Seen).HasUsableWeapon() && !Seen.IsA('SwatUndercover') && !Seen.IsA('SwatGuard') ) || 
 			!ISwatAI(Seen).GetCommanderAction().IsIgnoringComplianceOrders()) &&
 			CanAssignAnyOfficerToTarget(Seen))
 		{

@@ -305,6 +305,7 @@ latent function ShootWeaponAt(Actor Target)
 {
     local FiredWeapon CurrentWeapon;
 	local float DistanceFromTarget;
+	local vector EndTrace;
 
 	assertWithDescription((Target != None), "SwatWeaponAction::ShootWeaponAt - Target is None!");
 	assertWithDescription((m_Pawn != None), "SwatWeaponAction::ShootWeaponAt - m_Pawn is None!");
@@ -349,8 +350,21 @@ latent function ShootWeaponAt(Actor Target)
     // if the weapon's not empty, use it
 	if (CurrentWeapon!= None && !CurrentWeapon.IsEmpty())
     {
-		ISwatAI(m_Pawn).SetWeaponTarget(Target);
-		CurrentWeapon.LatentUse();
+		
+		if (m_pawn.IsA('SwatOfficer') )
+		{
+			EndTrace = Target.Location;
+			if (CurrentWeapon.WillHitIntendedTarget(Target, !CurrentWeapon.bIsLessLethal, EndTrace) ) //make sure Officers will shoot the intended target as trained professionals
+			{ 
+			  ISwatAI(m_Pawn).SetWeaponTarget(Target);
+			  CurrentWeapon.LatentUse();
+			}
+		}
+		else
+		{
+			ISwatAI(m_Pawn).SetWeaponTarget(Target);
+			CurrentWeapon.LatentUse();
+		}
 //		log("finished shooting at time " $ m_Pawn.Level.TimeSeconds);
     }
 }
