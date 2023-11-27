@@ -4123,6 +4123,7 @@ exec function LoveTap()
 	
 	if ( HitActor == None ) return;
 	if( !HitActor.isa('SwatPlayer') ) return;
+	if( Pawn(HitActor)==self.Pawn) return; //don't tap yourself...giggity
 	if( !Pawn(HitActor).IsConscious()) return;
 	
 	ClientMessage("[c=FFFFFF]You tapped a player!", 'SpeechManagerNotification');
@@ -4143,8 +4144,8 @@ function ServerRequestLoveTap(Pawn TappedPlayer)
     {
         current = SwatGamePlayerController( i );
         if ( current != None &&
-		    (current != self) &&              
-			(current != theLocalPlayerController) &&
+		    //(current != self) &&              
+			//(current != theLocalPlayerController) &&
 			current.Pawn == TappedPlayer
 		)
             current.ClientReceieveLoveTap(); //Sending Love....Tap... maybe...no homo
