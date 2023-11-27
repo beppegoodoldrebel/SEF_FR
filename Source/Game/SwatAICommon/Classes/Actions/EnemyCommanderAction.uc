@@ -678,9 +678,8 @@ function OnPawnEncounteredVisionNotification()
 	if (m_Pawn.logAI)
 		log(m_Pawn.Name $ " OnPawnEncounteredVisionNotification - VisionSensor.LastPawnSeen: " $ VisionSensor.LastPawnSeen $ " LostPawnTimer: " $ LostPawnTimer $ " CurrentEnemy: " $CurrentEnemy);
 
+	EncounterEnemy(Enemy);
 	
-	if( m_pawn.CanSee(Enemy) )
-		EncounterEnemy(Enemy);
 }
 
 function OnPawnLostVisionNotification()
