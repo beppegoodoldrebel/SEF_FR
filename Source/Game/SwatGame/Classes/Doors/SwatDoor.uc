@@ -2720,6 +2720,16 @@ simulated function Lock()
         bIsLocked = true;
 }
 
+simulated function SilentUnlock()
+{
+    // Clients get their value replicated from the server.
+    if ( Level.NetMode != NM_Client )
+	{
+		bCanBeLocked = false;
+        bIsLocked = false;
+	}
+}
+
 simulated function float GetMoveAndClearPauseThreshold()
 {
 	return MoveAndClearPauseThreshold;

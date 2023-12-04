@@ -35,6 +35,25 @@ var config class<HandheldEquipment> GivenC2Class;
 var config class<HandheldEquipment> GivenPepperSprayClass;
 var config class<HandheldEquipment> GivenWedgeClass;
 
+var config Mesh DetectiveMesh;
+var config Material DetectiveFleshMaterial;
+var config Material DetectiveClothesMaterial;
+
+static function Mesh GetDetectiveMesh()
+{
+	return default.DetectiveMesh;
+}
+
+static function Material GetDetectiveFleshMaterial()
+{
+	return default.DetectiveFleshMaterial;
+}
+
+static function Material GetDetectiveClothesMaterial()
+{
+	return default.DetectiveClothesMaterial;
+}
+
 static function float GetMinimumLongThrowSpeed()
 {
 	return default.MinimumLongThrowSpeed;

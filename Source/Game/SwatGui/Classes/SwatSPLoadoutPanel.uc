@@ -368,6 +368,22 @@ function bool CheckValidity( class EquipmentClass, eNetworkValidity type )
 				}
 			}
 	    }
+		else if(CampaignPath == 4)
+	    {
+			//forget about skins
+			if( Left(string(EquipmentClass),4) != "Swat")
+			 return true;
+			
+	    	// unlock only specific equipment
+			for(i = 0; i < class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment.Length; ++i)
+			{
+				if(class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
+				{
+					log("SwatSPLoadout CP " $ CampaignPath $ " EC " $ EquipmentClass $ " ");
+					return true;
+				}
+			}
+	    }
 		
 
 	    return (type == NETVALID_SPOnly) || (Super.CheckValidity( EquipmentClass, type ));
@@ -454,6 +470,23 @@ function bool CheckCampaignValid( class EquipmentClass )
 		for(i = 0; i < class'SwatGame.SwatFRCareerPath'.default.UnlockedEquipment.Length; ++i)
         {
             if(class'SwatGame.SwatFRCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
+            {
+                log("CheckCampaignValid failed on "$EquipmentClass);
+                return true;
+            }
+        }
+		return false;
+    }
+	else if(CampaignPath == 4) { // We only do this for the regular Patrol Officer missions mode
+    		
+		//forget about skins
+		if( Left(string(EquipmentClass),4) != "Swat")
+		 return true;
+			
+        // unlock only specific equipment
+		for(i = 0; i < class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment.Length; ++i)
+        {
+            if(class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
             {
                 log("CheckCampaignValid failed on "$EquipmentClass);
                 return true;

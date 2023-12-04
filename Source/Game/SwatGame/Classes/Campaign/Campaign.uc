@@ -13,7 +13,7 @@ var config private int availableIndex;  //the index of the highest mission that 
 var config public bool HACK_HasPlayedCreditsOnCampaignCompletion;
 
 // SEF additions
-var config int CampaignPath;  // Which campaign path we're on (0 = SWAT 4 + TSS, 1 = Extra Missions, 2 = All Missions , 3 = FR type)
+var config int CampaignPath;  // Which campaign path we're on (0 = SWAT 4 + TSS, 1 = Extra Missions, 2 = All Missions , 3 = FR type , 4 = Patrol Officer)
 var config bool PlayerPermadeath; // Whether the campaign has player permadeath enabled
 var config bool PlayerDied; // Player permadeath only - true if the campaign is KIA
 var config bool OfficerPermadeath; // Whether the campaign has officer permadeath enabled
@@ -25,6 +25,7 @@ var config bool CustomCareerPath; // Whether this career is a Quick Mission Make
 var config string CustomCareer; // The pack associated with this Quick Mission Maker career
 var config bool HardcoreMode; // New in v7: Hardcore mode doesn't allow failure of any kind. (Player permadeath is implied)
 var config bool HardcoreFailed; // Hardcore only - true if the campaign was failed
+var config bool DetectiveMode;  //FR New DetectiveMode
 
 // Stats
 var(Stats) config int MissionsCompleted; // The number of missions that have been successfully completed

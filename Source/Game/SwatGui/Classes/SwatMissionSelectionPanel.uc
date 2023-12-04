@@ -512,6 +512,18 @@ private function PopulateCampaignMissionList()
             }
   	     }
   	}
+	else if(theCampaign.CampaignPath == 4)
+    {
+		for(index = 0; index < class'SwatGame.SwatFRPatrolCareerPath'.default.Missions.Length; index++)
+  		{
+  			if( index <= theCampaign.GetAvailableIndex() )
+            {
+				MyMissionSelectionBox.List.Add(string(class'SwatGame.SwatFRPatrolCareerPath'.default.Missions[index]),,
+					class'SwatGame.SwatFRCareerPath'.default.MissionFriendlyNames[index],
+					index,, true);
+            }
+  	     }
+  	}
 
 
     if(theCampaign.CampaignPath == 2)

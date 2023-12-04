@@ -4109,7 +4109,8 @@ simulated function String GetHumanReadableName()
 // return false.
 simulated function bool IsTheVIP()
 {
-    return false;
+	return SwatGamePlayerController(Controller).ThisPlayerIsTheVIP;
+    //return false;
 }
 
 // Override in NetPlayer for network games. For standalone games, always

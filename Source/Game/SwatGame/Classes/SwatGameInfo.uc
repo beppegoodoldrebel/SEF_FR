@@ -631,7 +631,8 @@ function SetupNameDisplay()
 function InitializeGameMode()
 {
     local EMPMode GUIGameMode;
-
+	Local Campaign Campaign;
+	
     bAlreadyEnded=false;
 
     log( "Initializing GameMode." );
@@ -649,7 +650,14 @@ function InitializeGameMode()
 
     if ( Level.NetMode == NM_Standalone )
     {
-        GameMode = Spawn( class'GameModeStandalone', self );
+		Campaign = Repo.GetCampaign();
+		if ( Campaign.CampaignPath == 4 )
+		{
+			log("GameModePatrolOfficer started!");
+			GameMode = Spawn( class'GameModePatrolOfficer', self );
+		}
+		else
+			GameMode = Spawn( class'GameModeStandalone', self );
     }
     else
     {
@@ -1076,6 +1084,7 @@ function AddDefaultInventory(Pawn inPlayerPawn)
     local int i;
     local DynamicLoadOutSpec LoadOutSpec;
 	local bool IsSuspect;
+	local Campaign Campaign;
 
     log( "In SwatGameInfo::AddDefaultInventory(). Pawn="$inPlayerPawn);
 
@@ -1091,8 +1100,23 @@ function AddDefaultInventory(Pawn inPlayerPawn)
         }
         else
         {
-            LoadOut = Spawn(class'EliteLoadout', PlayerPawn, 'DefaultPlayerLoadOut');
-            LoadOutSpec = Spawn(class'DynamicLoadOutSpec', PlayerPawn, 'CurrentPlayerLoadOut');
+			Campaign = Repo.GetCampaign();
+			
+					
+			if (Campaign.DetectiveMode) //detective game mode
+			{
+				SwatGamePlayerController(Level.GetLocalPlayerController()).ThisPlayerIsTheVIP=true;
+				
+				LoadOut = Spawn( class'EliteLoadout', PlayerPawn, 'DetectiveLoadOut' );
+				LoadOutSpec = Spawn(class'DynamicLoadOutSpec', None, 'DefaultDetectiveLoadOut');
+				
+				PlayerPawn.SwitchToMesh(class'SwatPlayerConfig'.static.GetDetectiveMesh());
+			}
+			else
+			{
+				LoadOut = Spawn(class'EliteLoadout', PlayerPawn, 'DefaultPlayerLoadOut');
+				LoadOutSpec = Spawn(class'DynamicLoadOutSpec', PlayerPawn, 'CurrentPlayerLoadOut');
+			}
         }
         assert(LoadOut != None);
 

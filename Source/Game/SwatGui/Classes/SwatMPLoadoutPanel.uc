@@ -146,6 +146,21 @@ function bool CheckValidity( class EquipmentClass, eNetworkValidity type )
 			}
 		}
 	}
+	else if (Settings.IsCampaignCOOP() && CampaignPath == 4 && !Settings.bIsQMM) //FR campaign mode
+	{
+		//forget about skins
+		if( Left(string(EquipmentClass),4) != "Swat")
+		 return true;
+			
+	    // unlock only specific equipment
+		for(i = 0; i < class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment.Length; ++i)
+		{
+			if(class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
+			{
+				return true;
+			}
+		}
+	}
 		
 	// Check for server disabled equipment
 	for(i = 0; i < ServerDisabledEquipment.Length; i++)
@@ -186,8 +201,8 @@ function bool CheckCampaignValid( class EquipmentClass )
 	      if(class'SwatGame.SwatVanillaCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
 	        return false;
 	}
-	else if (Settings.IsCampaignCOOP() && CampaignPath == 3 && !Settings.bIsQMM) //FR campaign mode
-	{
+	else if(CampaignPath == 3) { // We only do this for the regular FR missions mode
+    		
 		//forget about skins
 		if( Left(string(EquipmentClass),4) != "Swat")
 		 return true;
@@ -202,7 +217,24 @@ function bool CheckCampaignValid( class EquipmentClass )
             }
         }
 		return false;
-	}
+    }
+	else if(CampaignPath == 4) { // We only do this for the regular FR missions mode
+    		
+		//forget about skins
+		if( Left(string(EquipmentClass),4) != "Swat")
+		 return true;
+			
+        // unlock only specific equipment
+		for(i = 0; i < class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment.Length; ++i)
+        {
+            if(class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
+            {
+                log("CheckCampaignValid failed on "$EquipmentClass);
+                return true;
+            }
+        }
+		return false;
+    }
 	return true;
 }
 

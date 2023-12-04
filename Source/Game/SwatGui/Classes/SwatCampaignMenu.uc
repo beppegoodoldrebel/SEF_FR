@@ -77,6 +77,7 @@ var() private config localized string StringM;
 var() private config localized string StringN;
 var() private config localized string StringO;
 var() private config localized string StringP;
+var() private config localized string StringQ;
 
 // Campaign custom/whatever strings
 var() private config localized string MajorPathA;
@@ -91,7 +92,7 @@ var() private config localized string NoHardcoreAllowed;
 var() private config localized string NoPermadeathAllowed;
 var() private config localized string NoAllMissionsAllowed;
 
-var() private config localized string CampaignPathBlurb[4];
+var() private config localized string CampaignPathBlurb[5];
 var() private config localized string CustomPathBlurb;
 var() private config localized string NeedToUnlockHardcoreMode;
 
@@ -225,6 +226,7 @@ private function StockCareersSelected()
 	MyCampaignPathBox.List.Add(StringN, , , 1);	// Extra Missions
     MyCampaignPathBox.List.Add(StringO, , , 2); // All missions
 	MyCampaignPathBox.List.Add(StringP, , , 3); // FR Mode
+	MyCampaignPathBox.List.Add(StringQ, , , 4); // FR Mode
 }
 
 private function CustomCareersSelected()
@@ -579,6 +581,7 @@ defaultproperties
 	CampaignPathBlurb[1]="[c=FFFFFF]A campaign containing Extra Missions added by SWAT: Elite Force."
 	CampaignPathBlurb[2]="[c=FFFFFF]A campaign containing all missions on your hard drive, including customs. [b]All missions and equipment are unlocked at the start.[\\b] Some additional equipment is available."
 	CampaignPathBlurb[3]="[c=FFFFFF]A combined campaign of the original SWAT 4 and The Stetchkov Syndicate missions. [b]Limited to only plausible United States SWAT equipment.[\\b]"
-
+	CampaignPathBlurb[4]="[c=FFFFFF]A combined campaign of the original SWAT 4 and The Stetchkov Syndicate missions as Patrol Officers , [b]Equipment is limited , stay focus!!![\\b]"
+	
     NeedToUnlockHardcoreMode="Complete the SWAT 4 + Expansion campaign at least once to unlock."
 }

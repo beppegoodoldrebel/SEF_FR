@@ -27,7 +27,7 @@ final function bool HasCompletedCampaignAtLeastOnce()
 
     for(i = 0; i < Campaigns.length; i++)
     {
-        if(Campaigns[i].HACK_HasPlayedCreditsOnCampaignCompletion && ( Campaigns[i].CampaignPath == 0 || Campaigns[i].CampaignPath == 3 ) && !Campaigns[i].CustomCareerPath)
+        if(Campaigns[i].HACK_HasPlayedCreditsOnCampaignCompletion && ( Campaigns[i].CampaignPath == 0 || Campaigns[i].CampaignPath == 3  || Campaigns[i].CampaignPath == 4) && !Campaigns[i].CustomCareerPath)
         {
             return true;
         }
