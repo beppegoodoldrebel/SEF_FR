@@ -10,6 +10,14 @@ simulated function OnHolderDesiredFlashlightStateChanged() //we dont shoot here.
 	
 }
 
+simulated function InitFlashlight()
+{
+	Super.InitFlashlight();
+	
+	if ( FlashlightDynamicLight != None )
+	  FlashlightDynamicLight.LightCone = 20; //how wide the flashlight beam is
+}
+
 function evidence()
 {
 	
