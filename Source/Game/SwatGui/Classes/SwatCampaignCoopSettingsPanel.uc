@@ -188,16 +188,28 @@ function PopulateCustomUnlocks()
 function PopulateCampaignUnlocks()
 {
     local Campaign theCampaign;
-    local int i;
+    local int i, CampaignPath;
     local class<ICanBeSelectedInTheGUI> Item;
+	local ServerSettings Settings;
 
     // Clear it first
     MyUnlockedEquipmentBox.List.Clear();
 
-    theCampaign = SwatGUIController(Controller).GetCampaign();
+
+	if ( PlayerOwner().Level.NetMode == NM_Client )
+	{
+		//get it from server and deal with it
+		Settings = ServerSettings(PlayerOwner().Level.CurrentServerSettings);
+		CampaignPath = Settings.CampaignCOOP & 65535;
+	}
+	else
+	{
+		theCampaign = SwatGUIController(Controller).GetCampaign();
+		CampaignPath = theCampaign.CampaignPath;
+	}
 
     
-	if(theCampaign.CampaignPath == 0)
+	if(CampaignPath == 0)
 	{
 		for(i = 0; i < theCampaign.GetAvailableIndex() + 1; i++)
 		{
@@ -222,7 +234,7 @@ function PopulateCampaignUnlocks()
 		}
 		MyUnlockedEquipmentBox.List.Sort();
 	}
-	else if(theCampaign.CampaignPath == 3)
+	else if(CampaignPath == 3)
 	{
 		// unlock only specific equipment
 		for(i = 0; i < class'SwatGame.SwatFRCareerPath'.default.UnlockedEquipment.Length; ++i)
@@ -236,8 +248,184 @@ function PopulateCampaignUnlocks()
         }
 		MyUnlockedEquipmentBox.List.Sort();
 	}
+	else if(CampaignPath == 4)
+	{
+		// unlock only specific equipment
+		for(i = 0; i < class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment.Length; ++i)
+        {
+            Item = class<ICanBeSelectedInTheGUI>(class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment[i]);
+			if(Item == None)
+			{
+				continue;
+			}
+			MyUnlockedEquipmentBox.List.Add(Item.static.GetFriendlyName());
+        }
+		MyUnlockedEquipmentBox.List.Sort();
+	}
 	
 	return;
+}
+
+function bool CheckCampaignValid( class EquipmentClass )
+{
+	local int MissionIndex;
+	local int i;
+	local int CampaignPath;
+	local ServerSettings Settings;
+	local CustomScenarioPack QMMPak;
+	
+	if ( PlayerOwner().Level.NetMode == NM_Client ) //Clients get equipment from Server settings
+	{
+		Settings = ServerSettings(PlayerOwner().Level.CurrentServerSettings);
+
+		MissionIndex = (Settings.CampaignCOOP & -65536) >> 16;
+		CampaignPath = Settings.CampaignCOOP & 65535;
+	
+	// Any equipment above the MissionIndex is currently unavailable
+	if(Settings.IsCampaignCOOP() && CampaignPath == 0 && !Settings.bIsQMM)
+	{	// We only do this for the original career, not for QMM coop
+    	// Check first set of equipment
+		for (i = MissionIndex + 1; i < class'SwatGame.SwatVanillaCareerPath'.default.Missions.Length; ++i)
+			if (class'SwatGame.SwatVanillaCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
+				return false;
+
+	    // Check second set of equipment
+		for(i = class'SwatGame.SwatVanillaCareerPath'.default.Missions.Length + MissionIndex + 1;
+			i < class'SwatGame.SwatVanillaCareerPath'.default.UnlockedEquipment.Length;
+			++i)
+	      if(class'SwatGame.SwatVanillaCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
+	        return false;
+	}
+	else if(CampaignPath == 3) { // We only do this for the regular FR missions mode
+    		
+		//forget about skins
+		if( Left(string(EquipmentClass),4) != "Swat")
+		 return true;
+			
+        // unlock only specific equipment
+		for(i = 0; i < class'SwatGame.SwatFRCareerPath'.default.UnlockedEquipment.Length; ++i)
+        {
+            if(class'SwatGame.SwatFRCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
+            {
+                log("CheckCampaignValid failed on "$EquipmentClass);
+                return true;
+            }
+        }
+		return false;
+    }
+	else if(CampaignPath == 4) { // We only do this for the regular FR missions mode
+    		
+		//forget about skins
+		if( Left(string(EquipmentClass),4) != "Swat")
+		 return true;
+			
+        // unlock only specific equipment
+		for(i = 0; i < class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment.Length; ++i)
+        {
+            if(class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
+            {
+                log("CheckCampaignValid failed on "$EquipmentClass);
+                return true;
+            }
+        }
+		return false;
+    }
+	return true;
+	
+	
+	}
+	else 
+	{
+	// Host gets equipment from local GUI
+	MissionIndex = SwatGUIControllerBase(Controller).GetCampaign().GetAvailableIndex();
+	CampaignPath = SwatGUIControllerBase(Controller).GetCampaign().CampaignPath;
+	QMMPak = GC.GetCustomScenarioPack();
+
+	// Any equipment above the MissionIndex is currently unavailable
+	if(QMMPak != None)
+	{	// QMM
+		// Check for it being on the list of unlocks, if unlocks are enabled.
+		if(QMMPak.UseGearUnlocks)
+		{
+			// Disable everything that is after our current mission index
+			for(i = MissionIndex + 1; i < QMMPak.FirstEquipmentUnlocks.Length; i++)
+			{
+				if(EquipmentClass == QMMPak.FirstEquipmentUnlocks[i])
+				{
+					return false;
+				}
+			}
+
+			for(i = MissionIndex + 1; i < QMMPak.SecondEquipmentUnlocks.Length; i++)
+			{
+				if(EquipmentClass == QMMPak.SecondEquipmentUnlocks[i])
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else if(CampaignPath == 0) { // We only do this for the regular SWAT 4 missions
+    // Check first set of equipment
+		for (i = MissionIndex + 1; i < class'SwatGame.SwatVanillaCareerPath'.default.Missions.Length; ++i)
+        {
+            if (class'SwatGame.SwatVanillaCareerPath'.default.UnlockedEquipment[i] == EquipmentClass) {
+                log("CheckCampaignValid failed on "$EquipmentClass);
+				return false;
+            }
+        }
+
+        // Check second set of equipment
+		for(i = class'SwatGame.SwatVanillaCareerPath'.default.Missions.Length + MissionIndex + 1;
+			i < class'SwatGame.SwatVanillaCareerPath'.default.UnlockedEquipment.Length;
+			++i)
+        {
+            if(class'SwatGame.SwatVanillaCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
+            {
+                log("CheckCampaignValid failed on "$EquipmentClass);
+                return false;
+            }
+        }
+    }
+	else if(CampaignPath == 3) { // We only do this for the regular FR missions mode
+    		
+		//forget about skins
+		if( Left(string(EquipmentClass),4) != "Swat")
+		 return true;
+			
+        // unlock only specific equipment
+		for(i = 0; i < class'SwatGame.SwatFRCareerPath'.default.UnlockedEquipment.Length; ++i)
+        {
+            if(class'SwatGame.SwatFRCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
+            {
+                log("CheckCampaignValid failed on "$EquipmentClass);
+                return true;
+            }
+        }
+		return false;
+    }
+	else if(CampaignPath == 4) { // We only do this for the regular Patrol Officer missions mode
+    		
+		//forget about skins
+		if( Left(string(EquipmentClass),4) != "Swat")
+		 return true;
+			
+        // unlock only specific equipment
+		for(i = 0; i < class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment.Length; ++i)
+        {
+            if(class'SwatGame.SwatFRPatrolCareerPath'.default.UnlockedEquipment[i] == EquipmentClass)
+            {
+                log("CheckCampaignValid failed on "$EquipmentClass);
+                return true;
+            }
+        }
+		return false;
+    }
+	
+
+	return true;
+	
+	}
 }
 
 defaultproperties
