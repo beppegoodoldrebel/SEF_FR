@@ -1623,7 +1623,17 @@ simulated function OnEquippingFinished()
 
 simulated function NotifyPlayerHeIsVIPIfNecessary()
 {
-    return; // not used since SEF is a PvE game
+	if ( Level.NetMode != NM_Standalone )
+    {
+        if ( Controller == Level.GetLocalPlayerController() )
+        {
+            if ( IsTheVIP() )//&& !bNotifiedPlayerTheyAreVIP )
+            {
+                ClientMessage( "", 'YouAreVIP' );
+                //bNotifiedPlayerTheyAreVIP = true;
+            }
+        }
+    }
 }
 
 
@@ -4109,8 +4119,7 @@ simulated function String GetHumanReadableName()
 // return false.
 simulated function bool IsTheVIP()
 {
-	return SwatGamePlayerController(Controller).ThisPlayerIsTheVIP;
-    //return false;
+    return false;
 }
 
 // Override in NetPlayer for network games. For standalone games, always

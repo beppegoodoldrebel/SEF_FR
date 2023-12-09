@@ -31,6 +31,10 @@ var(SWATGui) EditInline Config GUIButton		   MyUpButton;
 var(SWATGui) EditInline Config GUIButton		   MyDownButton;
 var(SWATGui) EditInline Config GUIButton           MyLoadMapsButton;
 
+//PVP
+var(SWATGui) EditInline Config GUINumericEdit      MyDeathLimitBox;
+var(SWATGui) EditInline Config GUINumericEdit      MyTimeLimitBox;
+
 //Level information
 var(SWATGui) EditInline Config GUIImage            MyLevelScreenshot;
 var(SWATGui) EditInline Config GUILabel            MyIdealPlayerCount;
@@ -110,8 +114,8 @@ function LoadNextMap()
 		AllMissionSummaries[AllMissionSummaries.Length] = Summary;
 	}
 
-	LoadAvailableMaps( EMPMode.MPM_COOP, MyMapFilterBox.List.GetExtraIntData() );
-	LoadMapList( EMPMode.MPM_COOP );
+	LoadAvailableMaps( EMPMode(MyMapTypeBox.GetIndex()), MyMapFilterBox.List.GetExtraIntData() );
+	LoadMapList( EMPMode(MyMapTypeBox.GetIndex()) );
 }
 
 function RegularMissionFrame()
@@ -196,8 +200,19 @@ function InitComponent(GUIComponent MyOwner)
 	MyLoadMapsButton.OnClick= OnLoadMapsButtonClicked;
 
 	MyMapTypeBox.Clear();
-	MyMapTypeBox.List.Add(QMMString, , , , true);
-	MyMapTypeBox.List.Add(MissionsString, , , , false);
+	MyMapTypeBox.List.TypeOfSort=SORT_Numeric;
+	MyMapTypeBox.List.UpdateSortFunction();
+	//MyMapTypeBox.List.Add(QMMString, , , , true);
+	//MyMapTypeBox.List.Add(MissionsString, , , , false);
+	
+	//set the available missions for the list box
+	for( i = 0; i < EMPMode.EnumCount; ++i )
+	{
+    	MyMapTypeBox.List.Add(GC.GetGameModeName(EMPMode(i)), , ,i, false);
+	}
+	MyMapTypeBox.List.Sort(); //sort needed to match index enum
+	MyMapTypeBox.SetIndex(0);
+	
 
 	MyMapTypeBox.OnChange=InternalOnChange;
     MyUseGameSpyBox.OnChange=InternalOnChange;
@@ -240,7 +255,9 @@ function InternalOnChange(GUIComponent Sender)
 			OnMapFilterChanged( ServerSetupMapFilters(MyMapFilterBox.GetInt()) );
 			break;
 		case MyMapTypeBox:
-			OnMapTypeChanged( MyMapTypeBox.List.GetExtraBoolData() );
+			OnGameModeChanged( EMPMode(MyMapTypeBox.GetIndex()) );
+			OnMapTypeChanged( EMPMode(MyMapTypeBox.GetIndex()) == MPM_COOPQMM );
+			OnMapFilterChanged( ServerSetupMapFilters(MyMapFilterBox.GetInt()) );
 			break;
     }
 }
@@ -289,6 +306,10 @@ function SetSubComponentsEnabled( bool bSetEnabled )
     AvailableMaps.SetVisibility( bSetEnabled );
     SelectedMaps.SetVisibility( bSetEnabled );
     DisplayOnlyMaps.SetVisibility( !bSetEnabled );
+	
+	//PVP
+	MyDeathLimitBox.SetEnabled( bSetEnabled );
+	MyTimeLimitBox.SetEnabled( bSetEnabled );
 
 }
 
@@ -321,7 +342,41 @@ function DoResetDefaultsForGameMode( EMPMode NewMode )
         //default 5 rounds per map for non-coop
         MyRoundsBox.SetValue( 5 );
     }
+	
+	//PVP
+	
+	//Barricaded special
+    if( NewMode == EMPMode.MPM_BarricadedSuspects )
+    {
+        MyTimeLimitBox.SetValue( 900, true );
+        MyDeathLimitBox.SetValue( 50 );
+    }
+    else
+    {
+        MyDeathLimitBox.DisableComponent();
+        MyNoRespawnButton.DisableComponent();
+    }
+    
+    //Rapid deployment special
+    if( NewMode == EMPMode.MPM_RapidDeployment )
+    {
+        MyTimeLimitBox.SetValue( 600, true );
+    }
+    else
+    {
+        //Do Nothing
+    }
 
+    //VIP special
+    if( NewMode == EMPMode.MPM_VIPEscort )
+    {
+        MyTimeLimitBox.SetValue( 720, true );
+    }
+    else
+    {
+        //Do Nothing
+    }
+	
     MyNoRespawnButton.SetChecked(false);
 }
 
@@ -341,6 +396,11 @@ function LoadServerSettings( optional bool ReadOnly )
         Settings = ServerSettings(PlayerOwner().Level.CurrentServerSettings);
     else
         Settings = ServerSettings(PlayerOwner().Level.PendingServerSettings);
+	
+	 //
+    // update the game type, (also loads the available maps)
+    //
+    MyMapTypeBox.SetIndex(Settings.GameType);
 
     //
     // Select the current map
@@ -362,11 +422,13 @@ function LoadServerSettings( optional bool ReadOnly )
     // Load the rest of the settings
     //
     MyRoundsBox.SetValue(Settings.NumRounds, true);
+	//MyDeathLimitBox.SetValue(Settings.DeathLimit, true);
+    //MyTimeLimitBox.SetValue(Settings.RoundTimeLimit, true);
     MyPasswordedButton.bForceUpdate = true;
     MyNoRespawnButton.SetChecked( Settings.bNoRespawn );
     MyQuickResetBox.SetChecked( Settings.bQuickRoundReset );
-	MyMapTypeBox.List.FindExtraBoolData(Settings.bIsQMM);
-
+	
+	
     //
     // Update the general server information/player name
     //
@@ -398,7 +460,18 @@ function SaveServerSettings()
     //
     // Save all maps
     //
-	Settings.bIsQMM = MyMapTypeBox.List.GetExtraBoolData();
+	//Settings.bIsQMM = MyMapTypeBox.List.GetExtraBoolData();
+	Settings.GameType = EMPMode(MyMapTypeBox.GetIndex());
+	
+	if ( EMPMode(MyMapTypeBox.GetIndex()) == MPM_COOPQMM )
+	{
+		Settings.bIsQMM =  true;
+	}
+	else
+		Settings.bIsQMM =  false;
+	
+		
+
     SwatPlayerController(PlayerOwner()).ServerClearMaps( Settings );
 
     for( i = 0; i < SelectedMaps.Num(); i++ )
@@ -423,7 +496,8 @@ function SaveServerSettings()
     //  - LAN / Internet
     //  - Selected Map
     //
-    if( Settings.bLAN != !SwatServerSetupMenu.bUseGameSpy ||
+    if(  Settings.GameType != SwatServerSetupMenu.CurGameType ||
+		Settings.bLAN != !SwatServerSetupMenu.bUseGameSpy ||
         PreviousMap != SelectedMaps.List.GetItemAtIndex(SelectedIndex) )
     {
         SwatPlayerController(PlayerOwner()).ServerSetDirty( Settings );
@@ -450,7 +524,8 @@ function SaveServerSettings()
 function OnMapFilterChanged( ServerSetupMapFilters NewFilter )
 {
 	// Just load the available maps
-	LoadAvailableMaps(EMPMode.MPM_COOP, NewFilter);
+	//LoadAvailableMaps(EMPMode.MPM_COOP, NewFilter); //SEF code
+	LoadAvailableMaps(EMPMode(MyMapTypeBox.GetIndex()), NewFilter);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -572,6 +647,11 @@ function OnGameModeChanged( EMPMode NewMode )
 {
     log( self$"::OnGameModeChanged( "$GetEnum(EMPMode,NewMode)$" )" );
 
+	if ( SwatServerSetupMenu.CurGameType != NewMode )
+    {	
+	
+	SwatServerSetupMenu.CurGameType = NewMode;
+	
     //load the available map list
     LoadAvailableMaps( NewMode, 0 );
 
@@ -586,6 +666,8 @@ function OnGameModeChanged( EMPMode NewMode )
     DisplayLevelSummary( LevelSummary( AvailableMaps.List.GetObject() ) );
 
     SetTimer(0.03);
+	
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -891,7 +973,8 @@ function OnSelectedMapsChanged( GUIComponent Sender )
 {
 	local LevelSummary Summary;
 
-    MapListOnChange( EMPMode.MPM_COOP );
+    //MapListOnChange( EMPMode.MPM_COOP );
+	MapListOnChange(EMPMode(MyMapTypeBox.GetIndex())); 
 
     if( SelectedMaps.Num() <= 1 )
         SetSelectedMapsIndex( 0 );

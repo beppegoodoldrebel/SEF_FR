@@ -1104,9 +1104,7 @@ function AddDefaultInventory(Pawn inPlayerPawn)
 			
 					
 			if (Campaign.DetectiveMode) //detective game mode
-			{
-				SwatGamePlayerController(Level.GetLocalPlayerController()).ThisPlayerIsTheVIP=true;
-				
+			{				
 				LoadOut = Spawn( class'EliteLoadout', PlayerPawn, 'DetectiveLoadOut' );
 				LoadOutSpec = Spawn(class'DynamicLoadOutSpec', None, 'DefaultDetectiveLoadOut');
 				

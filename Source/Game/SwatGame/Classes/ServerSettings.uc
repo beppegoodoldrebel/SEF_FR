@@ -60,6 +60,12 @@ var(ServerSettings) config string					QMMPackQueue[MAX_MAPS];
 // SEF_FR
 var(ServerSettings) config bool						HidePenaltyMessages;
 
+// SEF_FR PVP
+var(ServerSettings) config int            DeathLimit "How many deaths are required to lose a round (0 = No Death Limit)";
+var(ServerSettings) config int            RoundTimeLimit "Time limit for each round (in seconds) (0 = No Time Limit)";
+var(ServerSettings) config bool           bShowEnemyNames "If true, will display enemy names";
+var(ServerSettings) config float          ArrestRoundTimeDeduction "Smash and Grab: seconds deducted when officers arrest a suspect.";
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -73,7 +79,10 @@ replication
         bQuickRoundReset, FriendlyFireAmount, DisabledEquipment, Unused ,
         ServerName, Password, bPassworded, bLAN, AdditionalRespawnTime, CampaignCOOP,
 		bNoLeaders, bNoKillMessages, bEnableSnipers,
-		bIsQMM, QMMUseCustomBriefing, QMMCustomBriefing, QMMScenario;
+		bIsQMM, QMMUseCustomBriefing, QMMCustomBriefing, QMMScenario,
+		//PVP
+		DeathLimit,RoundTimeLimit,bShowEnemyNames,ArrestRoundTimeDeduction
+		;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -112,6 +121,15 @@ log( self$"::SetAdminServerSettings( "$PC$", ServerName="$newServerName$", Passw
     Password = newPassword;
     bPassworded = newbPassworded;
     bLAN = newbLAN;
+}
+
+function SetPVPSettings(int newDeathLimit,int newRoundTimeLimit,bool newbShowEnemyNames,float newArrestRoundTimeDeduction)
+{
+	DeathLimit=newDeathLimit;
+	RoundTimeLimit=newRoundTimeLimit;
+	bShowEnemyNames=newbShowEnemyNames;
+	ArrestRoundTimeDeduction=newArrestRoundTimeDeduction;
+	SaveConfig();
 }
 
 function SetQMMSettings(CustomScenario NewScenario, CustomScenarioPack Pack, bool IsCampaignCOOP, int CampaignCOOPIndex)
@@ -187,7 +205,11 @@ function SetServerSettingsNoConfigSave(PlayerController PC,
 							bool newbNoKillMessages,
 							bool newbEnableSnipers)
 {
-	GameType = newGameType;
+	if (newGameType == MPM_COOPQMM ) //fix for some QMM gamemode bugs
+		GameType = MPM_COOP;
+	else
+		GameType = newGameType;
+	
     MapIndex = newMapIndex;
     NumRounds = newNumRounds;
     MaxPlayers = newMaxPlayers;

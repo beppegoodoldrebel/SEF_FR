@@ -28,6 +28,8 @@ var(SWATGui) EditInline Config GUIButton						EquipmentButton;
 
 var(SWATGui) EditInline Config GUIButton						ProfileButton;
 
+var(SWATGui) EMPMode CurGameType;
+
 var() private config localized string BackButtonHelpString;
 var() private config localized string CancelButtonHelpString;
 var() private config localized string QuitButtonHelpString;
@@ -310,7 +312,7 @@ function SaveServerSettings()
     // Set all server settings
     //
     SwatPlayerController(PlayerOwner()).ServerSetSettings( Settings,
-                                EMPMode.MPM_COOP,
+                                CurGameType,
                                 QuickSetupPanel.SelectedIndex,
                                 QuickSetupPanel.MyRoundsBox.Value,
                                 AdvancedSetupPanel.MyMaxPlayersBox.Value,
@@ -330,11 +332,20 @@ function SaveServerSettings()
 								!AdvancedSetupPanel.MyEnableLeadersCheck.bChecked,
 								!AdvancedSetupPanel.MyEnableKillMessagesCheck.bChecked,
 								AdvancedSetupPanel.MyEnableSnipers.bChecked);
+								
 	SwatPlayerController(PlayerOwner()).ServerSetQMMSettings(Settings,
 		None,
 		None,
 		false,
 		0);
+	
+	//PVP configs
+	SwatPlayerController(PlayerOwner()).ServerSetPVPSettings(Settings,
+	QuickSetupPanel.MyDeathLimitBox.Value,
+	QuickSetupPanel.MyTimeLimitBox.Value,
+	false,
+	-1.0);//default value
+		
     GC.SaveConfig();
 }
 
