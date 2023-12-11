@@ -256,7 +256,22 @@ event PostNetReceive()
 	if(ReplicatedLoadoutSpec[0] != DynamicLoadoutSpec.LoadOutSpec[0])
 	{
 		// Our loadout got forced to something else by the server. Adjust. Adapt. Overcome.
-		NewLoadOut = Spawn(class'EliteLoadout', self, 'EmptyMultiplayerOfficerLoadOut' );
+			
+		if ( GetTeamNumber() == 0 )
+		{
+			if ( IsTheVIP() )
+			{
+				newLoadOut = Spawn(class'EliteLoadout', self, 'VIPLoadOut' );
+				SwitchToMesh( VIPMesh );
+			}
+			else
+				newLoadOut = Spawn(class'EliteLoadout', self, 'EmptyMultiplayerOfficerLoadOut' );
+		}
+		else
+		{
+			newLoadOut = Spawn(class'EliteLoadout', self, 'EmptyMultiplayerSuspectLoadOut' );
+		}
+		
 
 		CopyReplicatedSpecToDynamicSpec();
 
@@ -750,10 +765,31 @@ simulated function float GetQualifyTimeForToolkit()
 
 simulated function SetPlayerSkins( OfficerLoadOut inLoadOut )
 {
+	local Equipment SE;
+	local int i;
+	
     Super.SetPlayerSkins( inLoadOut );
+	
 
 	if (Level.NetMode != NM_Client)
 	{
+		If(IstheVIP()) //little hack for ListenServer.... 
+		{
+			SwitchToMesh(VIPMesh);
+			
+			for (i = Pocket.Pocket_EquipOne; i <= Pocket.Pocket_SimpleRadioPouch; ++i)
+			{
+				
+					se = Equipment(Loadout.GetItemAtPocket(Pocket(i)));
+				if ( se != None )
+				{	
+					// Hide all simpleequipment on officers
+					se.bHidden		= true;
+					se.CullDistance = 1; // doesn't really matter, but just in case culldistance is checked earlier in pipeline than bHidden			
+				}
+			}
+		}
+		
 		ReplicatedSkins[0] = inLoadOut.GetDefaultPantsMaterial();
 		ReplicatedSkins[1] = inLoadOut.GetDefaultFaceMaterial();
 		ReplicatedSkins[2] = inLoadOut.GetDefaultNameMaterial();

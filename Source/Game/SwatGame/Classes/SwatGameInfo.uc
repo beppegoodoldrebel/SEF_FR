@@ -1161,8 +1161,7 @@ function AddDefaultInventory(Pawn inPlayerPawn)
             RepoPlayerItem = SwatGamePlayerController(PlayerPawn.Controller).SwatRepoPlayerItem;
 
             // FIXME: this sequence here is what's responsible for the busted replication!!!
-
-            RepoPlayerItem.PrintLoadOutSpecToMPLog();
+            //RepoPlayerItem.PrintLoadOutSpecToMPLog();
 
             // Copy the items from the loadout to the netplayer.
             for( i = 0; i < Pocket.EnumCount; ++i )
