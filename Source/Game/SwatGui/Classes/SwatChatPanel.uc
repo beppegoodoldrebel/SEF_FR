@@ -122,6 +122,17 @@ var() private config localized string CantReceiveTooMuchBulkMessage;
 var() private config localized string GaveEquipmentMessage;
 var() private config localized string GaveYouEquipmentMessage;
 
+//PVP
+var() private config localized string SwatTeamKillMessage;
+var() private config localized string SuspectsTeamKillMessage;
+
+var() private config localized string SwatKillMessage;
+var() private config localized string SuspectsKillMessage;
+
+var() private config localized string SwatArrestMessage;
+var() private config localized string SuspectsArrestMessage;
+
+
 
 struct ChatLine
 {
@@ -529,6 +540,36 @@ function MessageRecieved( String MsgText, Name Type, optional bool bDisplaySpeci
 				MsgText = FormatTextString( DebugMessageString, StrA );
             }
             break;
+		//PVP
+        case 'SwatKill':
+            if( StrB == "" )
+                StrB = SomeoneString;
+            MsgText = FormatTextString( SwatKillMessage, StrA, StrB, GetWeaponFriendlyName(StrC) );
+            break;
+        case 'SuspectsKill':
+            if( StrB == "" )
+                StrB = SomeoneString;
+            MsgText = FormatTextString( SuspectsKillMessage, StrA, StrB, GetWeaponFriendlyName(StrC) );
+            break;
+        case 'SwatArrest':
+            if( StrB == "" )
+                StrB = SomeoneString;
+            MsgText = FormatTextString( SwatArrestMessage, StrA, StrB );
+            break;
+        case 'SuspectsArrest':
+            if( StrB == "" )
+                StrB = SomeoneString;
+            MsgText = FormatTextString( SuspectsArrestMessage, StrA, StrB );
+            break;
+        case 'SwatTeamKill':
+            if( StrB == "" )
+                StrB = SomeoneString;
+            MsgText = FormatTextString( SwatTeamKillMessage, StrA, StrB, GetWeaponFriendlyName(StrC) );
+            break;
+        case 'SuspectsTeamKill':
+            if( StrB == "" )
+                StrB = SomeoneString;
+			MsgText = FormatTextString( SuspectsTeamKillMessage, StrA, StrB, GetWeaponFriendlyName(StrC) );			
 
     }
 

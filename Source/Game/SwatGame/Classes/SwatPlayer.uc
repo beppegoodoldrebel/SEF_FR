@@ -977,6 +977,8 @@ simulated function DestroyEquipment()
 
 simulated event Destroyed()
 {
+	local int i;
+	
     // Superclass method calls DestroyEquipment.
 	Super.Destroyed();
 
@@ -995,6 +997,9 @@ simulated event Destroyed()
     PerlinNoiseAxisB.Delete(); PerlinNoiseAxisB = None;
 
     Loadout.Destroy();
+	
+    for(i=0;i<Attached.length;i++)
+		Attached[i].Destroy();
 
     UnTriggerAllNonLethalEffectEvents();
 

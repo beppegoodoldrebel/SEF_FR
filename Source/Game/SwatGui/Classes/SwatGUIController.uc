@@ -434,6 +434,14 @@ function bool OnMessageRecieved( String Msg, Name Type )
         case 'RedSuicide':
 		case 'PenaltyIssuedChat':
         case 'TeamKill':
+		case 'SwatKill':
+		case 'SuspectsKill':
+        case 'SwatSuicide':
+        case 'SuspectsSuicide':
+        case 'SwatTeamKill':
+        case 'SuspectsTeamKill':
+        case 'SwatArrest':
+        case 'SuspectsArrest':
         case 'BlueArrest':
         case 'RedArrest':
 		case 'BlueIncapacitate':

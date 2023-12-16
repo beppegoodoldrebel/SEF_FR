@@ -3220,6 +3220,85 @@ simulated function bool SpecialCondition_CanBeArrested(Actor Target)
  	return SwatPawn.CanBeArrestedNow();
 }
 
+simulated function bool SpecialCondition_CuffsOnVIP(SwatPlayer Player , Actor Target)
+{
+ 	local NetPlayer NP;
+	
+ 	if(!Target.IsA('NetPlayer') || !Player.isa('NetPlayer') || Level.IsCoopServer )
+ 	{
+ 		return false; // not something we can arrest
+ 	}
+
+ 	NP = NetPlayer(Target);
+ 	if(!class'Pawn'.static.checkConscious(NP) || !NP.IsTheVIP())
+ 	{
+ 		return false; // not conscious, can't arrest them
+ 	}
+ 	else if(NP.IsArrested() || NP.IsBeingArrestedNow())
+ 	{
+ 		return false; // is either arrested or in the process of being arrested
+ 	}
+	else if ( NetPlayer(Player).GetTeamNumber() == NetPlayer(Target).GetTeamNumber() )
+	{
+		return false;
+    }		
+	
+ 	return NP.CanBeArrestedNow();
+}
+
+simulated function bool SpecialCondition_CuffsOnPlayer(SwatPlayer Player , Actor Target)
+{
+ 	local NetPlayer NP;
+	
+ 	if(!Target.IsA('NetPlayer') || !Player.isa('NetPlayer') || Level.IsCoopServer )
+ 	{
+ 		return false; // not something we can arrest
+ 	}
+
+ 	NP = NetPlayer(Target);
+ 	if(!class'Pawn'.static.checkConscious(NP) )
+ 	{
+ 		return false; // not conscious, can't arrest them
+ 	}
+ 	else if(NP.IsArrested() || NP.IsBeingArrestedNow())
+ 	{
+ 		return false; // is either arrested or in the process of being arrested
+ 	}
+	else if ( NetPlayer(Player).GetTeamNumber() == NetPlayer(Target).GetTeamNumber() )
+	{
+		return false;
+    }		
+	
+ 	return NP.CanBeArrestedNow();
+}
+
+simulated function bool SpecialCondition_ToolkitOnVIP(SwatPlayer Player , Actor Target)
+{
+ 	local NetPlayer NP;
+	
+ 	if(!Target.IsA('NetPlayer') || !Player.isa('NetPlayer') || Level.IsCoopServer )
+ 	{
+ 		return false; // not something we can arrest
+ 	}
+
+ 	NP = NetPlayer(Target);
+ 	if(!class'Pawn'.static.checkConscious(NP) || !NP.IsTheVIP())
+ 	{
+ 		return false; // not conscious, can't arrest them
+ 	}
+ 	else if(!NP.IsArrested() || NP.IsBeingArrestedNow())
+ 	{
+ 		return false; // is either arrested or in the process of being arrested
+ 	}
+	else if ( NetPlayer(Player).GetTeamNumber() != NetPlayer(Target).GetTeamNumber() )
+	{
+		return false;
+    }		
+	
+ 	return NP.IsArrested();
+}
+
+
 cpptext
 {
     virtual UBOOL DoorRelatedContextMatches(UPlayerInterfaceDoorRelatedContext* DoorRelatedContext, ASwatDoor* Door);

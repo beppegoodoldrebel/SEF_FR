@@ -225,7 +225,9 @@ simulated function bool SpecialCondition_Uncompliant(Actor Target) { return fals
 simulated function bool SpecialCondition_CanBeArrested(Actor Target) { return false; }
 simulated function bool SpecialCondition_LowReadyPawn(SwatPlayer Player, Actor Target) { return false; }
 simulated function bool SpecialCondition_Shield(SwatPlayer Player, Actor Target) { return false; }
-
+simulated function bool SpecialCondition_CuffsOnPlayer(SwatPlayer Player, Actor Target) { return false; }
+simulated function bool SpecialCondition_CuffsOnVIP(SwatPlayer Player, Actor Target) { return false; }
+simulated function bool SpecialCondition_ToolkitOnVIP(SwatPlayer Player, Actor Target) { return false; }
 
 // This function also got rewritten from native code
 function bool DoorRelatedContextMatches(SwatPlayer Player, SwatDoor Door, PlayerInterfaceDoorRelatedContext Context,
@@ -467,19 +469,23 @@ function bool ContextMatches(SwatPlayer Player, Actor Target, PlayerInterfaceCon
 				return true; // PvP FIXME
 				break;
 			case 'CuffsOnVIP':
-				return false; // PvP FIXME
+				if (!SpecialCondition_CuffsOnVIP(Player , Target) )
+					return false;
 				break;
 			case 'CuffsOnPlayer':
-				return false; // PvP FIXME
+				if (!SpecialCondition_CuffsOnPlayer(Player , Target) )
+					return false;
 				break;
 			case 'Bandage':
 				return false; // PvP FIXME
 				break;
 			case 'ToolkitOnArrestedVIP':
-				return false; // PvP FIXME
+				if (!SpecialCondition_ToolkitOnVIP(Player , Target) )
+					return false;
 				break;
 			case 'ArrestablePlayer':
-				return false; // PvP FIXME
+				if (!SpecialCondition_CuffsOnPlayer(Player , Target) )
+					return false;
 				break;
 		}
 	}
