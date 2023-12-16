@@ -469,23 +469,30 @@ function bool ContextMatches(SwatPlayer Player, Actor Target, PlayerInterfaceCon
 				return true; // PvP FIXME
 				break;
 			case 'CuffsOnVIP':
-				if (!SpecialCondition_CuffsOnVIP(Player , Target) )
-					return false;
+				if ( (NetPlayer(Player).GetTeamNumber() != NetPlayer(Target).GetTeamNumber() ) &&
+				      NetPlayer(Target).istheVip() )
+					return true;
+				else
+                    return false;
 				break;
 			case 'CuffsOnPlayer':
-				if (!SpecialCondition_CuffsOnPlayer(Player , Target) )
+			    if (NetPlayer(Player).GetTeamNumber() == NetPlayer(Target).GetTeamNumber() )
 					return false;
+				else
+                    return true;
 				break;
 			case 'Bandage':
 				return false; // PvP FIXME
 				break;
 			case 'ToolkitOnArrestedVIP':
-				if (!SpecialCondition_ToolkitOnVIP(Player , Target) )
-					return false;
+				if ( (NetPlayer(Player).GetTeamNumber() == NetPlayer(Target).GetTeamNumber() ) &&
+				      NetPlayer(Target).istheVip() )
+					return true;
+				else
+                    return false;
 				break;
 			case 'ArrestablePlayer':
-				if (!SpecialCondition_CuffsOnPlayer(Player , Target) )
-					return false;
+					return true;
 				break;
 		}
 	}
