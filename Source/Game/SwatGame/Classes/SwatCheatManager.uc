@@ -700,6 +700,34 @@ exec function PlayerMesh(String newMesh)
 	
 }
 
+exec function DetectiveMesh()
+{
+	local SwatPlayer thePlayer;
+	local SkeletalMesh SM;
+    local int i;
+	
+	assert(Level.NetMode == NM_Standalone); //to avoid server crash!
+	
+	SM= SkeletalMesh(DynamicLoadObject("SwatMaleAnimation2.MaleCasual1", class'SkeletalMesh'));
+	
+	if (SM != None)
+	{
+		thePlayer = SwatPlayer(Pawn);
+		thePlayer.SwitchToMesh(SM);
+		thePlayer.skins.Remove(0,5);
+		thePlayer.skins[0]=Material(DynamicLoadObject("MaleCasual1Tex.MC1_ArmsFleshCshader", class'Material'));
+		thePlayer.skins[1]=Material(DynamicLoadObject("MaleCasual1Tex.MC1_ClothesBshader", class'Material'));
+		
+		for ( i=0; i <= thePlayer.Attached.Length ; i++ )
+		{
+			if(!thePlayer.Attached[i].isa('FiredWeapon'))
+				thePlayer.Attached[i].Hide();
+		}
+		
+	}
+	
+}
+
 
 exec function LockAllDoors()
 {
