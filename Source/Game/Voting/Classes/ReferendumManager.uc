@@ -1,5 +1,7 @@
 class ReferendumManager extends Engine.Actor config(SwatGuiState);
 
+import enum EMPMode from Engine.Repo;
+
 var private TeamInfo ReferendumTeam;				// The team of the player that started the referendum
 
 var private int YesVotes;							// The current tally of yes votes
@@ -268,7 +270,7 @@ protected function bool StartReferendum(PlayerReplicationInfo PRI, Referendum Re
 	return true;
 }
 
-function bool StartNewReferendum(PlayerController PC, class<Referendum> ReferendumClass, optional PlayerController Target, optional String TargetStr)
+function bool StartNewReferendum(PlayerController PC, class<Referendum> ReferendumClass, optional PlayerController Target, optional String TargetStr, optional EMPMode GameType)
 {
 	local Referendum Referendum;
 
@@ -281,7 +283,7 @@ function bool StartNewReferendum(PlayerController PC, class<Referendum> Referend
 	}
 
 	Referendum = Spawn(ReferendumClass);
-	Referendum.InitializeReferendum(PC, Target, TargetStr);
+	Referendum.InitializeReferendum(PC, Target, TargetStr , GameType);
 
 	if(Target != None && Target != PC && !Referendum.ReferendumCanBeCalledOnTarget(PC, Target))
 	{

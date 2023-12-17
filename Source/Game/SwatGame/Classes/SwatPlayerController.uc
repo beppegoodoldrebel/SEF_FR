@@ -867,9 +867,9 @@ function bool VOIPIsSpeaking(int PlayerID)
 // Voting replicated function
 ///////////////////////////////////////////////////////////////////////////////
 
-exec function ServerStartReferendum(PlayerController PC, class<Voting.Referendum> ReferendumClass, optional PlayerController Target, optional String TargetStr)
+exec function ServerStartReferendum(PlayerController PC, class<Voting.Referendum> ReferendumClass, optional PlayerController Target, optional String TargetStr, optional EMPMode GameType)
 {
-  SwatGameReplicationInfo(Level.GetGameReplicationInfo()).StartReferendum(PC, ReferendumClass, Target, TargetStr);
+  SwatGameReplicationInfo(Level.GetGameReplicationInfo()).StartReferendum(PC, ReferendumClass, Target, TargetStr , GameType);
 }
 
 exec function ServerStartReferendumForPlayer(PlayerController PC, class<Voting.Referendum> ReferendumClass, string PlayerName)

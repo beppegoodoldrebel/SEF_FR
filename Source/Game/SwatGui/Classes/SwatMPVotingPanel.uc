@@ -10,6 +10,7 @@ var(SWATGui) private EditInline Config GUIButton BanButton;
 var(SWATGui) private EditInline Config GUIButton LeaderButton;
 
 var(SWATGui) private EditInline Config GUIListBox MapList;
+var(SWATGui) private EditInline Config GUIComboBox GameTypes;
 var(SWATGui) private EditInline Config GUIButton MapButton;
 var(SWATGui) private EditInline Config GUIButton NextMapButton;
 var(SWATGui) private EditInline Config GUIButton EndMapButton;
@@ -29,6 +30,7 @@ var(SWATGui) private EditInline Config GUIButton LoadMapsButton;
 var(DEBUG) private GUIList FullMapList;
 
 var private bool bPrevEnabled;
+var private bool bInitialisingGameTypes;
 
 function InitComponent(GUIComponent MyOwner)
 {
@@ -43,6 +45,7 @@ function InitComponent(GUIComponent MyOwner)
 	LeaderButton.OnClick = OnPlayerReferendumClicked;
 
 	MapButton.OnClick = OnMapButtonClicked;
+	GameTypes.OnChange = OnGameTypesChange;
 
 	NextMapButton.OnClick = OnSimpleReferendumClicked;
 	EndMapButton.OnClick = OnSimpleReferendumClicked;
@@ -131,6 +134,9 @@ private function SetVotingEnabled(optional bool bForceRefresh)
 
 		MapButton.SetVisibility(bEnabled);
 		MapButton.SetEnabled(bEnabled);
+		
+		GameTypes.SetVisibility(bEnabled);
+		GameTypes.SetEnabled(bEnabled);		
 
         NextMapButton.SetVisibility(bEnabled);
         NextMapButton.SetEnabled(bEnabled);
@@ -168,6 +174,7 @@ private function SetVotingEnabled(optional bool bForceRefresh)
 private function InternalOnActivate()
 {
 	InitialiseTeamMembers();
+	InitialiseGameTypes();
 
 	SetVotingEnabled(true);
 
@@ -281,8 +288,14 @@ private function InitialiseMapList()
 {
     local int i, j;
     local LevelSummary Summary;
+	local EMPMode GameType;
 
     MapList.Clear();
+	
+	if (GameTypes.GetIndex() == -1)
+		return;
+
+	GameType = EMPMode(GameTypes.GetInt());
 
     for( i = 0; i < FullMapList.ItemCount; i++ )
     {
@@ -290,7 +303,7 @@ private function InitialiseMapList()
 
         for( j = 0; j < Summary.SupportedModes.Length; j++ )
         {
-            if( Summary.SupportedModes[j] == EMPMode.MPM_COOP )
+            if( Summary.SupportedModes[j] == GameType )
             {
                 MapList.List.AddElement( FullMapList.GetAtIndex(i) );
                 break;
@@ -300,6 +313,48 @@ private function InitialiseMapList()
 
     MapList.List.Sort();
 	MapList.List.SetIndex(0);
+}
+
+private function InitialiseGameTypes()
+{
+	local ServerSettings Settings;
+	local int i;
+
+    Settings = ServerSettings(PlayerOwner().Level.CurrentServerSettings);
+    
+    if (Settings == None)
+        return;
+
+	bInitialisingGameTypes = true;
+
+	GameTypes.Clear();
+
+	// When playing a coop map, only allow votes for other coop maps
+	if (Settings.GameType == MPM_COOP)
+	{
+		GameTypes.AddItem(GC.GetGameModeName(MPM_COOP),,, int(EMPMode.MPM_COOP));
+	}
+	else
+	{
+		// Add all game types except for coop
+		for( i = 0; i < EMPMode.EnumCount; ++i )
+		{
+			if (EMPMode(i) != MPM_Coop && EMPMode(i) != MPM_COOPQMM)
+    			GameTypes.AddItem(GC.GetGameModeName(EMPMode(i)),,, i);
+		}
+	}
+
+	bInitialisingGameTypes = false;
+
+	GameTypes.SetIndex(0);
+}
+
+private function OnGameTypesChange(GUIComponent Sender)
+{
+	if (bInitialisingGameTypes)
+		return;
+
+	InitialiseMapList();
 }
 
 private function OnLoadMapsClicked(GUIComponent Sender)
@@ -371,16 +426,22 @@ private function OnSimpleReferendumClicked(GUIComponent Sender)
 private function OnMapButtonClicked(GUIComponent Sender)
 {
 	local String MapName;
+	local EMPMode GameType;
 
 	MapName = MapList.List.Get();
 
 	if (MapName == "")
 		return;
+	
+	if (GameTypes.GetIndex() == -1)
+		return;
+
+	GameType = EMPMode(GameTypes.GetInt());
 
 	if (SwatPlayerController(PlayerOwner()) == None)
 		return;
 
-	SwatPlayerController(PlayerOwner()).ServerStartReferendum(PlayerOwner(), class'SwatGame.MapChangeReferendum', None, MapName);
+	SwatPlayerController(PlayerOwner()).ServerStartReferendum(PlayerOwner(), class'SwatGame.MapChangeReferendum', None, MapName , GameType);
 
 	if (SwatMPPage(Controller.TopPage()) != None)
 		SwatMPPage(Controller.TopPage()).ResumeGame();

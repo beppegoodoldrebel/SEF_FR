@@ -250,6 +250,7 @@ function CopyLoadOutWeaponry( DynamicLoadOutSpec to, DynamicLoadOutSpec from )
 
 function CopyThisPage(DynamicLoadOutSpec to)
 {
+   Assert( to != None );	
   switch(GetActiveTab())
   {
     case 0:

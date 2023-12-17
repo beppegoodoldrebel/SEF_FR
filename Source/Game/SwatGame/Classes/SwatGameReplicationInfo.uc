@@ -346,7 +346,7 @@ function int ServerChooseSoundEffectToPlay( name EffectSpecification, Actor Sour
     return SoundRef.SoundSetIndex;
 }
 
-function StartReferendum(PlayerController PC, class<Voting.Referendum> ReferendumClass, optional PlayerController Target, optional String TargetStr)
+function StartReferendum(PlayerController PC, class<Voting.Referendum> ReferendumClass, optional PlayerController Target, optional String TargetStr, optional EMPMode GameType)
 {
 	if(RefMgr == None)
 		return;
@@ -357,7 +357,7 @@ function StartReferendum(PlayerController PC, class<Voting.Referendum> Referendu
 		return;
 	}
 
-	if(RefMgr.StartNewReferendum(PC, ReferendumClass, Target, TargetStr))
+	if(RefMgr.StartNewReferendum(PC, ReferendumClass, Target, TargetStr , GameType))
 	{
 		VoteYes(PC);
 	}
