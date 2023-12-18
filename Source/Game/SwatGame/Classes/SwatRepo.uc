@@ -593,7 +593,7 @@ log("[dkaplan] >>> StateChange of "$self$", newState == "$GetEnum(eSwatGameState
             if( GuiConfig.SwatGameRole == GAMEROLE_MP_Host )
             {
                 NetRoundInProgress = true;
-                GetSGRI().ServerCountdownTime = 0;
+                GetSGRI().ServerCountdownTime = ServerSettings(Level.CurrentServerSettings).RoundTimeLimit;
                 //Level.Game.SetPause( false, PlayerController );
             }
             break;
@@ -1072,6 +1072,15 @@ log("[dkaplan] >>> NetStartNextRound()" );
 		CurrentSettings.bNoKillMessages,
 		CurrentSettings.bEnableSnipers
 	);
+	
+	//PVP settings
+	ServerSettings(Level.PendingServerSettings).SetPVPSettings(
+	  CurrentSettings.DeathLimit,
+	  CurrentSettings.RoundTimeLimit,
+	  CurrentSettings.bShowEnemyNames,
+	  CurrentSettings.ArrestRoundTimeDeduction
+	);
+	
 	ServerSettings(Level.PendingServerSettings).RoundNumber = CurrentSettings.RoundNumber;
 
     SGI = SwatGameInfo(Level.Game);

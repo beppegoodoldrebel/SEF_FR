@@ -58,7 +58,7 @@ function Initialize()
     assert(respawnTimer != None);
     respawnTimer.timerDelegate = DecrementRespawnTimers;
 
-    ScoreLimitForRound = 0;
+    ScoreLimitForRound = ServerSettings(Level.CurrentServerSettings).DeathLimit;
 }
 
 
