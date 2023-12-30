@@ -992,12 +992,17 @@ function ServerActivateOfficerViewport( bool ShouldActivate, optional string Vie
         log(self$"--ServerActivateOfficerViewport - ShouldActivate :"$ShouldActivate$", ViewportType = "$ViewportType);
 
         // We need to convert the viewport type into co-op teams
-		if ( Level.IsCOOPServer )
+		if ( Level.IsPlayingCOOP )
 		{
 			if(ViewportType ~= "Red")
 				ViewportType = "TeamB";
 			else if(ViewportType ~= "Blue")
 				ViewportType = "TeamA";
+		}
+		else
+		{
+			//be sure to just see my PVP team only!
+			 ViewportType = NetPlayer(Pawn).GetViewportType();
 		}
 
         if (Level.GetEngine().EnableDevTools)
