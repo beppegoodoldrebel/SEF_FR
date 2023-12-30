@@ -59,17 +59,18 @@ simulated protected function bool PreUpdateHook(SwatGamePlayerController Player,
     if ( !bLoadedFromRepo )
     {
         CachedRep = SwatGameReplicationInfo(PlayerController(Owner).GameReplicationInfo);
-        mplog( "Testing repo initialization! CachedRep: "$CachedRep$", ShowFriendlyTags: "$CachedRep.ShowTeammateNames );
-        if ( CachedRep != None && CachedRep.ShowTeammateNames > 0 )
+        mplog( "Testing repo initialization! CachedRep: "$CachedRep$", ShowFriendlyTags: "$CachedRep.ShowTeammateNames $", EnemyTags: "$CachedRep.ShowEnemyNames );
+        if ( CachedRep != None && CachedRep.ShowTeammateNames > 0 && CachedRep.ShowEnemyNames > 0)
         {
-            bLoadedFromRepo = true;
+            bLoadedFromRepo = true;	
             bShowFriendlyTags = CachedRep.ShowTeammateNames == 2;
+			bShowEnemyTags = CachedRep.ShowEnemyNames == 2;
             mplog( "Repo_Loaded! ShowFriendlyTags: "$bShowFriendlyTags );
         }
     }
 
     // don't want update if no tags are requested in the server options
-    return bShowFriendlyTags;
+    return (bShowEnemyTags || bShowFriendlyTags);
 }
 
 simulated protected function ResetFocusHook(SwatGamePlayerController Player, HUDPageBase HUDPage)
@@ -90,6 +91,8 @@ simulated protected event PostFocusAdded(PlayerInterfaceContext Context, Actor T
 simulated function PostUpdate(SwatGamePlayerController Player)
 {
     local SwatPlayer LocalPlayer;
+	local bool bIsSWAT;
+    local bool bIsFriendly;
 
     LocalPlayer = SwatPlayer(SwatGamePlayerController(Owner).Pawn);
 
@@ -104,22 +107,21 @@ simulated function PostUpdate(SwatGamePlayerController Player)
         }
         else
         {
-            // The way Irrational did this was horrible, so I changed it --eez
-            if(bShowFriendlyTags)
+            bIsSWAT = PlayerTargetDuringUpdate.GetTeamNumber() == 0;
+            bIsFriendly = PlayerTargetDuringUpdate.GetTeamNumber() == LocalPlayer.GetTeamNumber() ||
+							(PlayerTargetDuringUpdate.GetTeamNumber() == 0 && LocalPlayer.GetTeamNumber() == 2) ||
+							(PlayerTargetDuringUpdate.GetTeamNumber() == 2 && LocalPlayer.GetTeamNumber() == 0); // dbeswick: hack for coop
+            if ( (bShowFriendlyTags && bIsFriendly) || (bShowEnemyTags && !bIsFriendly) )
             {
-              if(SwatPlayerReplicationInfo(PlayerTargetDuringUpdate.PlayerReplicationInfo).IsLeader)
-              {
-                StartTag(true, CachedHUDPage.Controller.GetStyle(LeaderTagStyle));
-              }
-              else if(PlayerTargetDuringUpdate.GetTeamNumber() == 0)
-              {
-                StartTag(true, CachedHUDPage.Controller.GetStyle(FriendlyTagStyle));
-              }
-              else if(PlayerTargetDuringUpdate.GetTeamNumber() == 2)
-              {
-                StartTag(true, CachedHUDPage.Controller.GetStyle(EnemyTagStyle));
-              }
+				if (SwatPlayerReplicationInfo(PlayerTargetDuringUpdate.PlayerReplicationInfo) != None && 
+					SwatPlayerReplicationInfo(PlayerTargetDuringUpdate.PlayerReplicationInfo).IsLeader)
+					StartTag(bIsFriendly, CachedHUDPage.Controller.GetStyle(LeaderTagStyle));
+				else if (bIsSWAT)
+					StartTag(bIsFriendly, CachedHUDPage.Controller.GetStyle(FriendlyTagStyle));
+				else
+					StartTag(bIsFriendly, CachedHUDPage.Controller.GetStyle(EnemyTagStyle));
             }
+
         }
     }
     PlayerTargetDuringUpdate = None;
@@ -140,7 +142,10 @@ simulated function StartTag( bool bFriendly, GUIStyles Style )
     CachedPlayerTarget = PlayerTargetDuringUpdate;
 
     // Set the hover duration
-    HoverDuration = FriendlyHoverDuration;
+    if ( bFriendly )
+        HoverDuration = FriendlyHoverDuration;
+    else
+        HoverDuration = EnemyHoverDuration;
 
     // Start the hover timer, if it's already started this will have no effect as it's passing false as the "reset" parameter
     HoverTimer.StartTimer( HoverDuration, false, false );

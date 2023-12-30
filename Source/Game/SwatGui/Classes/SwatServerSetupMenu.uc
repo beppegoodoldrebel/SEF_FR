@@ -343,7 +343,7 @@ function SaveServerSettings()
 	SwatPlayerController(PlayerOwner()).ServerSetPVPSettings(Settings,
 	QuickSetupPanel.MyDeathLimitBox.Value,
 	QuickSetupPanel.MyTimeLimitBox.Value,
-	false,
+	AdvancedSetupPanel.MyShowEnemyButton.bChecked,
 	-1.0);//default value
 		
     GC.SaveConfig();

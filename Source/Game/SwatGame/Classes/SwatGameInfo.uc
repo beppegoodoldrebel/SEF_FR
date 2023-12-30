@@ -624,6 +624,11 @@ function SetupNameDisplay()
         SGRI.ShowTeammateNames = 2;
     else
         SGRI.ShowTeammateNames = 1;
+	
+	if ( ServerSettings(Level.CurrentServerSettings).bShowEnemyNames )
+        SGRI.ShowEnemyNames = 2;
+    else
+        SGRI.ShowEnemyNames = 1;
 
 	mplog( "...ShowTeammateNames="$SGRI.ShowTeammateNames );
 }

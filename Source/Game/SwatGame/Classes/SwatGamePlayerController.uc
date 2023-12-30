@@ -992,10 +992,13 @@ function ServerActivateOfficerViewport( bool ShouldActivate, optional string Vie
         log(self$"--ServerActivateOfficerViewport - ShouldActivate :"$ShouldActivate$", ViewportType = "$ViewportType);
 
         // We need to convert the viewport type into co-op teams
-        if(ViewportType ~= "Red")
-          ViewportType = "TeamB";
-        else if(ViewportType ~= "Blue")
-          ViewportType = "TeamA";
+		if ( Level.IsCOOPServer )
+		{
+			if(ViewportType ~= "Red")
+				ViewportType = "TeamB";
+			else if(ViewportType ~= "Blue")
+				ViewportType = "TeamA";
+		}
 
         if (Level.GetEngine().EnableDevTools)
             mplog( "Setting viewporttype manually for netgame to "$ViewportType );

@@ -1432,7 +1432,13 @@ function float GetExternalDamageModifier( Actor Damager, Actor Victim )
     //  for enemy damage and team damage
     if( NetPlayer(Damager) != none && NetPlayer(Victim) != None )
     {
-        return GetFriendlyFireModifier();
+		if ( Level.IsCoopServer )
+			return GetFriendlyFireModifier();
+		
+		 if( NetPlayer(Damager).GetTeamNumber() == NetPlayer(Victim).GetTeamNumber() )
+            return GetFriendlyFireModifier();
+        else
+			return 1.0; //lost EnemyFireModifier setting... 
     }
     else
         return Super.GetExternalDamageModifier( Damager, Victim );

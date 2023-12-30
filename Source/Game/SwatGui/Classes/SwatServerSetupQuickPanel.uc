@@ -34,6 +34,7 @@ var(SWATGui) EditInline Config GUIButton           MyLoadMapsButton;
 //PVP
 var(SWATGui) EditInline Config GUINumericEdit      MyDeathLimitBox;
 var(SWATGui) EditInline Config GUINumericEdit      MyTimeLimitBox;
+var(SWATGui) EditInline Config GUINumericEdit      MyShowEnemyBox;
 
 //Level information
 var(SWATGui) EditInline Config GUIImage            MyLevelScreenshot;
@@ -422,8 +423,8 @@ function LoadServerSettings( optional bool ReadOnly )
     // Load the rest of the settings
     //
     MyRoundsBox.SetValue(Settings.NumRounds, true);
-	//MyDeathLimitBox.SetValue(Settings.DeathLimit, true);
-    //MyTimeLimitBox.SetValue(Settings.RoundTimeLimit, true);
+	MyDeathLimitBox.SetValue(Settings.DeathLimit, true);
+    MyTimeLimitBox.SetValue(Settings.RoundTimeLimit, true);
     MyPasswordedButton.bForceUpdate = true;
     MyNoRespawnButton.SetChecked( Settings.bNoRespawn );
     MyQuickResetBox.SetChecked( Settings.bQuickRoundReset );

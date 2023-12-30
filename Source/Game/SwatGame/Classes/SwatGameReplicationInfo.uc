@@ -26,6 +26,7 @@ var float ServerCountdownTime;
 // if we just used a bool, they couldn't tell whether false meant "really
 // false" or "false because it hasn't been replicated yet".
 var int ShowTeammateNames;
+var int ShowEnemyNames;
 
 var int TotalNumberOfBombs;
 var int DiffusedBombs;
@@ -63,7 +64,7 @@ var String NextMap;
 replication
 {
 	reliable if ( bNetDirty && (Role == ROLE_Authority) )
-		NextMap, ServerCountdownTime, ShowTeammateNames,
+		NextMap, ServerCountdownTime, ShowTeammateNames,ShowEnemyNames,
         TotalNumberOfBombs, DiffusedBombs,
         ObjectiveHidden, ObjectiveNames, ObjectiveStatus, ProcedureCalculations, ProcedureValue,
         RoundTime, SpecialTime, TimedObjectiveIndex, bWaitingForPlayers,

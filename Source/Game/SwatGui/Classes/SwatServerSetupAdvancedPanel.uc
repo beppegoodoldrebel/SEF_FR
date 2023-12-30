@@ -9,6 +9,7 @@ var(SWATGui) EditInline Config GUINumericEdit	   MyMaxPlayersBox;
 var(SWATGui) EditInline Config GUISlider           MyFriendlyFireSlider;
 var(SWATGui) EditInline Config GUINumericEdit      MyPreGameTimeLimitBox;
 var(SWATGui) EditInline Config GUICheckBoxButton   MyShowTeammatesButton;
+var(SWATGui) EditInline Config GUICheckBoxButton   MyShowEnemyButton;
 var(SWATGui) EditInline Config GUINumericEdit      MyPostGameTimeLimitBox;
 var(SWATGui) EditInline Config GUICheckBoxButton   MyDedicatedServerCheck;
 var(SWATGui) EditInline Config GUILabel            MyDedicatedServerLabel;
@@ -31,6 +32,7 @@ function SetSubComponentsEnabled( bool bSetEnabled )
 	MyFriendlyFireSlider.SetEnabled( bSetEnabled );
 	MyPreGameTimeLimitBox.SetEnabled( bSetEnabled );
 	MyShowTeammatesButton.SetEnabled( bSetEnabled );
+	MyShowEnemyButton.SetEnabled( bSetEnabled );
 	MyPostGameTimeLimitBox.SetEnabled( bSetEnabled );
 	MyDedicatedServerCheck.SetEnabled( bSetEnabled );
 
@@ -69,6 +71,7 @@ function DoResetDefaultsForGameMode( EMPMode NewMode )
 
 		// default always show friendly names in coop
 	    MyShowTeammatesButton.SetChecked( true );
+		MyShowEnemyButton.DisableComponent();
 
 		MyEnableLeadersCheck.SetChecked( true );
 
@@ -114,6 +117,7 @@ function LoadServerSettings( optional bool ReadOnly )
     MyPreGameTimeLimitBox.SetValue(Settings.MPMissionReadyTime, true);
     MyPostGameTimeLimitBox.SetValue(Settings.PostGameTimeLimit, true);
     MyShowTeammatesButton.SetChecked( Settings.bShowTeammateNames );
+	MyShowEnemyButton.SetChecked( Settings.bShowEnemyNames );
     MyFriendlyFireSlider.SetValue( Settings.FriendlyFireAmount );
 	MyAdditionalRespawnTimeBox.SetValue( Settings.AdditionalRespawnTime );
 	MyEnableSnipers.SetChecked( Settings.bEnableSnipers );
