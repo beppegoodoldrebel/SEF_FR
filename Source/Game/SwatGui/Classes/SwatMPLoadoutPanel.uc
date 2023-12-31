@@ -171,6 +171,12 @@ function bool CheckValidity( class EquipmentClass, eNetworkValidity type )
 		}
 	}
 	
+	//PVP skin validity
+	//if(Left(string(EquipmentClass),4) != "Swat") //skin classes
+	//{
+	//	return CheckTeamValidity(GetSkinTeamValidity(EquipmentClass));
+	//}
+	
     return (type == NETVALID_MPOnly) || (Super.CheckValidity( EquipmentClass, type ));
 }
 
@@ -269,6 +275,34 @@ function bool CheckWeightBulkValidity()
 
 	return true;
 }
+
+function bool CheckTeamValidity( eTeamValidity type )
+{
+	local bool IsSuspect;
+
+	if (PlayerOwner().Level.IsPlayingCOOP)
+	{
+		IsSuspect = false; // In coop the player is never a suspect
+	}
+	else
+	{
+		assert(PlayerOwner() != None);
+
+		// If we don't have access to a team object assume the item is valid for the players future team
+		// This case should only be true right after a level change when the player has no control over their team or loadout anyway
+		// but we don't want the client to reset the loadout based on team without knowing the team. The server will never allow
+		// an illegal loadout anyway so this is just a lax client side check.
+		if (PlayerOwner().PlayerReplicationInfo == None || NetTeam(PlayerOwner().PlayerReplicationInfo.Team) == None)
+			return true;
+
+		// The suspect team always has a team number of 1
+		IsSuspect = (NetTeam(PlayerOwner().PlayerReplicationInfo.Team).GetTeamNumber() == 1);
+	}
+
+	       // Item is usable by any team   or // Suspect only item and player is suspect    or // SWAT only item and player is not a suspect
+	return Super.CheckTeamValidity( type ) || (type == TEAMVALID_SuspectsOnly && IsSuspect) || (type == TEAMVALID_SWATOnly && !IsSuspect);
+}
+
 
 defaultproperties
 {

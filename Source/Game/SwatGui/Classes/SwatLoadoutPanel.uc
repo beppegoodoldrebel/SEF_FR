@@ -396,6 +396,32 @@ function bool CheckCampaignValid( class EquipmentClass )  //should be further su
 	return true;
 }
 
+function bool CheckTeamValidity( eTeamValidity type )  //should be further subclassed
+{
+	return (type == TEAMVALID_ALL);
+}
+
+function eTeamValidity GetSkinTeamValidity(class CheckClass)
+{
+	local string ClassName;
+	//local SwatCustomSkin DLOClass;
+	local int i;
+
+	for( i = 0; i < GC.AvailableEquipmentPockets[Pocket.Pocket_CustomSkin].EquipmentClassName.Length; ++i )
+	{
+		ClassName = GC.AvailableEquipmentPockets[Pocket.Pocket_CustomSkin].EquipmentClassName[i];
+
+		//DLOClass = SwatCustomSkin(DynamicLoadObject(ClassName, class'SwatCustomSkin'));
+
+		//AssertWithDescription( DLOClass != None, self.Name$":  Could not DLO invalid equipment class "$ClassName$" specified in the pocket specifications section of SwatEquipment.ini." );
+
+		
+		return SwatCustomSkin(DynamicLoadObject(ClassName, class'SwatCustomSkin')).SkinTeam;
+	}
+
+	return TEAMVALID_ALL;
+}
+
 ///////////////////////////
 //GUI display and updating of loadout information
 ///////////////////////////

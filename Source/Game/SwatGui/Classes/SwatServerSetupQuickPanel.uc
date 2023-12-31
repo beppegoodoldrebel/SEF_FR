@@ -257,8 +257,8 @@ function InternalOnChange(GUIComponent Sender)
 			break;
 		case MyMapTypeBox:
 			OnGameModeChanged( EMPMode(MyMapTypeBox.GetIndex()) );
-			OnMapTypeChanged( EMPMode(MyMapTypeBox.GetIndex()) == MPM_COOPQMM );
-			OnMapFilterChanged( ServerSetupMapFilters(MyMapFilterBox.GetInt()) );
+			//OnMapTypeChanged( EMPMode(MyMapTypeBox.GetIndex()) == MPM_COOPQMM );
+			//OnMapFilterChanged( ServerSetupMapFilters(MyMapFilterBox.GetInt()) );
 			break;
     }
 }
@@ -647,11 +647,21 @@ function OnMapTypeChanged(bool bQMM)
 function OnGameModeChanged( EMPMode NewMode )
 {
     log( self$"::OnGameModeChanged( "$GetEnum(EMPMode,NewMode)$" )" );
-
+	
 	if ( SwatServerSetupMenu.CurGameType != NewMode )
     {	
 	
 	SwatServerSetupMenu.CurGameType = NewMode;
+	
+	if ( SwatServerSetupMenu.CurGameType == MPM_COOPQMM )
+	{
+	    OnMapTypeChanged( true );
+	}
+	else
+	{
+	OnMapTypeChanged( false );
+	
+	MyMapFilterBox.SetIndex(0); //filter to All Maps
 	
     //load the available map list
     LoadAvailableMaps( NewMode, 0 );
@@ -667,6 +677,7 @@ function OnGameModeChanged( EMPMode NewMode )
     DisplayLevelSummary( LevelSummary( AvailableMaps.List.GetObject() ) );
 
     SetTimer(0.03);
+	}
 	
 	}
 }
