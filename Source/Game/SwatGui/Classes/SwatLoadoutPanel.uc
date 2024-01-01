@@ -404,19 +404,19 @@ function bool CheckTeamValidity( eTeamValidity type )  //should be further subcl
 function eTeamValidity GetSkinTeamValidity(class CheckClass)
 {
 	local string ClassName;
-	//local SwatCustomSkin DLOClass;
+	local class<Actor> DLOClass;
 	local int i;
 
 	for( i = 0; i < GC.AvailableEquipmentPockets[Pocket.Pocket_CustomSkin].EquipmentClassName.Length; ++i )
 	{
 		ClassName = GC.AvailableEquipmentPockets[Pocket.Pocket_CustomSkin].EquipmentClassName[i];
 
-		//DLOClass = SwatCustomSkin(DynamicLoadObject(ClassName, class'SwatCustomSkin'));
+		DLOClass = class<Actor>(DynamicLoadObject(ClassName, class'class'));
 
-		//AssertWithDescription( DLOClass != None, self.Name$":  Could not DLO invalid equipment class "$ClassName$" specified in the pocket specifications section of SwatEquipment.ini." );
+		AssertWithDescription( DLOClass != None, self.Name$":  Could not DLO invalid equipment class "$ClassName$" specified in the pocket specifications section of SwatEquipment.ini." );
 
-		
-		return SwatCustomSkin(DynamicLoadObject(ClassName, class'SwatCustomSkin')).SkinTeam;
+		if ( DLOClass == CheckClass )
+			return GC.AvailableEquipmentPockets[Pocket.Pocket_CustomSkin].TeamValidity[i];;	
 	}
 
 	return TEAMVALID_ALL;

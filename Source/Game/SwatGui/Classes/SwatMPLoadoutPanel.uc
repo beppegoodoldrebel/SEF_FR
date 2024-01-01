@@ -172,10 +172,11 @@ function bool CheckValidity( class EquipmentClass, eNetworkValidity type )
 	}
 	
 	//PVP skin validity
-	//if(Left(string(EquipmentClass),4) != "Swat") //skin classes
-	//{
-	//	return CheckTeamValidity(GetSkinTeamValidity(EquipmentClass));
-	//}
+	if ( Settings.GameType != MPM_COOP && Settings.GameType != MPM_COOPQMM )
+	{	
+		if(Left(string(EquipmentClass),4) != "Swat") //skin classes
+			return CheckTeamValidity(GetSkinTeamValidity(EquipmentClass));
+	}
 	
     return (type == NETVALID_MPOnly) || (Super.CheckValidity( EquipmentClass, type ));
 }

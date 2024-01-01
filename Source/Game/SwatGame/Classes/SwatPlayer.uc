@@ -27,7 +27,7 @@ var protected OfficerLoadOut LoadOut;
 var config int ThrownProjectilePitch;
 
 var HandheldEquipment GivenPepperSpray;
-var config name Unused1;
+var config name AlreadyVIP;
 var config name Unused2;
 var config name Unused3;
 var config name	 Unused4;
@@ -1632,10 +1632,14 @@ simulated function NotifyPlayerHeIsVIPIfNecessary()
     {
         if ( Controller == Level.GetLocalPlayerController() )
         {
-            if ( IsTheVIP() )//&& !bNotifiedPlayerTheyAreVIP )
+            if ( IsTheVIP() &&
+				AlreadyVIP != 'YouAreVIP'
+				)
+			//&& !bNotifiedPlayerTheyAreVIP )
             {
                 ClientMessage( "", 'YouAreVIP' );
                 //bNotifiedPlayerTheyAreVIP = true;
+				AlreadyVIP = 'YouAreVIP';
             }
         }
     }
