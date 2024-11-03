@@ -1159,9 +1159,12 @@ function NotifyClientsOfDoorBlocked( bool OpeningBlocked )
 function Blasted(Pawn Instigator)
 {
   local float chance; 
+  local bool BlockBrokenDoor;
   
      chance = frand();
-	//if ( frand() < 0.5 ) //door will open on random chance
+		
+    if ( !Instigator.GetActiveItem().isa('BatteringRam') ) //Shotguns only
+	{
 		
 	switch (GetDoorModel().GetCurrentMaterial(0).MaterialVisualType )
     { 
@@ -1188,7 +1191,27 @@ function Blasted(Pawn Instigator)
 		}	
 	}	
 	
-	Broken();
+	}
+	else //Battering Ram only
+	{
+		
+		BlockBrokenDoor = true; //dont use broken door model
+		
+		if ( IsClosed() || IsClosing() )
+		{
+			if (ActorIsToMyLeft(Instigator))
+				SetPositionForMove( DoorPosition_OpenRight, MR_Blasted );
+			else
+				SetPositionForMove( DoorPosition_OpenLeft, MR_Blasted );
+
+			Moved(false, true); //not instantly, but force
+		}	
+		
+	}
+	
+	if ( !BlockBrokenDoor ) 
+		Broken();
+	
 	OnUnlocked();
 }
 
@@ -1752,12 +1775,12 @@ simulated state BeingBlasted extends Moving
 {
     simulated function BeginState()
     {
-        if (!IsBroken())
-        {
+        //if (!IsBroken())
+        //{
             PlayBlastedEffects();
 //            TriggerEffectEvent('Blasted');
-            Broken();
-        }
+        //    Broken();
+        //}
     }
 
     simulated function StartMoving()
@@ -2933,13 +2956,27 @@ simulated function float GetQualifyTimeForC2Charge()
 // Notification that we were hit
 simulated function OnSkeletalRegionHit(ESkeletalRegion RegionHit, vector HitLocation, vector HitNormal, int Damage, class<DamageType> DamageType, Actor Instigator)
 {
+	
+	log("SwatDoor - BatteringRam - RegionHit Else " $ Instigator.name);
     //if a SwatDoor's REGION_Door_BreachingSpot is hit by a ShotgunDamageType, then the door has been blasted.
-    if (RegionHit == REGION_Door_BreachingSpot)
-    {
-        assertWithDescription(Instigator.IsA('SwatPawn'),
-            "[tcohen] SwatDoor::OnSkeletalRegionHit() RegionHit is REGION_Door_BreachingSpot and DamageType is FrangibleBreachingAmmo, but Instigator is not a SwatPawn.");
-        Blasted(SwatPawn(Instigator));
-    }
+	if (!SwatPawn(Instigator).getActiveItem().isa('BatteringRam') )
+	{
+		//Shotguns	
+		if (RegionHit == REGION_Door_BreachingSpot)
+		{
+			assertWithDescription(Instigator.IsA('SwatPawn'),
+				"[tcohen] SwatDoor::OnSkeletalRegionHit() RegionHit is REGION_Door_BreachingSpot and DamageType is FrangibleBreachingAmmo, but Instigator is not a SwatPawn.");
+			Blasted(SwatPawn(Instigator));
+		}
+	}
+	else
+	{
+		//BatteringRam
+		assertWithDescription(Instigator.IsA('SwatPawn'),
+			"[tcohen] SwatDoor::OnSkeletalRegionHit()  DamageType is BatteringRamAmmo, but Instigator is not a SwatPawn.");
+		Blasted(SwatPawn(Instigator));
+	}
+	
 }
 
 

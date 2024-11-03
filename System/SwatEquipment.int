@@ -1053,6 +1053,18 @@ FireModes=Pump-Action
 TotalAmmoString=50 shells
 RateOfFire=150 RPM
 
+[BatteringRam]
+Description=BatteringRam
+FriendlyName=BatteringRam
+ShortName=BatteringRam
+Manufacturer=
+Caliber=
+CountryOfOrigin=United States
+ProductionStart=1980
+FireModes=
+TotalAmmoString=
+RateOfFire=
+
 [Toolkit]
 Description=The multi-tool serves many functions and can be used to pick locks, disable bombs and traps, and remove tactical wedges.  All officers are equipped with a toolkit.
 FriendlyName=Toolkit
