@@ -18,9 +18,6 @@ simulated function bool HandleBallisticImpact(
 	local vector PlayerToDoor;
 	local float MaxDoorDistance;
 	local float BreachingChance;
-	local ShotgunAmmo ShotgunAmmo;
-
-	ShotgunAmmo = ShotgunAmmo(Ammo);
 
 	if(Role == Role_Authority)  // ONLY do this on the server!!
 	{
@@ -45,7 +42,7 @@ simulated function bool HandleBallisticImpact(
       if ( ( Victim.IsA('SwatDoor')  || Victim.Owner.IsA('SwatDoor')  )
 	  && PlayerToDoor Dot PlayerToDoor < MaxDoorDistance*MaxDoorDistance && ShouldBreach(BreachingChance) )
       {
-		log("BatteringRam - OnSkeletalRegionHit" $ Victim.name );
+		 //can be a door or something owned by it 
 		if ( Victim.IsA('SwatDoor') )
 		{
         IHaveSkeletalRegions(Victim).OnSkeletalRegionHit(
@@ -73,24 +70,7 @@ simulated function bool HandleBallisticImpact(
 	}
 
 	// We should still consider it to have ballistic impacts
-	return Super.HandleBallisticImpact(
-	    Victim,
-	    HitLocation,
-	    HitNormal,
-	    NormalizedBulletDirection,
-	    HitMaterial,
-	    HitRegion,
-	    Momentum,
-        KillEnergy,
-        BulletType,
-	    ExitLocation,
-	    ExitNormal,
-	    ExitMaterial);
-}
-
-function bool ShouldPenetrateMaterial(float BreachingChance)
-{
-  return FRand() < BreachingChance;
+	return false;
 }
 
 defaultproperties
@@ -100,4 +80,5 @@ defaultproperties
 	bPenetratesDoors=false
 	IgnoreAmmoOverrides=true
 	bAbletoMelee=false
+	Slot=Slot_BatteringRam
 }

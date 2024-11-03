@@ -1195,7 +1195,16 @@ function Blasted(Pawn Instigator)
 	else //Battering Ram only
 	{
 		
-		BlockBrokenDoor = true; //dont use broken door model
+		switch (GetDoorModel().GetCurrentMaterial(0).MaterialVisualType )
+		{ 
+		case MVT_wood:
+		   break;    //if a door is made of wood play the damaged model
+		case MVT_ThinMetal:
+	    case MVT_ThickMetal:
+	    case MVT_Default:	
+		default:
+			BlockBrokenDoor = true; //dont use broken door model
+		}
 		
 		if ( IsClosed() || IsClosing() )
 		{
@@ -2957,7 +2966,6 @@ simulated function float GetQualifyTimeForC2Charge()
 simulated function OnSkeletalRegionHit(ESkeletalRegion RegionHit, vector HitLocation, vector HitNormal, int Damage, class<DamageType> DamageType, Actor Instigator)
 {
 	
-	log("SwatDoor - BatteringRam - RegionHit Else " $ Instigator.name);
     //if a SwatDoor's REGION_Door_BreachingSpot is hit by a ShotgunDamageType, then the door has been blasted.
 	if (!SwatPawn(Instigator).getActiveItem().isa('BatteringRam') )
 	{

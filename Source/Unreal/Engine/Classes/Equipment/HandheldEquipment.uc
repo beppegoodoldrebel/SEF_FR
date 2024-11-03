@@ -45,6 +45,7 @@ enum EquipmentSlot
 	Slot_AmmoBandolier,     //15
 	Slot_Maglite,           //16
     Slot_Bandage,           //17
+	Slot_BatteringRam,       //18
 	kNumEquipmentSlots,
 };
 
