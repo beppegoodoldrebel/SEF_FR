@@ -536,7 +536,7 @@ simulated protected function bool CanPawnUseLowReady()
     return false;
 
   Equipment = Self.GetActiveItem();
-  if( Equipment.IsA('Optiwand') || ((Equipment.GetSlot() != Slot_PrimaryWeapon) && (Equipment.GetSlot() != Slot_SecondaryWeapon) ) ) 
+  if( Equipment.IsA('Optiwand') || Equipment.IsA('BatteringRam') || ((Equipment.GetSlot() != Slot_PrimaryWeapon) && (Equipment.GetSlot() != Slot_SecondaryWeapon) ) ) 
     return false;
   else if(SGPC.WantsZoom && !Equipment.ShouldLowReadyInIronsights())
     return false;

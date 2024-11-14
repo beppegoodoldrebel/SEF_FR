@@ -590,6 +590,7 @@ simulated function EAnimationSet GetOptiwandAimPoseSet()                { if (!b
 simulated function EAnimationSet GetPaintballAimPoseSet()               { if (!bIsCrouched) return kAnimationSetPaintball;      else return kAnimationSetPaintballCrouched; }
 simulated function EAnimationSet GetCuffedAimPoseSet()                  { if (isArrestedOnFloor ()) return kAnimationSetCuffedFloor; else  return kAnimationSetCuffed; }
 simulated function EAnimationSet GetShieldAimPoseSet()                  { return kAnimationSetShield; }
+simulated function EAnimationSet GetRamAimPoseSet()                  { return kAnimationSetRam; }
 
 // Returns the animation set based on the Pawns current equipment
 simulated function EAnimationSet GetEquipmentAimSet()
@@ -614,6 +615,8 @@ simulated function EAnimationSet GetEquipmentAimSet()
               return GetHandgunAimPoseSet();
 			case WeaponAnimAim_Shield:
               return GetShieldAimPoseSet();
+			case WeaponAnimAim_Ram:
+              return GetRamAimPoseSet();
             case WeaponAnimAim_SubmachineGun:
               return GetSubMachineGunAimPoseSet();
             case WeaponAnimAim_MachineGun:

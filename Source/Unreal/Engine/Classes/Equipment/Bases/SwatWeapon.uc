@@ -51,7 +51,8 @@ enum WeaponAimAnimationType
   WeaponAnimAim_Optiwand,
   WeaponAnimAim_Paintball,
   WeaponAnimAim_Cuffed,
-  WeaponAnimAim_Shield
+  WeaponAnimAim_Shield,
+  WeaponAnimAim_Ram
 };
 
 enum WeaponLowReadyAnimationType
@@ -85,6 +86,7 @@ enum EIdleWeaponStatus
 	IdleWithUMP,
   IdleWithHandgun,
   IdleWithShield,
+  IdleWithRam,
 	IdleWithShotgun,
 	IdleWithPaintballGun,
 	IdleWithGrenade,

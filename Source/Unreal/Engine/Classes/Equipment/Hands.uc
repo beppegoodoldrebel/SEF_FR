@@ -240,7 +240,7 @@ simulated function OnUnequipKeyFrame()
 simulated function OnUseKeyFrame()
 {
 //    log( self$" in Hands::OnUseKeyFrame()" );
-    Pawn(Owner).OnUseKeyFrame();
+	Pawn(Owner).OnUseKeyFrame();
 }
 
 simulated function OnLightstickKeyFrame()
@@ -263,8 +263,13 @@ simulated function OnReloadKeyFrame()
 
 simulated function OnReloadMagDump()
 {
-    log( self$" in Hands::OnReloadMagDump()" );
+//   log( self$" in Hands::OnReloadMagDump()" );
     Pawn(Owner).OnReloadMagDump();
+}
+
+simulated function OnRamKeyFrame()
+{
+	Pawn(Owner).OnRamKeyFrame();
 }
 
 //hands idle

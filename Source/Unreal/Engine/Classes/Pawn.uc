@@ -2846,6 +2846,17 @@ simulated function OnUseKeyFrame()
     }
 }
 
+simulated function OnRamKeyFrame()
+{
+	local HandheldEquipment LocalActiveItem;
+
+    LocalActiveItem = GetActiveItem();
+	
+	if ( LocalActiveItem != None && LocalActiveItem.IsA('BatteringRam') )
+		 FiredWeapon(LocalActiveItem).UsedHook();
+	
+}
+
 simulated function OnUsingBegan();
 simulated function OnUsingFinished();
 simulated function IWasNonlethaledAndFinishedSoDoAnEquipIfINeedToDoOne();

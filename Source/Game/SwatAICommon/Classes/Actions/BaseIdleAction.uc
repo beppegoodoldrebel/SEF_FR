@@ -60,6 +60,8 @@ private function bool CanUseIdleBasedOnWeapon()
         return m_Pawn.GetActiveItem() == None;
       case IdleWithGrenade:
         return m_Pawn.GetActiveItem() != None && m_Pawn.GetActiveItem().IsA('ThrownWeapon');
+	  case IdleWithRam:
+	    return m_Pawn.GetActiveItem() != None && m_Pawn.GetActiveItem().IsA('BatteringRam');
 	  case IdleWithShield:
 	    return m_Pawn.GetActiveItem() != None && m_Pawn.HasActiveShield() ; //dont idle with shield!
       case IdleWithSAW:

@@ -164,6 +164,9 @@ enum EAnimationSet
 	kAnimationSetShield,
     kAnimationSetShieldLowReady,
 	
+	//ram
+	kAnimationSetRam,
+	
 	//cuffed floor
 	kAnimationSetCuffedFloor,
 	kAnimationSetRestrainedFloor
@@ -330,6 +333,9 @@ overloaded function Construct()
 	//shield
 	CreateSet(kAnimationSetShield,									"AnimationSetShield");
     CreateSet(kAnimationSetShieldLowReady,							"AnimationSetShieldLowReady");
+	
+	//ram
+	CreateSet(kAnimationSetRam,									"AnimationSetRam");
 	
 	//cuffed floor
 	CreateSet(kAnimationSetCuffedFloor,									"AnimationSetCuffedFloor");
