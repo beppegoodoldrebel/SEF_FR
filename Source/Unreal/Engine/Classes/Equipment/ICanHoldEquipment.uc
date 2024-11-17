@@ -16,6 +16,7 @@ simulated function HandheldEquipment GetPendingItem();
 simulated function OnEquipKeyFrame();
 simulated function OnUnequipKeyFrame();
 simulated function OnUseKeyFrame();
+simulated function OnRamKeyFrame();
 simulated function OnLightstickKeyFrame();
 simulated function OnMeleeKeyFrame();
 simulated function OnReloadKeyFrame();

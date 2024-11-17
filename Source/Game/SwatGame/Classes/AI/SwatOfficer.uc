@@ -289,6 +289,7 @@ protected function ConstructCharacterAI()
 	characterResource.addAbility(new class'SwatAICommon.ThrowGrenadeAction');
 	characterResource.addAbility(new class'SwatAICommon.UseBreachingChargeAction');
 	characterResource.addAbility(new class'SwatAICommon.UseBreachingShotgunAction');
+	characterResource.addAbility(new class'SwatAICommon.UseBatteringRamAction');
 	characterResource.addAbility(new class'SwatAICommon.EngageForComplianceAction');
     characterResource.addAbility(new class'SwatAICommon.EngageForComplianceWhileFallingInAction');
     characterResource.addAbility(new class'SwatAICommon.EngageForComplianceWhileMovingToAction');

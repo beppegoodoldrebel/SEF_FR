@@ -1385,6 +1385,11 @@ simulated function vector GetPivotLocation()
     return Location - Normal(vector(Rotation)) * CollisionRadius / 2.0;
 }
 
+simulated function EMaterialVisualType GetDoorMaterialVisualType()
+{
+	return GetDoorModel().GetCurrentMaterial(0).MaterialVisualType;
+}
+
 simulated function bool LocationIsInSweep(vector DoorPivot, vector TestLocation, float TestLocationCollisionRadius, DoorPosition Side)
 {
     local bool LocationIsToMyLeft;
@@ -2144,6 +2149,23 @@ simulated function vector GetBreachAimPoint(Pawn Other)
 
 	return BreachAimPoint;
 }
+
+simulated function vector GetRamAimPoint(Pawn Other)
+{
+	local vector BreachAimPoint;
+
+	if (ActorIsToMyLeft(Other))
+	{
+		BreachAimPoint = GetBoneCoords('openLeftCenter', true).Origin;
+	}
+	else
+	{
+		BreachAimPoint = GetBoneCoords('openRightCenter', true).Origin;
+	}
+
+	return BreachAimPoint;
+}
+
 
 simulated function AIDoorUsageSide GetOpenPositions(Pawn Other, bool bPreferSides, out vector OpenPoint, out rotator PawnOpenRotation)
 {

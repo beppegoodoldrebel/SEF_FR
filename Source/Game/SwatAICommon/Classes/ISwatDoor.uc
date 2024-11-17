@@ -9,6 +9,7 @@ interface ISwatDoor;
 import enum AIDoorUsageSide from ISwatAI;
 import enum ESkeletalRegion from Engine.Actor;
 import enum DoorPosition from Engine.Door;
+import enum EMaterialVisualType from Material;
 
 enum EMoveReason
 {
@@ -36,6 +37,7 @@ function rotator GetSidesOpenRotation(vector OpenPoint);
 function vector GetClosePoint(bool bCloseFromLeft);
 function vector GetBreachFromPoint(Pawn Other);
 function vector GetBreachAimPoint(Pawn Other);
+function vector GetRamAimPoint(Pawn Other);
 function name GetOpenAnimation(Pawn Other, AIDoorUsageSide DoorUsageSide, optional bool bIsFranticOpen);
 function name GetCloseAnimation(Pawn Other, bool bCloseFromBehind);
 function name GetTryDoorAnimation(Pawn Other, AIDoorUsageSide DoorUsageSide);
@@ -72,3 +74,4 @@ function Actor GetTrapOnDoor();
 function bool isPartialOpen();
 simulated function SetPositionForMove( DoorPosition inPositionForMove, EMoveReason inReasonForMove, optional bool bDontUpdateDesired );
 simulated function Moved(optional bool Instantly, optional bool Force);
+simulated function EMaterialVisualType GetDoorMaterialVisualType();

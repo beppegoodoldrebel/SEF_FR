@@ -11,5 +11,5 @@ simulated event Notify( Actor Owner )
     AssertWithDescription(Holder != None,
         "[tcohen] AnimNotify_Ram was called on "$Owner$" which cannot hold equipment.");
 
-    Holder.OnUseKeyFrame();
+    Holder.OnRamKeyFrame();
 }

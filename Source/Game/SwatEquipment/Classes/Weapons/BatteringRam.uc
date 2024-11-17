@@ -68,8 +68,6 @@ simulated function UsedHook()
     local float Magnitude;
     local float AutoMagnitude;
     local float ForeDuration, BackDuration;
-
-    //log("Battering Ram - UsedHook ");
 	
     GetPerfectFireStart(PerfectStartLocation, PerfectStartDirection);
 	
@@ -79,7 +77,15 @@ simulated function UsedHook()
     StartTrace = StartLocation;
     for(Shot = 0; Shot < Ammo.ShotsPerRound; ++Shot) {
       ApplyRandomOffsetToRotation(StartDirection, GetChoke() * DEGREES_TO_RADIANS, CurrentDirection);
-      EndTrace = StartLocation + vector(CurrentDirection) * Range;
+	  
+	  if ( Owner.isa('SwatPlayer') || Owner.isa('Hands') )
+		EndTrace = StartLocation + vector(CurrentDirection) * Range;
+	  else
+	  {
+		  EndTrace = StartLocation + vector(CurrentDirection) * 100;  //fixed range for AI to be sure to hit door...
+		  //Level.GetLocalPlayerController().myHUD.AddDebugLine(StartTrace, EndTrace, class'Engine.Canvas'.Static.MakeColor(255,0,0));
+	  }
+	
       BallisticFire(StartTrace, EndTrace); 
     }
 	
@@ -136,7 +142,8 @@ simulated function bool HandleBallisticImpact(
 
 	if(Role == Role_Authority)  // ONLY do this on the server!!
 	{
-		MaxDoorDistance = 99.45;		//1.5 meters in UU
+		MaxDoorDistance = 99.45;		//1.5 meters in UU			
+		
     	PlayerToDoor = HitLocation - Owner.Location;
 			 
 		//sound of hitting something

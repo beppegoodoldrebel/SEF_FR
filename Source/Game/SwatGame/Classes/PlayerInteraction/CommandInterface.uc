@@ -271,6 +271,19 @@ enum ECommand
 	Command_Heal_Me, //heal local player
 	Command_CheckCorner, //check corner
 	
+	//RAM
+	Command_Ram,
+	Command_RamAndClear,
+    Command_RamBangAndClear,
+    Command_RamGasAndClear,
+    Command_RamStingAndClear,
+    Command_RamLeaderThrowAndClear,
+	Command_RamAndMakeEntry,
+	Command_RamBangAndMakeEntry,
+	Command_RamGasAndMakeEntry,
+	Command_RamStingAndMakeEntry,
+    Command_RamLeaderThrowAndMakeEntry,
+	
     Command_Static,
 };
 
@@ -660,9 +673,13 @@ simulated protected event PostDoorRelatedContextMatched(PlayerInterfaceDoorRelat
     CurrentDoorFocus = SwatDoor(Target);
     assert(CurrentDoorFocus != None);
     Context = CommandInterfaceDoorRelatedContext(inContext);
-
+	
+	//log("SetCommandStatus() Context.Command.length " $ Context.Command.length);
+	
     for (i=0; i<Context.Command.length; ++i)
-        SetCommandStatus(Commands[int(Context.Command[i])]);
+    {	
+		SetCommandStatus(Commands[int(Context.Command[i])]);
+	}
 
 	// shitty thing...we need to NOT consider the default command in one special case --eez
 	if(inContext.IsA('CommandInterfaceDoorRelatedContext_SP') &&
@@ -901,6 +918,8 @@ simulated function bool IsLeaderThrowCommand(Command Command) {
     case Command_C2LeaderThrowAndMakeEntry:
     case Command_ShotgunLeaderThrowAndClear:
     case Command_ShotgunLeaderThrowAndMakeEntry:
+	case Command_RamLeaderThrowAndClear:
+    case Command_RamLeaderThrowAndMakeEntry:
       return true;
   }
   return false;
@@ -943,6 +962,8 @@ simulated function bool CommandUsesFlashbang(Command Command) {
     case Command_C2BangAndMakeEntry:
     case Command_ShotgunBangAndClear:
     case Command_ShotgunBangAndMakeEntry:
+	case Command_RamBangAndClear:
+    case Command_RamBangAndMakeEntry:
     case Command_BangAndClear:
 	case Command_Request_Flashbang:
       return true;
@@ -961,6 +982,8 @@ simulated function bool CommandUsesGas(Command Command) {
     case Command_C2GasAndMakeEntry:
     case Command_ShotgunGasAndClear:
     case Command_ShotgunGasAndMakeEntry:
+	case Command_RamGasAndClear:
+    case Command_RamGasAndMakeEntry:
     case Command_GasAndClear:
 	case Command_Request_CSGas:
       return true;
@@ -979,6 +1002,8 @@ simulated function bool CommandUsesStinger(Command Command) {
     case Command_C2StingAndMakeEntry:
     case Command_ShotgunStingAndClear:
     case Command_ShotgunStingAndMakeEntry:
+	case Command_RamStingAndClear:
+    case Command_RamStingAndMakeEntry:
     case Command_StingAndClear:
 	case Command_Request_Stinger:
       return true;
@@ -1023,6 +1048,23 @@ simulated function bool CommandUsesShotgun(Command Command) {
   return false;
 }
 
+simulated function bool CommandUsesBatteringRam(Command Command) {
+  switch(Command.Command) {
+    case Command_RamAndClear:
+    case Command_RamAndMakeEntry:
+    case Command_RamBangAndClear:
+    case Command_RamBangAndMakeEntry:
+    case Command_RamGasAndClear:
+    case Command_RamGasAndMakeEntry:
+    case Command_RamStingAndClear:
+    case Command_RamStingAndMakeEntry:
+    case Command_RamLeaderThrowAndClear:
+    case Command_RamLeaderThrowAndMakeEntry:
+      return true;
+  }
+  return false;
+}
+
 simulated function bool CommandUsesWedge(Command Command)
 {
 	switch(Command.Command)
@@ -1058,7 +1100,7 @@ simulated function bool CommandIsCleanSweep(Command Command) {
 //set the MenuPadStatus for the specified Command
 simulated function SetCommandStatus(Command Command, optional bool TeamChanged)
 {
-    local MenuPadStatus Status;
+  local MenuPadStatus Status;
 
     if (Command == None) return;
 
@@ -1088,7 +1130,16 @@ simulated function SetCommandStatus(Command Command, optional bool TeamChanged)
       Status = Pad_GreyedOut;
     } else if (Level.NetMode == NM_Standalone && CommandUsesC2(Command) && !CurrentCommandTeam.DoesAnOfficerHaveUsableEquipment(Slot_Breaching)) {
       Status = Pad_GreyedOut;
-    } else if (Level.NetMode == NM_Standalone && CommandUsesShotgun(Command)) {
+    } else if (Level.NetMode == NM_Standalone && CommandUsesBatteringRam(Command)) {	
+      if(CurrentCommandTeam.DoesAnOfficerHaveUsableEquipment(Slot_PrimaryWeapon, 'BatteringRam'))
+        Status = Pad_Normal;
+      else if(CurrentCommandTeam.DoesAnOfficerHaveUsableEquipment(Slot_SecondaryWeapon, 'BatteringRam'))
+        Status = Pad_Normal;
+      else
+        Status = Pad_GreyedOut;
+ 
+	  //log("Battering Ram SetCommandStatus() " $GetEnum(ECommand, Command.Command) $ " Status " $GetEnum(MenuPadStatus, Status));
+	} else if (Level.NetMode == NM_Standalone && CommandUsesShotgun(Command)) {
       if(CurrentCommandTeam.DoesAnOfficerHaveUsableEquipment(Slot_PrimaryWeapon, 'Shotgun'))
       {
         Status = Pad_Normal;
@@ -1103,7 +1154,7 @@ simulated function SetCommandStatus(Command Command, optional bool TeamChanged)
       }
     } else if (IsLeaderThrowCommand(Command)) {
       Status = Pad_Normal;
-    } else if (CommandUsesC2(Command) || CommandUsesShotgun(Command) || CommandUsesFlashbang(Command)) {
+    } else if (CommandUsesC2(Command) || CommandUsesShotgun(Command) || CommandUsesFlashbang(Command) || CommandUsesBatteringRam(Command)) {
       Status = Pad_Normal;
     } else if (CommandIsCleanSweep(Command)) {
       Status = Pad_Normal;
@@ -1118,8 +1169,8 @@ simulated function SetCommandStatus(Command Command, optional bool TeamChanged)
         Status = Pad_Normal;
     else
         Status = Pad_GreyedOut;
-
-    SetCommand(Command, Status);
+	
+	SetCommand(Command, Status);
 }
 
 //reset all commands to their pre-updated, ie. unavailable, state.
@@ -2302,6 +2353,14 @@ simulated function SendCommandToOfficers()
             }
             break;
 
+		case Command_RamAndClear:
+        case Command_RamAndMakeEntry:
+            if(CheckForValidDoor(PendingCommand, PendingCommandTargetActor))
+            {
+              bCommandIssued = PendingCommandTeam.BreachAndClear(Level.GetLocalPlayerController().Pawn, PendingCommandOrigin, SwatDoor(PendingCommandTargetActor), true, 3);
+            }
+            break;
+		
         //clear with bang
 
         case Command_BangAndClear:
@@ -2341,6 +2400,14 @@ simulated function SendCommandToOfficers()
             if (CheckForValidDoor(PendingCommand, PendingCommandTargetActor))
             {
               bCommandIssued = PendingCommandTeam.BreachBangAndClear(Level.GetLocalPlayerController().Pawn, PendingCommandOrigin, SwatDoor(PendingCommandTargetActor), true, 2);
+            }
+            break;
+		
+		case Command_RamBangAndClear:
+        case Command_RamBangAndMakeEntry:
+            if (CheckForValidDoor(PendingCommand, PendingCommandTargetActor))
+            {
+              bCommandIssued = PendingCommandTeam.BreachBangAndClear(Level.GetLocalPlayerController().Pawn, PendingCommandOrigin, SwatDoor(PendingCommandTargetActor), true, 3);
             }
             break;
 
@@ -2385,6 +2452,14 @@ simulated function SendCommandToOfficers()
               bCommandIssued = PendingCommandTeam.BreachGasAndClear(Level.GetLocalPlayerController().Pawn, PendingCommandOrigin, SwatDoor(PendingCommandTargetActor), true, 2);
             }
             break;
+		
+		case Command_RamGasAndClear:
+        case Command_RamGasAndMakeEntry:
+            if (CheckForValidDoor(PendingCommand, PendingCommandTargetActor))
+            {
+              bCommandIssued = PendingCommandTeam.BreachGasAndClear(Level.GetLocalPlayerController().Pawn, PendingCommandOrigin, SwatDoor(PendingCommandTargetActor), true, 3);
+            }
+            break;
 
         //clear with sting
 
@@ -2425,6 +2500,14 @@ simulated function SendCommandToOfficers()
             if (CheckForValidDoor(PendingCommand, PendingCommandTargetActor))
             {
               bCommandIssued = PendingCommandTeam.BreachStingAndClear(Level.GetLocalPlayerController().Pawn, PendingCommandOrigin, SwatDoor(PendingCommandTargetActor), true, 2);
+            }
+            break;
+		
+		case Command_RamStingAndClear:
+        case Command_RamStingAndMakeEntry:
+            if (CheckForValidDoor(PendingCommand, PendingCommandTargetActor))
+            {
+              bCommandIssued = PendingCommandTeam.BreachStingAndClear(Level.GetLocalPlayerController().Pawn, PendingCommandOrigin, SwatDoor(PendingCommandTargetActor), true, 3);
             }
             break;
 
@@ -2471,6 +2554,14 @@ simulated function SendCommandToOfficers()
             if(CheckForValidDoor(PendingCommand, PendingCommandTargetActor))
             {
               bCommandIssued = PendingCommandTeam.BreachLeaderThrowAndClear(Level.GetLocalPlayerController().Pawn, PendingCommandOrigin, SwatDoor(PendingCommandTargetActor), true, 2);
+            }
+            break;
+		
+		case Command_RamLeaderThrowAndClear:
+        case Command_RamLeaderThrowAndMakeEntry:
+            if(CheckForValidDoor(PendingCommand, PendingCommandTargetActor))
+            {
+              bCommandIssued = PendingCommandTeam.BreachLeaderThrowAndClear(Level.GetLocalPlayerController().Pawn, PendingCommandOrigin, SwatDoor(PendingCommandTargetActor), true, 3);
             }
             break;
 
@@ -2755,6 +2846,18 @@ simulated protected function Actor GetPendingCommandTargetActor()
         case Command_ShotgunStingAndMakeEntry:
         case Command_ShotgunLeaderThrowAndClear:
         case Command_ShotgunLeaderThrowAndMakeEntry:
+		//ram
+		case Command_RamAndClear:
+        case Command_RamAndMakeEntry:
+        case Command_RamBangAndClear:
+        case Command_RamBangAndMakeEntry:
+        case Command_RamGasAndClear:
+        case Command_RamGasAndMakeEntry:
+        case Command_RamStingAndClear:
+        case Command_RamStingAndMakeEntry:
+        case Command_RamLeaderThrowAndClear:
+        case Command_RamLeaderThrowAndMakeEntry:
+		
 		case Command_TrapsAndMirror:
             return GetDoorFocus();
 

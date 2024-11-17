@@ -13,6 +13,7 @@ class SquadBreachAndClearAction extends SquadMoveAndClearAction
 // behaviors we use
 var private UseBreachingShotgunGoal CurrentUseBreachingShotgunGoal;
 var private UseBreachingChargeGoal  CurrentUseBreachingChargeGoal;
+var private UseBatteringRamGoal CurrentUseBatteringRamGoal;
 var protected OpenDoorGoal			CurrentOpenDoorGoal;
 var private int BreachingMethod;
 
@@ -153,6 +154,39 @@ protected function Pawn GetFirstOfficerWithBSG(optional bool skipBreacher)
 	
 }
 
+protected function Pawn GetFirstOfficerWithBR(optional bool skipBreacher)
+{
+	local int i;
+	local Pawn Officer, ShieldOfficer;
+	local Pawn Found;
+
+	for(i = 0; i < OfficersInStackUpOrder.Length; i++) {
+		Officer = OfficersInStackUpOrder[i];
+
+		if(class'Pawn'.static.checkConscious(Officer) && CanOfficerBreachWithBatteringRam(Officer) && (!skipBreacher || Officer != Breacher)) {
+			
+			if(Found.HasActiveShield()) //skip Shield guy if possible
+			{
+				ShieldOfficer=Officer;
+				continue;
+			}
+			
+			Found = Officer;
+			break;
+		}
+	}
+
+
+	if (Found != None)
+		return Found;
+	
+	if ( ShieldOfficer != None ) 
+		return ShieldOfficer;
+	else 
+		return None;
+	
+}
+
 protected function bool ShouldThrowerBeFirstOfficer()
 {
 	return Super.ShouldThrowerBeFirstOfficer();
@@ -172,6 +206,9 @@ protected function SetBreacher(optional bool skipBreacher)
 		case 2: // BreachingShotgun
 			Breacher = GetFirstOfficerWithBSG(skipBreacher);
 			break;
+	    case 3: //BatteringRam
+		    Breacher = GetFirstOfficerWithBR(skipBreacher);
+			break;
 	}
 
 	if(Breacher == None) {
@@ -185,19 +222,40 @@ protected function bool CanOfficerBreachWithShotgun(Pawn Officer)
 	local FiredWeapon Weapon;
 
 	Weapon = FiredWeapon(ISwatOfficer(Officer).GetItemAtSlot(SLOT_PrimaryWeapon));
-	if(Weapon != None && Weapon.IsA('Shotgun') && (!Weapon.NeedsReload() || Weapon.CanReload()))
+	if(Weapon != None && Weapon.IsA('Shotgun') && !Weapon.IsA('BatteringRam') && (!Weapon.NeedsReload() || Weapon.CanReload()))
 	{
 		return true;
 	}
 
 	Weapon = FiredWeapon(ISwatOfficer(Officer).GetItemAtSlot(SLOT_SecondaryWeapon));
-	if(Weapon != None && Weapon.IsA('Shotgun') && (!Weapon.NeedsReload() || Weapon.CanReload()))
+	if(Weapon != None && Weapon.IsA('Shotgun') && !Weapon.IsA('BatteringRam') && (!Weapon.NeedsReload() || Weapon.CanReload()))
 	{
 		return true;
 	}
 
 	return false;
 }
+
+protected function bool CanOfficerBreachWithBatteringRam(Pawn Officer)
+{
+	local FiredWeapon Weapon;
+
+	Weapon = FiredWeapon(ISwatOfficer(Officer).GetItemAtSlot(SLOT_PrimaryWeapon));
+	if(Weapon != None && Weapon.IsA('BatteringRam') && (!Weapon.NeedsReload() || Weapon.CanReload()))
+	{
+		return true;
+	}
+
+	Weapon = FiredWeapon(ISwatOfficer(Officer).GetItemAtSlot(SLOT_SecondaryWeapon));
+	if(Weapon != None && Weapon.IsA('BatteringRam') && (!Weapon.NeedsReload() || Weapon.CanReload()))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
 
 latent function UseBreachingShotgun()
 {
@@ -219,6 +277,60 @@ latent function UseBreachingShotgun()
 
 	CurrentUseBreachingShotgunGoal.Release();
 	CurrentUseBreachingShotgunGoal = None;
+
+	//we need to wait the door to be open (or it will interfere with the movement of the Squad while trying to enter the room)
+	sleep(1.0);
+
+	// have him open the door
+	
+	if (TargetDoor.IsClosed() && !TargetDoor.IsOpening() )
+	{
+	CurrentOpenDoorGoal = new class'OpenDoorGoal'(AI_Resource(Breacher.MovementAI), TargetDoor);
+	assert(CurrentOpenDoorGoal != None);
+	CurrentOpenDoorGoal.AddRef();
+
+	CurrentOpenDoorGoal.SetPreferSides();
+
+	CurrentOpenDoorGoal.postGoal(self);
+	
+	// if the thrower is not the same as the breacher, wait for the door to open
+	if(Thrower != Breacher)
+	{
+		WaitForGoal(CurrentOpenDoorGoal);
+		CurrentOpenDoorGoal.unPostGoal(self);
+
+		CurrentOpenDoorGoal.Release();
+		CurrentOpenDoorGoal = None;
+	}
+	else
+	{
+		WaitForGoal(CurrentOpenDoorGoal);
+	}
+	
+	}
+
+}
+
+latent function UseBatteringRam()
+{
+	assert(Breacher != None);
+
+	log("SquadBreachAndClearAction::UseBatteringRam()");
+
+	ISwatDoor(TargetDoor).RegisterInterestedInDoorOpening(self);
+
+	CurrentUseBatteringRamGoal = new class'UseBatteringRamGoal'(AI_Resource(Breacher.characterAI), TargetDoor);
+	assert(CurrentUseBatteringRamGoal != None);
+	CurrentUseBatteringRamGoal.AddRef();
+
+	CurrentUseBatteringRamGoal.postGoal(self);
+
+	WaitForGoal(CurrentUseBatteringRamGoal);
+
+	CurrentUseBatteringRamGoal.unPostGoal(self);
+
+	CurrentUseBatteringRamGoal.Release();
+	CurrentUseBatteringRamGoal = None;
 
 	//we need to wait the door to be open (or it will interfere with the movement of the Squad while trying to enter the room)
 	sleep(1.0);
@@ -360,7 +472,11 @@ latent function PrepareToMoveSquad(optional bool bNoZuluCheck)
 	// Move up the breacher to the first position
 	if(Breacher != GetFirstOfficer())
 	{
-		if(BreachingMethod == 0 || BreachingMethod == 2 && CanOfficerBreachWithShotgun(Breacher))
+		if(BreachingMethod == 0 || BreachingMethod == 3 && CanOfficerBreachWithBatteringRam(Breacher))
+		{
+			ISwatOfficer(Breacher).GetOfficerSpeechManagerAction().TriggerMoveUpBreachSGSpeech();
+		}
+		else if(BreachingMethod == 0 || BreachingMethod == 2 && CanOfficerBreachWithShotgun(Breacher))
 		{
 			ISwatOfficer(Breacher).GetOfficerSpeechManagerAction().TriggerMoveUpBreachSGSpeech();
 		}
@@ -368,13 +484,20 @@ latent function PrepareToMoveSquad(optional bool bNoZuluCheck)
 		{
 			ISwatOfficer(Breacher).GetOfficerSpeechManagerAction().TriggerMoveUpC2Speech();
 		}
+		
 		SwapStackUpPositions(Breacher, GetFirstOfficer());
 	}
 
 	log("SquadBreachAndClearAction: Is door locked? ("$SwatDoorTarget.IsLocked()$")");
 	while ((SwatDoorTarget.IsLocked() || bForceBreachAction)/* && !SwatDoorTarget.IsBroken()*/ && !TargetDoor.IsOpening() && !TargetDoor.IsOpen())
 	{
-		if (BreachingMethod == 0 || BreachingMethod == 2 && CanOfficerBreachWithShotgun(Breacher))
+		if (BreachingMethod == 0 || BreachingMethod == 3 && CanOfficerBreachWithBatteringRam(Breacher))
+		{
+			PreTargetDoorBreached();
+			UseBatteringRam();	// <-- "WaitForZulu" happens here
+			PostTargetDoorBreached();
+		}
+		else if (BreachingMethod == 0 || BreachingMethod == 2 && CanOfficerBreachWithShotgun(Breacher))
 		{
 			PreTargetDoorBreached();
 			UseBreachingShotgun();	// <-- "WaitForZulu" happens here
@@ -385,6 +508,7 @@ latent function PrepareToMoveSquad(optional bool bNoZuluCheck)
 			PlaceAndUseBreachingCharge();	// <-- "WaitForZulu" happens here
 			PostTargetDoorBreached();
 		}
+		
 		else
 		{
 			log("...Falling to default. (BreachingMethod = "$BreachingMethod$", CanUseC2 = "$CanOfficerBreachWithC2(Breacher)$", CanUseShotgun = "$CanOfficerBreachWithShotgun(Breacher)$")");
