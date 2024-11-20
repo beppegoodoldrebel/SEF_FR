@@ -3058,6 +3058,12 @@ simulated function bool HasActiveShield()
 	return GetActiveItem().isa('ShieldHandgun') || GetActiveItem().isa('TaserShield') ;
 }
 
+simulated function bool HasActiveRam()
+{
+	return GetActiveItem().isa('BatteringRam') ;
+}
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 

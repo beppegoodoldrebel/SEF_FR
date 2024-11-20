@@ -69,7 +69,8 @@ enum WeaponLowReadyAnimationType
   WeaponAnimLowReady_P90,
   WeaponAnimLowReady_Optiwand,
   WeaponAnimLowReady_Paintball,
-  WeaponAnimLowReady_Shield
+  WeaponAnimLowReady_Shield,
+  WeaponAnimLowReady_Ram
 };
 
 /*
@@ -470,7 +471,7 @@ simulated function BallisticFire(vector StartTrace, vector EndTrace)
           break;
         }
 
-		log("Shield Ballistic test Victim " $ Victim.name $ " Owner " $ Victim.Owner.name $ " Region " $ GetEnum(ESkeletalRegion,HitRegion) );
+		Ammo.BallisticsLog("Shield Ballistic test Victim " $ Victim.name $ " Owner " $ Victim.Owner.name $ " Region " $ GetEnum(ESkeletalRegion,HitRegion) );
 
 		if( Victim.isa('HandheldEquipmentModel') && Victim.Owner.isa('Hands') )
 		{

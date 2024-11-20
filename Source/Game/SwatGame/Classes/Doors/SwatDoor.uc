@@ -50,7 +50,8 @@ var config float QualifyTimeForToolkit;
 //var config float QualifyTimeForWedge;
 var bool DoorCheckLockTrapped;
 //in seconds, the time required to qualify to place a C2Charge on a door
-var config float QualifyTimeForC2Charge;
+//var config float QualifyTimeForC2Charge;    //removed from config
+var float RamDamage;
 
 // The doorway is an invisible copy of the DoorModel's static mesh, and it does
 // not move. It is used to define the region of space that is occupied by the
@@ -265,7 +266,7 @@ replication
     reliable if (Role == Role_Authority)
         bIsLocked, bIsBroken, ReasonForMove, LockedKnowledge,
         DeployedWedge, DeployedC2ChargeLeft, DeployedC2ChargeRight,
-				Broken ,DoorCheckLockTrapped;
+				Broken ,DoorCheckLockTrapped,RamDamage;
 }
 ///////////////////////////
 
@@ -1156,15 +1157,14 @@ function NotifyClientsOfDoorBlocked( bool OpeningBlocked )
 
 
 // Note: In multiplayer function Blasted only happens on the server
-function Blasted(Pawn Instigator)
+function Blasted(Pawn Instigator , optional bool IsBatteringRam)
 {
   local float chance; 
   local bool BlockBrokenDoor;
   
-     chance = frand();
-		
-    if ( !Instigator.GetActiveItem().isa('BatteringRam') ) //Shotguns only
+    if ( !IsBatteringRam ) //Shotguns only
 	{
+		chance = frand();
 		
 	switch (GetDoorModel().GetCurrentMaterial(0).MaterialVisualType )
     { 
@@ -1194,14 +1194,17 @@ function Blasted(Pawn Instigator)
 	}
 	else //Battering Ram only
 	{
-		
+		//log("Battering Ram Door Material:" $ GetEnum(EMaterialVisualType,GetDoorModel().GetCurrentMaterial(0).MaterialVisualType ));
 		switch (GetDoorModel().GetCurrentMaterial(0).MaterialVisualType )
 		{ 
+		case MVT_Default:	
 		case MVT_wood:
-		   break;    //if a door is made of wood play the damaged model
 		case MVT_ThinMetal:
+		case MVT_OpaqueGlass:
+		   break;    //if a door is made of wood play the damaged model
+		
 	    case MVT_ThickMetal:
-	    case MVT_Default:	
+	    
 		default:
 			BlockBrokenDoor = true; //dont use broken door model
 		}
@@ -1212,7 +1215,6 @@ function Blasted(Pawn Instigator)
 				SetPositionForMove( DoorPosition_OpenRight, MR_Blasted );
 			else
 				SetPositionForMove( DoorPosition_OpenLeft, MR_Blasted );
-
 			Moved(false, true); //not instantly, but force
 		}	
 		
@@ -1223,6 +1225,17 @@ function Blasted(Pawn Instigator)
 	
 	OnUnlocked();
 }
+
+simulated function float GetRamDamage()
+{
+	return RamDamage;
+}
+
+simulated function AddRamDamage()
+{
+	RamDamage=RamDamage + 1.0;
+}
+
 
 // Note: In multiplayer function Blasted only happens on the server
 function Breached(DeployedC2ChargeBase Charge)
@@ -2779,7 +2792,7 @@ simulated function SilentUnlock()
     // Clients get their value replicated from the server.
     if ( Level.NetMode != NM_Client )
 	{
-		bCanBeLocked = false;
+		bCanBeLocked = true;
         bIsLocked = false;
 	}
 }
@@ -2979,7 +2992,7 @@ simulated function OnUsedByC2Charge(ICanUseC2Charge Instigator)
 //return the time to qualify to use this with a C2Charge
 simulated function float GetQualifyTimeForC2Charge()
 {
-    return QualifyTimeForC2Charge;
+    return 3.0;
 }
 
 // IHaveSkeletalRegions implementation
@@ -3004,7 +3017,7 @@ simulated function OnSkeletalRegionHit(ESkeletalRegion RegionHit, vector HitLoca
 		//BatteringRam
 		assertWithDescription(Instigator.IsA('SwatPawn'),
 			"[tcohen] SwatDoor::OnSkeletalRegionHit()  DamageType is BatteringRamAmmo, but Instigator is not a SwatPawn.");
-		Blasted(SwatPawn(Instigator));
+		Blasted(SwatPawn(Instigator),true);
 	}
 	
 }

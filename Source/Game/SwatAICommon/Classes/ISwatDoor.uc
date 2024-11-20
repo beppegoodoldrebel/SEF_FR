@@ -54,7 +54,7 @@ function vector GetSkeletalRegionCenter(ESkeletalRegion Region);
 function name GetLeftRoomName();
 function name GetRightRoomName();
 function Breached(Pawn Instigator);
-function Blasted(Pawn Instigator);
+function Blasted(Pawn Instigator,optional bool IsBatteringRam);
 function OnUnlocked();
 function OnWedged();
 function OnUnwedged();

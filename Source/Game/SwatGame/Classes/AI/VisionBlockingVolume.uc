@@ -8,5 +8,5 @@ class VisionBlockingVolume extends Engine.Volume
 
 defaultproperties
 {
-	bBlockZeroExtentTraces=true
+	bBlockZeroExtentTraces=false
 }

@@ -239,6 +239,11 @@ function TriggerReportedDeployingShotgunSpeech()
 	TriggerSpeech('ReportedDeployingBreachSG');
 }
 
+function TriggerReportedDeployingRamSpeech()
+{
+	TriggerSpeech('ReportedDeployingRam');
+}
+
 function TriggerReportedDeployingC2Speech()
 {
 	TriggerSpeech('ReportedDeployingC2');

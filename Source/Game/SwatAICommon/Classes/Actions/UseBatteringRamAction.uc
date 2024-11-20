@@ -16,6 +16,7 @@ import enum EUpperBodyAnimBehaviorClientId from UpperBodyAnimBehaviorClients;
 
 var private AimAtPointGoal		        CurrentAimAtPointGoal;
 var private MoveToActorGoal             CurrentMoveToActorGoal;
+var private MoveToLocationGoal          CurrentMoveToLocationGoal;
 var private MoveToDoorGoal              CurrentMoveToDoorGoal;
 
 var private FiredWeapon		            BreachingShotgun;
@@ -58,12 +59,11 @@ function cleanup()
 		CurrentAimAtPointGoal = None;
 	}
 
-/*	if (CurrentMoveToLocationGoal != None)
+	if (CurrentMoveToLocationGoal != None)
 	{
 		CurrentMoveToLocationGoal.Release();
 		CurrentMoveToLocationGoal = None;
 	}
-*/
 	
 	if (CurrentMoveToDoorGoal != None)
 	{
@@ -140,13 +140,30 @@ function GetLocationToBreachFrom()
 
 }
 
+latent function MoveToBreachingLocation()
+{
+    // currently we just move to the open point on the door
+    CurrentMoveToLocationGoal = new class'SwatAICommon.MoveToLocationGoal'(movementResource(), achievingGoal.priority, BreachFrom);
+    assert(CurrentMoveToLocationGoal != None);
+    CurrentMoveToLocationGoal.AddRef();
+
+    CurrentMoveToLocationGoal.SetRotateTowardsPointsDuringMovement(true);
+
+    CurrentMoveToLocationGoal.postGoal(self);
+    waitForGoal(CurrentMoveToLocationGoal);
+    CurrentMoveToLocationGoal.unPostGoal(self);
+
+    CurrentMoveToLocationGoal.Release();
+    CurrentMoveToLocationGoal = None;
+}
+
 latent function MoveToRamPosition()
 {
 	CurrentMoveToDoorGoal = new class'MoveToDoorGoal'(AI_Resource(m_Pawn.movementAI), TargetDoor);
 	assert(CurrentMoveToDoorGoal != None);
 	CurrentMoveToDoorGoal.AddRef();
 
-	CurrentMoveToDoorGoal.SetRotateTowardsPointsDuringMovement(true);
+	CurrentMoveToDoorGoal.SetRotateTowardsPointsDuringMovement(false);
 
 	CurrentMoveToDoorGoal.postGoal(self);
 	WaitForGoal(CurrentMoveToDoorGoal);
@@ -204,57 +221,25 @@ latent function BreachDoorWithRam()
 	ISwatDoor(TargetDoor).UnRegisterInterestedInDoorOpening(self);
 
 	BreachingShotgun.SetPerfectAimNextShot();
-
-	// @HACK Break the door "before firing the shotgun. The AI literally always misses,
-	// and there is a very noticable delay if we automatically break the door AFTER firing
-	// the shotgun, but if we break the door FIRST it appears to happen exactly when the
-	// shot is fired. In other words, this solution looks perfect. -K.F.
-
-	//ISwatDoor(TargetDoor).Blasted(m_Pawn);
 	
 	while( TargetDoor.IsClosed() &&
 		  !TargetDoor.IsOpening() &&
-	       tries < 10)
-	{	//log("UseBatteringRamAction tries " $ tries ); 
+	       tries <= 5)
+	{	
 		tries++;
+			
 		BreachingShotgun.LatentUse();
 		
-		//DoorBlasting(ISwatDoor(TargetDoor));
+		yield();
+		if ( TargetDoor.IsClosed() || TargetDoor.IsOpening())
+			sleep(0.75); //wait a little before try again
 	}
+	
 }
 
-function DoorBlasting( ISwatDoor TargetDoor )
+function TriggerReportedDeployingRamSpeech()
 {
-local float BreachingChance;
-
-	if ( TargetDoor.IsLocked() )			
-		{	
-			//door resistance based on material type
-			switch (TargetDoor.GetDoorMaterialVisualType())
-			{
-	    	case MVT_ThinMetal:
-	    	case MVT_ThickMetal:
-	    	case MVT_Default:
-					BreachingChance = MetalBreachingChance;
-	    		break;
-	    	case MVT_Wood:
-					BreachingChance = WoodBreachingChance;
-	    		break;
-	    	default:
-	    		BreachingChance = 1;
-	    		break;
-			}
-	    }
-		else
-			BreachingChance = 1; //not locked go blast
-
-    if ( FRand() < BreachingChance )
-		TargetDoor.Blasted(m_Pawn);		
-}
-
-function TriggerReportedDeployingShotgunSpeech()
-{
-	ISwatOfficer(m_Pawn).GetOfficerSpeechManagerAction().TriggerReportedDeployingShotgunSpeech();
+	ISwatOfficer(m_Pawn).GetOfficerSpeechManagerAction().TriggerReportedDeployingRamSpeech();
 }
 
 state Running
@@ -266,25 +251,26 @@ Begin:
 
 		useResources(class'AI_Resource'.const.RU_ARMS);
 
-		TriggerReportedDeployingShotgunSpeech();
+		TriggerReportedDeployingRamSpeech();
 
 		// no avoiding collision while we're breaching the door!
 		m_Pawn.DisableCollisionAvoidance();
 
 		MoveToRamPosition();
+		//MoveToBreachingLocation();
 		
 		useResources(class'AI_Resource'.const.RU_LEGS);
 
 		clearDummyWeaponGoal();
 
-		AimAtDoor();
+		//AimAtDoor();
 		EquipBreachingShotgun();
 
 		WaitForZulu();
 
 		BreachDoorWithRam();
 
-		StopAimingAtDoorKnob();
+		//StopAimingAtDoorKnob();
 		ISwatOfficer(m_Pawn).ReEquipFiredWeapon();
 
 		// re-enable collision avoidance!
@@ -306,8 +292,8 @@ Begin:
 
 defaultproperties
 {
-	WoodBreachingChance = 0.9  //to be tested
-	MetalBreachingChance = 0.8 //to be tested
+	WoodBreachingChance = 0.5  //to be tested
+	MetalBreachingChance = 0.3 //to be tested
 	satisfiesGoal = class'UseBatteringRamGoal'
 }
 

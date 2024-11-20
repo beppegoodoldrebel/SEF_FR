@@ -717,6 +717,7 @@ simulated function EAnimationSet GetP90LowReadyAimPoseSet()             { if (!b
 simulated function EAnimationSet GetOptiwandLowReadyAimPoseSet()        { if (!bIsCrouched) return kAnimationSetOptiwandLowReady;       else return kAnimationSetOptiwandLowReadyCrouched; }
 simulated function EAnimationSet GetPaintballLowReadyAimPoseSet()       { if (!bIsCrouched) return kAnimationSetPaintballLowReady;      else return kAnimationSetPaintballLowReadyCrouched; }
 simulated function EAnimationSet GetShieldLowReadyAimPoseSet()         { return kAnimationSetShieldLowReady; }
+simulated function EAnimationSet GetRamLowReadyAimPoseSet()            { return kAnimationSetRam; }
 // Returns the animation set based on the Pawns current equipment
 simulated function EAnimationSet GetLowReadySet()
 {
@@ -743,6 +744,8 @@ simulated function EAnimationSet GetLowReadySet()
               return GetHandgunLowReadyAimPoseSet();
 			case WeaponAnimLowReady_Shield:
               return GetShieldLowReadyAimPoseSet();
+			case WeaponAnimLowReady_Ram:
+              return GetRamLowReadyAimPoseSet();
             case WeaponAnimLowReady_SubmachineGun:
               return GetSubMachineGunLowReadyAimPoseSet();
             case WeaponAnimLowReady_MachineGun:

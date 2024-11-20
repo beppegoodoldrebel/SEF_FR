@@ -340,7 +340,7 @@ function ApplyAimDirectionSimilarityWeight(out float Weight, EAimFov AimFov, vec
         AimDirectionSimilarity = (1.5 * AimDirectionSimilarity) + 0.5;
         Weight *= AimDirectionSimilarity;
 		
-		if ( m_pawn.hasActiveSHield())
+		if ( m_pawn.hasActiveSHield() || m_pawn.HasActiveRam())
 			Weight *= 20;
     }
 	
@@ -814,7 +814,7 @@ Begin:
     // FIXME: need a check here...
   }
 
-    if (!bOnlyAimIfMoving || (VSize(m_Pawn.Velocity) > 0.0) || !m_Pawn.hasActiveShield() )
+    if (!bOnlyAimIfMoving || (VSize(m_Pawn.Velocity) > 0.0) || !m_Pawn.hasActiveShield() || !m_Pawn.hasActiveRam() )
     {
 		// now aim at the point
         FindAndAimAtPoint();
