@@ -21,7 +21,7 @@ event Notify( Actor Owner )
 		{
 			Officer = Element.pawns[i];
 
-			if ((Officer != Owner) && class'Pawn'.static.checkConscious(Officer) && Pawn(Owner).LineOfSightTo(Officer))
+			if ((Officer != Owner) && class'Pawn'.static.checkConscious(Officer) && Pawn(Owner).LineOfSightTo(Officer) && !Officer.HasActiveShield())
 			{
 				SwatOfficer(Officer).PlayTurnAwayAnimation();
 			}
