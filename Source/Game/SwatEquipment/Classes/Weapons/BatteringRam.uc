@@ -1,5 +1,18 @@
 class BatteringRam extends BreachingShotgun config(SwatEquipment); 
 
+simulated function EquippedHook()
+{
+	super.EquippedHook();
+	if (Ammo == None)
+	{
+		Ammo = new class'BatteringRamAmmo';
+		ShotgunAmmo(Ammo).StartingRounds=1;
+		ShotgunAmmo(Ammo).CurrentRounds=1;
+		Log("BatteringRam Ammo " $ Ammo.name $ " Rounds " $ ShotgunAmmo(Ammo).StartingRounds);
+	}
+	
+}
+
 simulated function TraceFire()
 {
 	//do nothing here , just swing the ram 
@@ -19,7 +32,7 @@ simulated function UsedHook()
     StartDirection = PerfectStartDirection;
     ApplyAimError(StartDirection);
     StartTrace = StartLocation;
-    for(Shot = 0; Shot < Ammo.ShotsPerRound; ++Shot) {
+    for(Shot = 0; Shot < 1; ++Shot) {
       ApplyRandomOffsetToRotation(StartDirection, GetChoke() * DEGREES_TO_RADIANS, CurrentDirection);
 	  
 	  if (inFirstPersonView())
@@ -239,6 +252,7 @@ simulated function changeShellsMaterial()
 
 defaultproperties
 {
+	PassableItem=false
 	WoodBreachingChance = 0.5  //to be tested
 	MetalBreachingChance = 0.3 //to be tested
 	bPenetratesDoors=false

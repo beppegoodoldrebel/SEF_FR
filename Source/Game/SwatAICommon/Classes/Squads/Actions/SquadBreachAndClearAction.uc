@@ -240,14 +240,8 @@ protected function bool CanOfficerBreachWithBatteringRam(Pawn Officer)
 {
 	local FiredWeapon Weapon;
 
-	Weapon = FiredWeapon(ISwatOfficer(Officer).GetItemAtSlot(SLOT_PrimaryWeapon));
-	if(Weapon != None && Weapon.IsA('BatteringRam') && (!Weapon.NeedsReload() || Weapon.CanReload()))
-	{
-		return true;
-	}
-
-	Weapon = FiredWeapon(ISwatOfficer(Officer).GetItemAtSlot(SLOT_SecondaryWeapon));
-	if(Weapon != None && Weapon.IsA('BatteringRam') && (!Weapon.NeedsReload() || Weapon.CanReload()))
+	Weapon = FiredWeapon(ISwatOfficer(Officer).GetItemAtSlot(SLOT_BatteringRam));
+	if(Weapon != None && Weapon.IsA('BatteringRam') )
 	{
 		return true;
 	}

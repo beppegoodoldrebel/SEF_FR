@@ -155,20 +155,23 @@ Caption=EQUIPMENT
 [SwatSPLoadoutPanel_savedloadoutslabel]
 Caption=SAVED LOADOUTS
 
-[SwatSPLoadoutPanel_equip1label]
-Caption=1:
+[SwatSPLoadoutPanel_equip1buttonlabel]
+Caption=BANG
 
 [SwatSPLoadoutPanel_equip2label]
-Caption=2:
+Caption=GAS
 
 [SwatSPLoadoutPanel_equip3label]
-Caption=3:
+Caption=STING
 
 [SwatSPLoadoutPanel_equip4label]
-Caption=4:
+Caption=MISC 1
 
 [SwatSPLoadoutPanel_equip5label]
-Caption=5:
+Caption=MISC 2
+
+[SwatSPLoadoutPanel_equip6label]
+Caption=SPECIAL
 
 [SwatSPLoadoutPanel_leadnametag]
 Caption=Lead
@@ -402,19 +405,22 @@ Caption=SECONDARY
 Hint=Select secondary weapon and ammunition.
 
 [SwatSPLoadoutPanel_2_TabPanel_equip1buttonlabel]
-Caption=1
+Caption=BANG
 
 [SwatSPLoadoutPanel_2_TabPanel_equip2buttonlabel]
-Caption=2
+Caption=GAS
 
 [SwatSPLoadoutPanel_2_TabPanel_equip3buttonlabel]
-Caption=3
+Caption=STING
 
 [SwatSPLoadoutPanel_2_TabPanel_equip4buttonlabel]
-Caption=4
+Caption=MISC 1
 
 [SwatSPLoadoutPanel_2_TabPanel_equip5buttonlabel]
-Caption=5
+Caption=MISC 2
+
+[SwatSPLoadoutPanel_2_TabPanel_equip6buttonlabel]
+Caption=SPECIAL
 
 [SwatSPLoadoutPanel_2_TabButton]
 Caption=TACTICAL

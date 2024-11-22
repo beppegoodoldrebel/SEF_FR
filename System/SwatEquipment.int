@@ -1054,9 +1054,9 @@ TotalAmmoString=50 shells
 RateOfFire=150 RPM
 
 [BatteringRam]
-Description=BatteringRam
-FriendlyName=BatteringRam
-ShortName=BatteringRam
+Description=The Battering Ram consists of a steel cylinder with two ergonomic handles, one in the middle and one at the back. It's impact head is reinforced with more steel to break down objects with more ease. It's known for it's condensed size, useful in small spaces where the law enforcement and tactical entry teams that use it.
+FriendlyName=Battering Ram
+ShortName=Battering Ram
 Manufacturer=
 Caliber=
 CountryOfOrigin=United States
