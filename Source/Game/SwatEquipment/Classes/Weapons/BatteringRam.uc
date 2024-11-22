@@ -11,6 +11,7 @@ simulated function UsedHook()
     local rotator PerfectStartDirection, StartDirection, CurrentDirection;
 	local vector StartTrace, EndTrace;
     local int Shot;
+
 	
     GetPerfectFireStart(PerfectStartLocation, PerfectStartDirection);
 	
@@ -21,18 +22,24 @@ simulated function UsedHook()
     for(Shot = 0; Shot < Ammo.ShotsPerRound; ++Shot) {
       ApplyRandomOffsetToRotation(StartDirection, GetChoke() * DEGREES_TO_RADIANS, CurrentDirection);
 	  
-	  if ( Owner.isa('SwatPlayer') || Owner.isa('Hands') )
+	  if (inFirstPersonView())
+	  {	  
+		  //log("Battering Ram shot " $Shot $ " Owner " $ Owner.name " );
 		  EndTrace = StartLocation + vector(CurrentDirection) * Range;
-	  else
+		  //Level.GetLocalPlayerController().myHUD.AddDebugLine(StartTrace, EndTrace, class'Engine.Canvas'.Static.MakeColor(0,255,0));
+	  }
+	  else                                                 //AI
 	  {
-		  EndTrace = StartLocation + vector(CurrentDirection) * 120;  //fixed range for AI to be sure to hit door...	  
+          StartTrace = Owner.Location;
+	      EndTrace = StartTrace + vector(Owner.Rotation)*120;
+		  //EndTrace = StartLocation + vector(CurrentDirection) * 120;  //fixed range for AI to be sure to hit door...	  
 		  //DEBUG
 		  Level.GetLocalPlayerController().myHUD.AddDebugLine(StartTrace, EndTrace, class'Engine.Canvas'.Static.MakeColor(255,0,0));
 	  }
 	
       BallisticFire(StartTrace, EndTrace); 
     }
-	
+
 	 //TMC TODO 9/17/2003 move this into LocalFire() after Mike meets the milestone... then we don't need to do this redundant test.
     //LocalPlayerController = Level.GetLocalPlayerController();
 

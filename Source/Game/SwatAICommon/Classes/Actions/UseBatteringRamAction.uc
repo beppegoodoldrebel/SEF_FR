@@ -211,7 +211,8 @@ private function StopAimingAtDoorKnob()
 latent function BreachDoorWithRam()
 {
 	local int tries;
-	ISwatAI(m_Pawn).SetWeaponTargetLocation(BreachAimLocation);
+	//ISwatAI(m_Pawn).SetWeaponTargetLocation(BreachAimLocation);
+	ISwatAI(m_Pawn).SetWeaponTargetLocation(TargetDoor.Location);
 
     // @NOTE: Pause for a brief moment before shooting to make the shot look
     // more deliberate
@@ -220,22 +221,25 @@ latent function BreachDoorWithRam()
 	// we're no longer interested if the door is opening (we're about to open it)
 	ISwatDoor(TargetDoor).UnRegisterInterestedInDoorOpening(self);
 
-	BreachingShotgun.SetPerfectAimNextShot();
-	
 	while( TargetDoor.IsClosed() &&
 		  !TargetDoor.IsOpening() &&
 	       tries <= 5)
 	{	
 		tries++;
-			
+		
 		BreachingShotgun.LatentUse();
 		
 		yield();
-		if ( TargetDoor.IsClosed() || TargetDoor.IsOpening())
-			sleep(0.75); //wait a little before try again
+		if ( TargetDoor.IsClosed() )
+		{
+			sleep(0.5); //wait a little before try again
+		}
 	}
 	
+	
 }
+
+
 
 function TriggerReportedDeployingRamSpeech()
 {

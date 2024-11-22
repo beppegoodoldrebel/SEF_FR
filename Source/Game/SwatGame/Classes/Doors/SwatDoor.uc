@@ -2429,6 +2429,9 @@ simulated function name GetRightSideCenterOpenAnimation()
 // just returning the center points animations
 simulated function name GetOpenAnimation(Pawn Other, AIDoorUsageSide DoorUsageSide, optional bool bIsFranticOpen)
 {
+	if (Other.HasActiveRam())
+		return 'RamInteract';
+	
 	
 	if (Other.HasActiveShield())
 		return 'InteractShield';
@@ -2548,6 +2551,9 @@ simulated function name GetORFrontAwayCloseAnimation()
 // just returning the cneter points animations -- todo: support all points when they are added in.
 simulated function name GetCloseAnimation(Pawn Other, bool bCloseFromBehind)
 {
+	if (Other.HasActiveRam())
+		return 'RamInteract';
+	
 	if (Other.HasActiveShield())
 		return 'InteractShield';
 	
