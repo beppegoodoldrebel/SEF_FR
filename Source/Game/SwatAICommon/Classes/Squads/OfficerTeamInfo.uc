@@ -533,7 +533,9 @@ event private function bool DoesTeamHaveSufficientBreachingEquipment(int Breachi
 	}
 	else if(BreachingMethod == 2)
 	{
-		return DoesAnOfficerHaveUsableEquipment(Slot_PrimaryWeapon, 'Shotgun') || DoesAnOfficerHaveUsableEquipment(Slot_SecondaryWeapon, 'Shotgun');
+		return DoesAnOfficerHaveUsableEquipment(Slot_PrimaryWeapon, 'Shotgun') || 
+		       DoesAnOfficerHaveUsableEquipment(Slot_SecondaryWeapon, 'Shotgun') ||
+			   DoesAnOfficerHaveUsableEquipment(Slot_Breaching, 'BreachingShotgun');
 	}
 	return CanBreachAndClearLockedDoor();
 }
@@ -606,7 +608,11 @@ event function bool CanDeployShotgun(Door TargetDoor)
 		return false;
 	}
 
-	if(DoesAnOfficerHaveUsableEquipment(Slot_PrimaryWeapon, 'Shotgun'))
+	if(DoesAnOfficerHaveUsableEquipment(Slot_Breaching, 'BreachingSG'))
+	{
+		return true;
+	}
+	else if(DoesAnOfficerHaveUsableEquipment(Slot_PrimaryWeapon, 'Shotgun'))
 	{
 		return true;
 	}

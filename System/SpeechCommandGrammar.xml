@@ -185,6 +185,7 @@ NOTES:
 			<PHRASE VALSTR="Command_C2GasAndMakeEntry">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with +see +two ?and ?throw ?toss ?a see yes ?gas ?grenade ?and ?prepare ?to make entry.</PHRASE>
 			<PHRASE VALSTR="Command_C2StingAndMakeEntry">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with +see +two ?and ?throw ?toss ?a +sting ?grenade ?and ?prepare ?to make entry.</PHRASE>
 			<PHRASE VALSTR="Command_C2LeaderThrowAndMakeEntry">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with +see +two ?and ?wait ?hold ?back ?for +leader ?throw ?and ?prepare ?to make entry.</PHRASE>
+			
 			<PHRASE VALSTR="Command_ShotgunAndClear">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?breaching shot gun and ... clear ...</PHRASE>
 			<PHRASE VALSTR="Command_ShotgunBangAndClear">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?breaching shot gun ?and ?throw ?toss ?a ?flash +bang ?grenade ... clear ...</PHRASE>
 			<PHRASE VALSTR="Command_ShotgunGasAndClear">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?breaching shot gun ?and ?throw ?toss ?a ?see ?yes ?CS +gas ?grenade ... clear ...</PHRASE>
@@ -201,6 +202,23 @@ NOTES:
 			<PHRASE VALSTR="Command_ShotgunLeaderThrowAndMakeEntry">?Break ?open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?breaching shot gun ?and wait for me ... make entry.</PHRASE>
 			<PHRASE VALSTR="Command_ShotgunLeaderThrowAndMakeEntry">?Break ?open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?breaching shot gun ?and let me throw ... make entry.</PHRASE>
 			<PHRASE VALSTR="Command_ShotgunLeaderThrowAndMakeEntry">?Break ?open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?breaching shot gun ?and leader throw ... make entry.</PHRASE>
+			
+			<PHRASE VALSTR="Command_RamAndClear">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram and ... clear ...</PHRASE>
+			<PHRASE VALSTR="Command_RamBangAndClear">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and ?throw ?toss ?a ?flash +bang ?grenade ... clear ...</PHRASE>
+			<PHRASE VALSTR="Command_RamGasAndClear">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and ?throw ?toss ?a ?see ?yes ?CS +gas ?grenade ... clear ...</PHRASE>
+			<PHRASE VALSTR="Command_RamGasAndClear">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and ?throw ?toss ?a see yes ?gas ?grenade ... clear ...</PHRASE>
+			<PHRASE VALSTR="Command_RamStingAndClear">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and ?throw ?toss ?a +sting ?grenade ... clear ...</PHRASE>
+			<PHRASE VALSTR="Command_RamLeaderThrowAndClear">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and wait for me ... clear ...</PHRASE>
+			<PHRASE VALSTR="Command_RamLeaderThrowAndClear">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and let me ... clear ...</PHRASE>
+			<PHRASE VALSTR="Command_RamLeaderThrowAndClear">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and +leader ... clear ...</PHRASE>
+			<PHRASE VALSTR="Command_RamAndMakeEntry">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and ?prepare ?to make entry.</PHRASE>
+			<PHRASE VALSTR="Command_RamBangAndMakeEntry">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and ?throw ?toss ?a ?flash +bang ?grenade ?and ?prepare ?to make entry.</PHRASE>
+			<PHRASE VALSTR="Command_RamGasAndMakeEntry">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and ?throw ?toss ?a ?see ?yes ?CS +gas ?grenade ?and ?prepare ?to make entry.</PHRASE>
+			<PHRASE VALSTR="Command_RamGasAndMakeEntry">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and ?throw ?toss ?a see yes ?gas ?grenade ?and ?prepare ?to make entry.</PHRASE>
+			<PHRASE VALSTR="Command_RamStingAndMakeEntry">?Break ?Open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and ?throw ?toss ?a +sting ?grenade ?and ?prepare ?to make entry.</PHRASE>
+			<PHRASE VALSTR="Command_RamLeaderThrowAndMakeEntry">?Break ?open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and wait for me ... make entry.</PHRASE>
+			<PHRASE VALSTR="Command_RamLeaderThrowAndMakeEntry">?Break ?open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and let me throw ... make entry.</PHRASE>
+			<PHRASE VALSTR="Command_RamLeaderThrowAndMakeEntry">?Break ?open ?Breach ?it ?the ?that ?room ?door ?over ?there ?with ?a ?the ?battering ram ?and leader throw ... make entry.</PHRASE>
 
 			<PHRASE VALSTR="Command_CleanSweep">... sweep ...</PHRASE>
 			<PHRASE VALSTR="Command_CleanSweep">Search ...</PHRASE>

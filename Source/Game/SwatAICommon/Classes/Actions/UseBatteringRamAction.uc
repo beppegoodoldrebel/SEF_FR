@@ -109,7 +109,7 @@ latent function EquipBreachingShotgun()
     Officer = ISwatOfficer(m_Pawn);
     assert(Officer != None);
 
-    BreachingShotgun = FiredWeapon(Officer.GetItemAtSlot(SLOT_BatteringRam));
+    BreachingShotgun = FiredWeapon(Officer.GetItemAtSlot(SLOT_Breaching));
 
 	if(BreachingShotgun == None || !BreachingShotgun.IsA('BatteringRam'))
 	{

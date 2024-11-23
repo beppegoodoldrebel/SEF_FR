@@ -1,5 +1,7 @@
 class BatteringRam extends BreachingShotgun config(SwatEquipment); 
 
+var private bool DebugTrace;
+
 simulated function EquippedHook()
 {
 	super.EquippedHook();
@@ -39,7 +41,8 @@ simulated function UsedHook()
 	  {	  
 		  //log("Battering Ram shot " $Shot $ " Owner " $ Owner.name " );
 		  EndTrace = StartLocation + vector(CurrentDirection) * Range;
-		  //Level.GetLocalPlayerController().myHUD.AddDebugLine(StartTrace, EndTrace, class'Engine.Canvas'.Static.MakeColor(0,255,0));
+		  if ( DebugTrace )
+			Level.GetLocalPlayerController().myHUD.AddDebugLine(StartTrace, EndTrace, class'Engine.Canvas'.Static.MakeColor(0,255,0));
 	  }
 	  else                                                 //AI
 	  {
@@ -47,7 +50,8 @@ simulated function UsedHook()
 	      EndTrace = StartTrace + vector(Owner.Rotation)*120;
 		  //EndTrace = StartLocation + vector(CurrentDirection) * 120;  //fixed range for AI to be sure to hit door...	  
 		  //DEBUG
-		  Level.GetLocalPlayerController().myHUD.AddDebugLine(StartTrace, EndTrace, class'Engine.Canvas'.Static.MakeColor(255,0,0));
+		  if ( DebugTrace )
+			Level.GetLocalPlayerController().myHUD.AddDebugLine(StartTrace, EndTrace, class'Engine.Canvas'.Static.MakeColor(255,0,0));
 	  }
 	
       BallisticFire(StartTrace, EndTrace); 
@@ -122,6 +126,15 @@ simulated function BallisticFire(vector StartTrace, vector EndTrace)
 			if ( self.Owner == Victim.Owner )
 				continue;
 		}
+		
+		if ( Victim.IsA('SwatDoor') )
+			if ( SwatDoor(Victim).IsOpening() || SwatDoor(Victim).isOpen() )
+				continue;
+			
+		if ( Victim.Owner.IsA('SwatDoor') )
+			if ( SwatDoor(Victim.Owner).IsOpening() || SwatDoor(Victim.Owner).isOpen() )
+				continue;
+			
 
         //handle each ballistic impact until the bullet runs out of momentum and does not penetrate 
         if (!HandleBallisticImpact(Victim, HitLocation, HitNormal, Normal(HitLocation - StartTrace), HitMaterial, HitRegion, Momentum, KillEnergy, BulletType, ExitLocation, ExitNormal, ExitMaterial))
@@ -258,5 +271,5 @@ defaultproperties
 	bPenetratesDoors=false
 	IgnoreAmmoOverrides=true
 	bAbletoMelee=false
-	Slot=Slot_BatteringRam
+	Slot=Slot_Breaching
 }

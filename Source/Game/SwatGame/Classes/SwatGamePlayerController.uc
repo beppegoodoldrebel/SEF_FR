@@ -5864,15 +5864,7 @@ exec function CommandOrEquip(NumberRow Row, int Number)
         )
         return;     //can't operate the GCI with keys
     else
-	{
-		if (Number == 9 ) //optiwand/ram
-		{
-		 if ( SwatPlayer(Pawn).GetLoadOut().GetItemAtSlot(Slot_BatteringRam) != None ) // I have the ram
-			EquipSlot(18);  //change the slot
-		}
-		else
-			EquipSlot(Number);
-	}
+		EquipSlot(Number);
 }
 
 function ServerGiveCommand(

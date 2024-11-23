@@ -1131,12 +1131,17 @@ simulated function SetCommandStatus(Command Command, optional bool TeamChanged)
     } else if (Level.NetMode == NM_Standalone && CommandUsesC2(Command) && !CurrentCommandTeam.DoesAnOfficerHaveUsableEquipment(Slot_Breaching)) {
       Status = Pad_GreyedOut;
     } else if (Level.NetMode == NM_Standalone && CommandUsesBatteringRam(Command)) {	
-      if(CurrentCommandTeam.DoesAnOfficerHaveUsableEquipment(Slot_BatteringRam, 'BatteringRam'))
+      if(CurrentCommandTeam.DoesAnOfficerHaveUsableEquipment(Slot_Breaching, 'BatteringRam'))
         Status = Pad_Normal;
       else
         Status = Pad_GreyedOut;
 	} else if (Level.NetMode == NM_Standalone && CommandUsesShotgun(Command)) {
-      if(CurrentCommandTeam.DoesAnOfficerHaveUsableEquipment(Slot_PrimaryWeapon, 'Shotgun'))
+	
+	  if(CurrentCommandTeam.DoesAnOfficerHaveUsableEquipment(Slot_Breaching, 'BreachingSG'))
+      {
+        Status = Pad_Normal;
+      } 	
+	  else if(CurrentCommandTeam.DoesAnOfficerHaveUsableEquipment(Slot_PrimaryWeapon, 'Shotgun'))
       {
         Status = Pad_Normal;
       }

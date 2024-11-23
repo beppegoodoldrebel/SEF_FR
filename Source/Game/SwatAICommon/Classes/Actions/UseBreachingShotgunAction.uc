@@ -105,6 +105,7 @@ private latent function CheckBreachingShotgunAmmunition()
 		}
 		else
 		{
+			log("Use BreachingShotgun check ammo ACT_NO_WEAPONS_AVAILABLE");
 			instantFail(ACT_NO_WEAPONS_AVAILABLE);
 		}
 	}
@@ -116,12 +117,17 @@ latent function EquipBreachingShotgun()
     Officer = ISwatOfficer(m_Pawn);
     assert(Officer != None);
 
-    BreachingShotgun = FiredWeapon(Officer.GetItemAtSlot(SLOT_PrimaryWeapon));
-		if(BreachingShotgun == None || !BreachingShotgun.IsA('Shotgun'))
-			BreachingShotgun = FiredWeapon(Officer.GetItemAtSlot(SLOT_SecondaryWeapon));
+	BreachingShotgun = FiredWeapon(Officer.GetItemAtSlot(SLOT_Breaching));
+	if(BreachingShotgun == None || !BreachingShotgun.IsA('BreachingSG'))
+	{
+		BreachingShotgun = FiredWeapon(Officer.GetItemAtSlot(SLOT_PrimaryWeapon));
+			if(BreachingShotgun == None || !BreachingShotgun.IsA('Shotgun'))
+				BreachingShotgun = FiredWeapon(Officer.GetItemAtSlot(SLOT_SecondaryWeapon));
+	}
 
 	if(BreachingShotgun == None || !BreachingShotgun.IsA('Shotgun'))
 	{
+		log("Use BreachingShotgun ACT_NO_WEAPONS_AVAILABLE");
 		instantFail(ACT_NO_WEAPONS_AVAILABLE);
 	}
 
