@@ -35,6 +35,7 @@ var private CloseDoorGoal			CurrentCloseDoorGoal;
 // automatically copied from our goal
 var(parameters) Door				TargetDoor;
 var(parameters) bool				bTriggerCouldntBreachLockedSpeech;
+var(parameters) bool				bPeekDoor;
 
 // constants
 const kDistanceToUseClosestStackUpPoint = 150.0;

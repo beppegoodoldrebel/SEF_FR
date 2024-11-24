@@ -12,13 +12,14 @@ class SquadStackUpGoal extends SquadCommandGoal;
 // automatically copied to our action
 var(parameters) Door	TargetDoor;
 var(parameters) bool	bTriggerCouldntBreachLockedSpeech;
+var(parameters) bool	bPeekDoor;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Constructors
 
 // Use this constructor
-overloaded function construct( AI_Resource r, Pawn inCommandGiver, vector inCommandOrigin, Door inTargetDoor, optional bool bInTriggerCouldntBreachLockedSpeech )
+overloaded function construct( AI_Resource r, Pawn inCommandGiver, vector inCommandOrigin, Door inTargetDoor, optional bool bInTriggerCouldntBreachLockedSpeech , optional bool bInPeekDoor )
 {
 	super.construct(r, inCommandGiver, inCommandOrigin);
 
@@ -26,6 +27,7 @@ overloaded function construct( AI_Resource r, Pawn inCommandGiver, vector inComm
 	TargetDoor = inTargetDoor;
 
 	bTriggerCouldntBreachLockedSpeech = bInTriggerCouldntBreachLockedSpeech;
+	bPeekDoor=bInPeekDoor;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

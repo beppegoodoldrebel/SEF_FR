@@ -78,8 +78,8 @@ function TryDoor(Pawn Officer)
 
 	// remove the stacked up goal on the officer
 	RemoveStackedUpGoalOnOfficer(Officer);
-
-	CurrentTryDoorGoal = new class'TryDoorGoal'(AI_Resource(Officer.characterAI), TargetDoor, !bTriggerCouldntBreachLockedSpeech);
+	
+	CurrentTryDoorGoal = new class'TryDoorGoal'(AI_Resource(Officer.characterAI), TargetDoor, !bTriggerCouldntBreachLockedSpeech , bPeekDoor);
 	assert(CurrentTryDoorGoal != None);
 	CurrentTryDoorGoal.AddRef();
 

@@ -916,7 +916,7 @@ function bool StackUpAt(Pawn CommandGiver, vector CommandOrigin, Door TargetDoor
 	return false;
 }
 
-function bool StackUpAndTryDoorAt(Pawn CommandGiver, vector CommandOrigin, Door TargetDoor, optional bool bTriggerCouldntBreachLockedSpeech)
+function bool StackUpAndTryDoorAt(Pawn CommandGiver, vector CommandOrigin, Door TargetDoor, optional bool bTriggerCouldntBreachLockedSpeech,optional bool bPeekDoor)
 {
 	local SquadStackUpAndTryDoorGoal SquadStackUpAndTryDoorGoal;
 
@@ -925,7 +925,7 @@ function bool StackUpAndTryDoorAt(Pawn CommandGiver, vector CommandOrigin, Door 
 	{
 		if (!IsSubElement() || !IsOtherSubElementUsingDoor(TargetDoor))
 		{
-			SquadStackUpAndTryDoorGoal = new class'SquadStackUpAndTryDoorGoal'(AI_Resource(SquadAI), CommandGiver, CommandOrigin, TargetDoor, bTriggerCouldntBreachLockedSpeech);
+			SquadStackUpAndTryDoorGoal = new class'SquadStackUpAndTryDoorGoal'(AI_Resource(SquadAI), CommandGiver, CommandOrigin, TargetDoor, bTriggerCouldntBreachLockedSpeech , bPeekDoor);
 			assert(SquadStackUpAndTryDoorGoal != None);
 
 			PostCommandGoal(SquadStackUpAndTryDoorGoal);

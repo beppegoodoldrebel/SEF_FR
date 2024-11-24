@@ -14,7 +14,7 @@ import enum AIDoorUsageSide from ISwatAI;
 // copied from our goal
 var(parameters) Door				TargetDoor;
 var(parameters) bool				bTriggerReportResultsSpeech;
-
+var(parameters) bool 				bPeekDoor;
 // behaviors we use
 var private MoveToDoorGoal			CurrentMoveToDoorGoal;
 var private RotateTowardActorGoal   CurrentRotateTowardActorGoal;
@@ -167,6 +167,7 @@ latent function TryDoor()
 	local int AnimSpecialChannel;
 	local name AnimName;
 	local ISwatDoor SwatDoorTarget;
+	local float frame,rate;
 
 	SwatDoorTarget = ISwatDoor(TargetDoor);
 	assert(SwatDoorTarget != None);
@@ -176,11 +177,25 @@ latent function TryDoor()
 		
 		AnimName		   = SwatDoorTarget.GetTryDoorAnimation(m_Pawn, TryDoorUsageSide);
 		AnimSpecialChannel = m_Pawn.AnimPlaySpecial(AnimName);
-
+		
+		if (bPeekDoor)
+		{
+			while (frame < 0.30)
+			{
+				m_Pawn.GetAnimParams(AnimSpecialChannel,AnimName,frame,rate);
+				yield();
+			}
+			
+			if (SwatDoorTarget.ActorIsToMyLeft(m_Pawn))
+				SwatDoorTarget.SetPositionForMove(DoorPosition_PartialOpenRight, MR_Interacted); 
+			else 
+				SwatDoorTarget.SetPositionForMove(DoorPosition_PartialOpenLeft, MR_Interacted); 
+		
+			SwatDoorTarget.Moved();
+		}
+		
 		m_Pawn.FinishAnim(AnimSpecialChannel);
-		
 	}
-		
 }
 
 function bool DoorIsLockable()

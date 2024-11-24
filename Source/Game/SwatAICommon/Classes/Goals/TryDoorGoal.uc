@@ -12,6 +12,7 @@ class TryDoorGoal extends OfficerCommandGoal;
 // copied to our action
 var(parameters) Door TargetDoor;
 var(parameters) bool bTriggerReportResultsSpeech;
+var(parameters) bool bPeekDoor;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -24,7 +25,7 @@ overloaded function construct( AI_Resource r )
 	assert(false);
 }
 
-overloaded function construct( AI_Resource r, Door inTargetDoor, bool bInTriggerReportResultsSpeech )
+overloaded function construct( AI_Resource r, Door inTargetDoor, bool bInTriggerReportResultsSpeech , optional bool bInPeekDoor )
 {
     Super.construct(r);
 
@@ -32,6 +33,7 @@ overloaded function construct( AI_Resource r, Door inTargetDoor, bool bInTrigger
     TargetDoor = inTargetDoor;
 
 	bTriggerReportResultsSpeech = bInTriggerReportResultsSpeech;
+	bPeekDoor=bInPeekDoor;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

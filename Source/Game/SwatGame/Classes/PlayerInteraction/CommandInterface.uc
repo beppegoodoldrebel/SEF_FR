@@ -270,6 +270,7 @@ enum ECommand
 	Command_Heal, //heal pawns with field dress
 	Command_Heal_Me, //heal local player
 	Command_CheckCorner, //check corner
+	Command_TryDoorPeek, //peek the door while try the lock
 	
 	//RAM
 	Command_Ram,
@@ -1165,11 +1166,31 @@ simulated function SetCommandStatus(Command Command, optional bool TeamChanged)
     else if  (
             Command.IsCancel
         ||  Command.SubPage != Page_None                        //command is an achor for a sub-page
-        ||  TeamCanExecuteCommand(Command, CurrentDoorFocus)
+        
         )
         Status = Pad_Normal;
     else
-        Status = Pad_GreyedOut;
+	{
+		//hack since TeamCanExecuteCommand doesnt import new command enum ... fuck it!
+		
+		if(Level.NetMode == NM_Standalone && Command.Command == Command_TryDoorPeek)
+		{
+			if ( CurrentDoorFocus.isClosed() )
+				Status = Pad_Normal;
+			else
+				Status = Pad_GreyedOut;
+			
+		}
+		
+		
+		if ( Status != Pad_Normal && Status != Pad_GreyedOut )
+		{	
+			if  (TeamCanExecuteCommand(Command, CurrentDoorFocus) )
+				Status = Pad_Normal;
+			else
+				Status = Pad_GreyedOut;
+		}
+	}
 	
 	SetCommand(Command, Status);
 }
@@ -2280,6 +2301,14 @@ simulated function SendCommandToOfficers()
                     PendingCommandOrigin,
                     SwatDoor(PendingCommandTargetActor));
             break;
+		
+		case Command_TryDoorPeek:
+			if (CheckForValidDoor(PendingCommand, PendingCommandTargetActor))
+                bCommandIssued = PendingCommandTeam.StackUpAndTryDoorAt(
+                    Level.GetLocalPlayerController().Pawn,
+                    PendingCommandOrigin,
+                    SwatDoor(PendingCommandTargetActor),false,true);
+            break;
 
         case Command_CheckForTraps:
             if(CheckForValidDoor(PendingCommand, PendingCommandTargetActor))
@@ -2800,6 +2829,7 @@ simulated protected function Actor GetPendingCommandTargetActor()
 
         //cases where we prefer a closed door
         case Command_StackUpAndTryDoor:
+		case Command_TryDoorPeek:
         case Command_CheckForTraps:
         case Command_PickLock:
         case Command_BreachAndClear:
