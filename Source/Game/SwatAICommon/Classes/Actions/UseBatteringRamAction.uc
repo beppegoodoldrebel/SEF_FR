@@ -225,7 +225,8 @@ latent function BreachDoorWithRam()
 	{	
 		tries++;
 		
-		BreachingShotgun.LatentUse();
+		//BreachingShotgun.LatentUse();
+		RamSpecialAnim();
 		
 		yield();
 		if ( TargetDoor.IsClosed() )
@@ -237,6 +238,14 @@ latent function BreachDoorWithRam()
 	
 }
 
+latent function RamSpecialAnim()
+{
+	local int AnimSpecialChannel;
+	
+	AnimSpecialChannel = m_Pawn.AnimPlaySpecial('RamFireSpecialAnim');
+	
+	m_Pawn.FinishAnim(AnimSpecialChannel);
+}
 
 
 function TriggerReportedDeployingRamSpeech()
