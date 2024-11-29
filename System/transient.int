@@ -2345,20 +2345,23 @@ Hint=Select this item.
 Caption=TACTICAL
 Hint=Choose tactical equipment.
 
+[SwatMPLoadoutPanel_2_TabPanel_equip6label]
+Caption=SPECIAL
+
 [SwatMPLoadoutPanel_2_TabPanel_equip5buttonlabel]
-Caption=5
+Caption=MISC 2
 
 [SwatMPLoadoutPanel_2_TabPanel_equip4buttonlabel]
-Caption=4
+Caption=MISC 1
 
 [SwatMPLoadoutPanel_2_TabPanel_equip3buttonlabel]
-Caption=3
+Caption=STING
 
 [SwatMPLoadoutPanel_2_TabPanel_equip2buttonlabel]
-Caption=2
+Caption=GAS
 
 [SwatMPLoadoutPanel_2_TabPanel_equip1buttonlabel]
-Caption=1
+Caption=BANG
 
 [SwatMPLoadoutPanel_1_TabButton]
 Caption=SECONDARY
