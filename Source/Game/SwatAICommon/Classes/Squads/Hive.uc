@@ -818,6 +818,7 @@ private function bool IsOfficerClearingIntoRoom(Pawn Officer, name RoomName)
 	return false;
 }
 
+
 // if we are in the same room, have a line of sight, or we can find an engaging point for the officer in the room,
 // we can assign an officer to this target
 // don't give the officer an assignment if they're deploying a thrown item or breaching
@@ -828,36 +829,21 @@ private event bool CanAssignOfficerToTarget(Pawn Officer, Pawn Target)
 	assert(class'Pawn'.static.checkConscious(Officer));
 
 	if (Target.IsA('SwatEnemy'))
-		bIsTargetAThreat = ISwatEnemy(Target).IsAThreat() ||  ISwatEnemy(Target).HasUsableWeapon();
+		bIsTargetAThreat = ISwatEnemy(Target).IsAThreat();
 
-	if(IsOfficerDeployingNonLethal(Officer) || IsOfficerBreaching(Officer))
+	if (! IsOfficerDeployingNonLethal(Officer) &&
+		! IsOfficerBreaching(Officer) &&
+		(Target.IsInRoom(Officer.GetRoomName()) || IsOfficerClearingIntoRoom(Officer, Target.GetRoomName()) ||
+		 ((!Target.IsA('SwatEnemy') || !bIsTargetAThreat) && Officer.LineOfSightTo(Target)) ||
+		 (Target.IsA('SwatEnemy') && bIsTargetAThreat && Officer.CanHit(Target)) ||
+		 ((bIsTargetAThreat || !Blackboard.AreAnyAssignedTargetsThreatening()) && (FindEngagingPointForOfficerInRoom(Officer, Target, 0.0) != None))))
 	{
-		// Don't assign us if we're applying less lethal equipment
+		return true;
+	}
+	else
+	{
 		return false;
 	}
-
-	if(FindEngagingPointForOfficerInRoom(Officer, Target, 0.0) != None)
-	{ // DO NOT assign us if we cannot find a point to engage our target from
-		if(Target.IsInRoom(Officer.GetRoomName()))
-		{
-			// DO assign us if we're in the same room
-			return true;
-		}
-
-		if(IsOfficerClearingIntoRoom(Officer, Target.GetRoomName()))
-		{
-			// DO assign us if we are in another room, and we are clearing.
-			return true;
-		}
-
-		//if(Officer.CanHitTarget(Target) || Officer.LineOfSightTo(Target))
-		if(Officer.LineOfSightTo(Target) ||  bIsTargetAThreat )
-		{ // DO assign us if we can hit the target or they are within LOS
-			return true;
-		}
-	}
-
-	return false;
 }
 
 private function bool CanAssignAnyOfficerToTarget(Pawn Target)

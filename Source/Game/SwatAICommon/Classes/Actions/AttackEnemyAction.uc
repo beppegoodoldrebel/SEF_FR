@@ -30,10 +30,6 @@ const kMaxAttackEnemyUpdateTime = 0.25;
 
 function float selectionHeuristic( AI_Goal goal )
 {
-	if(IsMovingTo() || IsFallingIn() || IsMovingAndClearing())
-	{
-		return 0.0;
-	}
 	return FRand();
 }
 
@@ -91,11 +87,12 @@ function goalNotAchievedCB( AI_Goal goal, AI_Action child, ACT_ErrorCodes errorC
 // (not in the middle of executing a move and clear!)
 function bool ShouldMoveToAttackEnemy()
 {
-	local SwatAIRepository SwatAIRepo;
-	SwatAIRepo = SwatAIRepository(Level.AIRepo);
 
-	// test to see if we're moving and clearing
-	return (! SwatAIRepo.IsOfficerMovingAndClearing(m_Pawn));
+	if(IsMovingTo() || IsFallingIn() || IsMovingAndClearing() || ( Vsize(Enemy.Location - m_Pawn.Location )  > 500 ))
+		return false;
+	else
+		return true;
+
 }
 
 // returns true if we're moving and clearing, or if our move to engage goal hasn't completed
@@ -107,11 +104,7 @@ function bool IsMovingToAttack()
 
 private function MoveToAttackEnemy()
 {
-	local SwatAIRepository SwatAIRepo;
-	SwatAIRepo = SwatAIRepository(Level.AIRepo);
-	
-	assert(!SwatAIRepo.GetElementSquad().IsMovingInFormation()); //dont spread if in formation!
-	
+		
 	// only move to attack the enemy if we should
 	if (m_Pawn.logAI)
 		log(m_Pawn.Name $ " will move to attack the enemy");

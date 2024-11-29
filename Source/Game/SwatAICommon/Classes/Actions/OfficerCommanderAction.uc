@@ -474,7 +474,8 @@ private latent function AttackTarget(Pawn Target)
 
 	if (m_Pawn.logAI)
 		log(m_Pawn.Name $ " is going to attack " $ Target.Name);
-
+ 
+	/*
 	// If we're just moving to the destination, just attack.
 	if ( (GetHive().IsMovingTo(self.m_Pawn) || GetHive().IsFallingIn(self.m_Pawn) || GetHive().IsMovingInFormation(self.m_Pawn) || SwatAIRepository(Level.AIRepo).IsOfficerMovingAndClearing(m_Pawn) ) || 
 	    ( Vsize(Target.Location - m_Pawn.Location )  > 500 )) //stay in formation if target less than 15
@@ -492,14 +493,15 @@ private latent function AttackTarget(Pawn Target)
 		AttackGoal = None;
 	}
 	else
-	{	// Otherwise, attack. Optionally while falling in.
+	{	// Otherwise, attack. Optionally while falling in. 
+	*/
 		CurrentAttackEnemyGoal = new class'AttackEnemyGoal'(characterResource());
 		assert(CurrentAttackEnemyGoal != None);
 		CurrentAttackEnemyGoal.AddRef();
 
 		CurrentAttackEnemyGoal.postGoal(self);
 		WaitForGoal(CurrentAttackEnemyGoal);
-	}
+	//}
 	
 }
 
