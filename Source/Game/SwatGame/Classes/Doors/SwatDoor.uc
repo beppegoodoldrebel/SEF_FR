@@ -1593,7 +1593,7 @@ simulated state Moving
 		
 		if ( ( (PendingPosition == DoorPosition_PartialOpenLeft ) || (PendingPosition == DoorPosition_PartialOpenRight  ) && CurrentPosition == DoorPosition_Closed ))
 		{
-			log("DOOR " $ frame $ " C " $ CurrentPosition $ " P "  $ PendingPosition $ "  D "$ PendingPosition $ " ");
+			//log("DOOR " $ frame $ " C " $ CurrentPosition $ " P "  $ PendingPosition $ "  D "$ PendingPosition $ " ");
 			if ( frame >= 0.36  )  //around frame 15 of opening a door
 			{
 				

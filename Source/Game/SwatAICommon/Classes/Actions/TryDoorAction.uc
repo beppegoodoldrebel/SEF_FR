@@ -248,7 +248,9 @@ Begin:
 			// re-enable collision avoidance
 			m_Pawn.EnableCollisionAvoidance();
 			ReportResultsToTeam();
-			ReportPossibleTrap();
+			
+			if (!bPeekDoor)
+				ReportPossibleTrap();
 		}
 	}
 
