@@ -2169,12 +2169,14 @@ simulated event Tick(float dTime)
         Disable('Tick');
         return;
     }
-
+	
+	if ( IsLaserON() )
+		LaserDraw();
+	
 	CheckTickEquipped();
 
     UpdateAimError(dTime);
 }
-
 simulated function CheckTickEquipped()
 {
     if (!IsEquipped()) // ckline: modified assert to conditional for efficiency (avoid string concat)
@@ -2183,6 +2185,16 @@ simulated function CheckTickEquipped()
             "[tcohen] "$class.name$", owned by "$Owner$" is Tick()ing, but it is not Equipped.");
     }
 }
+
+//LASER implementation to be expanded on childs
+exec simulated function ToggleLaser();
+simulated function bool IsLaserON();
+simulated function LaserDraw();
+simulated function InitLaser();
+simulated function DestroyLaser();
+simulated function bool HasIrLaser();
+simulated function SetLaserStartTime(float ST);
+
 
 //AimError at any moment in time is composed of two components:
 //  - base aim error represents the weapon's accuracy based on the current condition of its owner,
@@ -2719,6 +2731,13 @@ function OnPlayerViewChanged()
 		DestroyFlashlight(ICanToggleWeaponFlashlight(Owner).GetDelayBeforeFlashlightShutoff());
     }
     UpdateFlashlightState();
+	
+	if (IsLaserON())
+	{
+		//reset laser creating a new one
+		DestroyLaser();
+		InitLaser();  
+	}
 }
 
 //

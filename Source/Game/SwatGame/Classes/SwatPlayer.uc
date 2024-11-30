@@ -4850,6 +4850,11 @@ simulated function bool HasInstructorMesh()
 	return false;
 }
 
+simulated function bool HasNVGActiveForLaser()
+{
+	return ProtectiveEquipment( GetLoadOut().GetItemAtPocket(Pocket.Pocket_HeadArmor)).GetCanSeeIRLaser();
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 defaultproperties
 {

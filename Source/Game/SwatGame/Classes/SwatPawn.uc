@@ -1752,6 +1752,12 @@ simulated final protected function SetDesiredNightvisionState(bool DesireOn)
 	}
 }
 
+simulated final function bool GetNightvisionState()
+{
+	return NightvisionShouldBeOn;
+}
+
+
 simulated function UpdateNightvision()
 {
 	local IVisionEnhancement CurrentVision;
@@ -1772,6 +1778,8 @@ simulated function UpdateNightvision()
 		// update GUI overlays
 		SetProtection(REGION_Head, GetSkeletalRegionProtection(REGION_Head));
 	}
+	else
+		NightvisionShouldBeOn = false;
 }
 
 function UpdateNightvisionUP()

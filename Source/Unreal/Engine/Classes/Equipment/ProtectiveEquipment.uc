@@ -109,6 +109,8 @@ simulated function float GetArmorHealthPercent() {
   return 1.0;
 }
 
+simulated function bool GetCanSeeIRLaser(); //to be extended in subclasses
+
 defaultproperties
 {
     StaticMesh=StaticMesh'SwatGear_sm.Placeholder'

@@ -242,6 +242,12 @@ simulated state Activating
 		SetTimer(EffectDownTime, true);
 
 		TransitionStart = Level.TimeSeconds;
+		
+		
+		if ( PC.GetHUDPage().NVGogglesTransitionOverlay.WinTop > -0.5 )
+		{
+				
+		}
 	}
 
 	simulated function Tick(float Delta)
@@ -254,6 +260,9 @@ simulated state Activating
 		{
 			A = Lerp((Level.TimeSeconds - TransitionStart) / EffectDownTime, 0, 1);
 			PC.GetHUDPage().NVGogglesTransitionOverlay.WinTop = -1 + A * A;
+			
+			if ( PC.GetHUDPage().NVGogglesTransitionOverlay.WinTop >= -0.2 )
+				SetCanSeeIRLaser(true);
 		}
 
 		Super.Tick(Delta);
@@ -334,6 +343,9 @@ simulated state Deactivating
 		{
 			A = Lerp((Level.TimeSeconds - TransitionStart) / EffectUpTime, 0, 1);
 			PC.GetHUDPage().NVGogglesTransitionOverlay.WinTop = 0 - A * A;
+			
+			if ( PC.GetHUDPage().NVGogglesTransitionOverlay.WinTop < -0.2 )
+				SetCanSeeIRLaser(false);
 		}
 
 		Super.Tick(Delta);
@@ -350,6 +362,9 @@ static function bool IsUsableByPlayer()
 	// sort of clever hack...allows the night vision goggles to be disabled, but not NVGogglesBase
 	return default.class != class'SwatEquipment.NVGogglesBase';
 }
+
+simulated function bool GetCanSeeIRLaser();
+simulated function SetCanSeeIRLaser(bool Set);
 
 defaultproperties
 {

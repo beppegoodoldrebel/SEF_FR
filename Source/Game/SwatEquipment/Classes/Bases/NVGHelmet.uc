@@ -3,6 +3,8 @@ class NVGHelmet extends NVGogglesBase;
 var(Mesh) protected config StaticMesh AltActivatedMesh;
 var(Mesh) protected config StaticMesh AltDeactivatedMesh;
 
+var bool CanSeeIRLaser;
+
 
 simulated function SetNVGMesh( bool Activation )
 {
@@ -23,4 +25,14 @@ simulated function SetNVGMesh( bool Activation )
 			SetStaticMesh(DeactivatedMesh);
 		
 	}
+}
+
+simulated function bool GetCanSeeIRLaser()
+{
+	return CanSeeIRLaser;
+}
+
+simulated function SetCanSeeIRLaser(bool Set)
+{
+	CanSeeIRLaser = Set;
 }
