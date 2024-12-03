@@ -242,12 +242,6 @@ simulated state Activating
 		SetTimer(EffectDownTime, true);
 
 		TransitionStart = Level.TimeSeconds;
-		
-		
-		if ( PC.GetHUDPage().NVGogglesTransitionOverlay.WinTop > -0.5 )
-		{
-				
-		}
 	}
 
 	simulated function Tick(float Delta)
@@ -264,7 +258,9 @@ simulated state Activating
 			if ( PC.GetHUDPage().NVGogglesTransitionOverlay.WinTop >= -0.2 )
 				SetCanSeeIRLaser(true);
 		}
-
+		
+		UpdateStrobeLightPosition();
+		
 		Super.Tick(Delta);
 	}
 
@@ -308,6 +304,14 @@ simulated state Activated
 
 		ActivateEffect();
 	}
+	
+	simulated function Tick(float Delta)
+	{
+		SetCanSeeIRLaser(true);
+		UpdateStrobeLightPosition();
+		Super.Tick(Delta);
+	}	
+	
 
 	simulated function EndState()
 	{
@@ -347,6 +351,10 @@ simulated state Deactivating
 			if ( PC.GetHUDPage().NVGogglesTransitionOverlay.WinTop < -0.2 )
 				SetCanSeeIRLaser(false);
 		}
+		else
+			SetCanSeeIRLaser(false);
+		
+		UpdateStrobeLightPosition();
 
 		Super.Tick(Delta);
 	}
@@ -365,6 +373,7 @@ static function bool IsUsableByPlayer()
 
 simulated function bool GetCanSeeIRLaser();
 simulated function SetCanSeeIRLaser(bool Set);
+simulated function UpdateStrobeLightPosition();
 
 defaultproperties
 {

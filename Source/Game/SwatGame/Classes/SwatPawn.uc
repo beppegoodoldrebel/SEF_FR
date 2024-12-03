@@ -1778,8 +1778,8 @@ simulated function UpdateNightvision()
 		// update GUI overlays
 		SetProtection(REGION_Head, GetSkeletalRegionProtection(REGION_Head));
 	}
-	else
-		NightvisionShouldBeOn = false;
+	//else
+	//	NightvisionShouldBeOn = false;
 }
 
 function UpdateNightvisionUP()

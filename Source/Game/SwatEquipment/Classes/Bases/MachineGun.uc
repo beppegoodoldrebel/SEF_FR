@@ -5,10 +5,10 @@ class MachineGun extends ClipBasedWeapon;
 var config bool bHasIRLaser;
 var private bool bWantLaser;
 var IRLaser IRLaserClass;
-var private float StartTime;
-var private float DeltaTime;
 var private bool CanSeeLaser;
 
+var vector TraceStart;
+var vector HitLocation;
 
 //offset
 var config vector IRLaserPosition_1stPerson;
@@ -20,22 +20,16 @@ var config rotator IRLaserRotation_3rdPerson;
 //IR LASER
 simulated function LaserDraw()
 {
-	local vector traceStart,traceEnd,PerfectStartLocation;
-	local rotator PerfectStartDirection;
-	local Vector  hitLocation, hitNormal;
+	local vector traceEnd, hitNormal;
 	local HandheldEquipmentModel WeaponModel;
 	local vector PositionOffset;
 	local rotator RotationOffset;
 	
 	assert(bWantLaser && bHasIRLaser );
 	
-	
-	
 	//if (Pawn(Owner).Controller == Level.GetLocalPlayerController() )
 	if (Pawn(Owner).isA('SwatPlayer') || Pawn(Owner).isA('SwatOfficer'))
 	{
-		
-	//GetPerfectFireStart(PerfectStartLocation, PerfectStartDirection);
 		
 	if (InFirstPersonView())
     {
@@ -57,41 +51,41 @@ simulated function LaserDraw()
 	
 	WeaponModel.Owner.UpdateAttachmentLocations();
 	
-	DeltaTime = Level.TimeSeconds-StartTime;
 	//we draw only if local player is on NVGs
-	if (SwatPLayer(Level.GetLocalPlayerController().Pawn).HasNVGActiveForLaser() ) //	&& (StartTime <= Level.TimeSeconds ) ) //delay cause the NVG effect is not immediate
+	if (SwatPLayer(Level.GetLocalPlayerController().Pawn).HasNVGActiveForLaser() &&
+	    Level.GetLocalPlayerController().Pawn.IsFirstPerson() )//&& InFirstPersonView() )
 	{
-		
 		TraceStart = IrLaserClass.Location;
 		TraceEnd = TraceStart + vector(IrLaserClass.Rotation) * 10000;
-	
 		Trace(hitLocation, hitNormal, traceEnd, traceStart, true, , , , True);
 	
-		Level.GetLocalPlayerController().myHUD.AddDebugLine(traceStart, hitLocation,
-																class'Engine.Canvas'.Static.MakeColor(255,255,255), 0.01);
+		//poorman's beam effect lol
+		Level.GetLocalPlayerController().myHUD.AddDebugLine(traceStart, hitLocation,class'Engine.Canvas'.Static.MakeColor(255,255,255), 0.01);
 	}
     }
 }
 
 exec simulated function ToggleLaser()
 {
-	
 	bWantLaser=!bWantLaser;
 	
 	if (bWantLaser)
-	{
-//		if (SwatPawn(Level.GetLocalPlayerController().Pawn).GetNightvisionState())
-//			StartTime = ( Level.TimeSeconds - DeltaTime );
-//		else
-//			StartTime = ( Level.TimeSeconds - DeltaTime ) +  1.0   ;
 		InitLaser();
-	}
 	else
-	{
-		DestroyLaser();
-	}
-		
+		DestroyLaser();		
 }
+
+//AI laser use
+simulated function SetLaser(bool bForce)
+{
+	bWantLaser=bForce;
+	
+	if (bWantLaser)
+		InitLaser();
+	else
+		DestroyLaser();		
+}
+
 
 simulated function InitLaser()
 {
@@ -107,7 +101,7 @@ simulated function InitLaser()
 		PositionOffset = IRLaserPosition_1stPerson;
 		RotationOffset = IRLaserRotation_1stPerson;
     }
-    else // todo: handle 3rd person flashlight, including when controller changes
+    else
     {
 		assertWithDescription(ThirdPersonModel != None, "[ckline] Can't set up flashlight for "$self$", ThirdPersonModel is None");
 		WeaponModel = ThirdPersonModel;
@@ -136,9 +130,4 @@ simulated function DestroyLaser()
 simulated function bool HasIrLaser()
 {
 	return bHasIRLaser;
-}
-
-simulated function SetLaserStartTime(float ST)
-{
-	StartTime = ST;
 }

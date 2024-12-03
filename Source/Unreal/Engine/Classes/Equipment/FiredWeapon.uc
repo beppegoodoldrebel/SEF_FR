@@ -2187,14 +2187,13 @@ simulated function CheckTickEquipped()
 }
 
 //LASER implementation to be expanded on childs
-exec simulated function ToggleLaser();
+exec simulated function ToggleLaser(); //players
+simulated function SetLaser(bool bForce); //AI 
 simulated function bool IsLaserON();
 simulated function LaserDraw();
 simulated function InitLaser();
 simulated function DestroyLaser();
 simulated function bool HasIrLaser();
-simulated function SetLaserStartTime(float ST);
-
 
 //AimError at any moment in time is composed of two components:
 //  - base aim error represents the weapon's accuracy based on the current condition of its owner,
