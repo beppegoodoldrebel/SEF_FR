@@ -19,8 +19,6 @@ simulated function SetNVGMesh( bool Activation )
 			SetStaticMesh(AltActivatedMesh);
 		else	
 			SetStaticMesh(ActivatedMesh);
-	
-			//SetStrobeLight();
 	}
 	else
 	{
@@ -29,7 +27,6 @@ simulated function SetNVGMesh( bool Activation )
 		else	
 			SetStaticMesh(DeactivatedMesh);
 		
-		//AttachedStrobeLight.Stop();
 	}
 }
 

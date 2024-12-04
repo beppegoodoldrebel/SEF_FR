@@ -6162,13 +6162,12 @@ exec function ToggleFlashlight()
 
 exec function ToggleLaser()
 {
-        local FiredWeapon ActiveItem;
+     local FiredWeapon ActiveItem;
 
     ActiveItem = FiredWeapon( Pawn.GetActiveItem() );
     if (ActiveItem != None && ActiveItem.IsA('FiredWeapon'))
-		ActiveItem.ToggleLaser();
+		ActiveItem.ServerSetLaser();
 }
-
 
 // Toggle the player's NVG
 exec function ToggleNVG()

@@ -16,6 +16,12 @@ var config rotator IRLaserRotation_1stPerson;
 var config vector IRLaserPosition_3rdPerson;
 var config rotator IRLaserRotation_3rdPerson;
 
+replication
+{
+  unreliable if( Role == ROLE_Authority )
+	  bWantLaser;
+}
+
 
 //IR LASER
 simulated function LaserDraw()
@@ -60,30 +66,32 @@ simulated function LaserDraw()
 		Trace(hitLocation, hitNormal, traceEnd, traceStart, true, , , , True);
 	
 		//poorman's beam effect lol
-		Level.GetLocalPlayerController().myHUD.AddDebugLine(traceStart, hitLocation,class'Engine.Canvas'.Static.MakeColor(255,255,255), 0.01);
+		Level.GetLocalPlayerController().myHUD.AddDebugLine(traceStart, hitLocation,class'Engine.Canvas'.Static.MakeColor(255,255,255), 0.02);
+		log("Laser Draw Player " $ Pawn(Owner).name $ " laser "  $ IRLaserClass.name );
 	}
     }
 }
 
-exec simulated function ToggleLaser()
+function ServerSetLaser()
 {
+	log("ServerSetLaser Laser Player " $ Pawn(Owner).name $ " laser "  $ IRLaserClass.name );
 	bWantLaser=!bWantLaser;
-	
-	if (bWantLaser)
-		InitLaser();
-	else
-		DestroyLaser();		
+	SetLaser(bWantLaser);	
 }
 
-//AI laser use
+//client/AI laser use
 simulated function SetLaser(bool bForce)
 {
+	//assert(Level.NetMode != NM_DedicatedServer);
+	
 	bWantLaser=bForce;
 	
 	if (bWantLaser)
 		InitLaser();
 	else
 		DestroyLaser();		
+
+	Log("SetLaser Laser Player " $ Pawn(Owner).name $ " laser "  $ IRLaserClass.name );
 }
 
 
