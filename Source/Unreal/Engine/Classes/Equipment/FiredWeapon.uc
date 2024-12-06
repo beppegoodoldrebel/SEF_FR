@@ -2111,6 +2111,9 @@ simulated function UnEquippedHook()
 		//la pedina cambia stato di flashlight ... da capire se funziona!
        ICanToggleWeaponFlashlight(Owner).ToggleDesiredFlashlightState();
     }
+	
+	if (IsLaserON())
+		ServerSetLaser();
 }
 
 //get the FiredWeapons standard AimError based on its Owner's current condition.
