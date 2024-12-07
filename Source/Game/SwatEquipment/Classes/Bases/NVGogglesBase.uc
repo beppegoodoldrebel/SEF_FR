@@ -307,7 +307,11 @@ simulated state Activated
 	
 	simulated function Tick(float Delta)
 	{
-		SetCanSeeIRLaser(true);
+		if ( Level.GetLocalPlayerController().Pawn.IsFirstPerson() )
+			SetCanSeeIRLaser(true);
+		else
+			SetCanSeeIRLaser(false);
+		
 		UpdateStrobeLightPosition();
 		Super.Tick(Delta);
 	}	

@@ -1,20 +1,17 @@
 class ClipBasedWeapon extends Engine.SwatWeapon;
 
 var SpentMagDrop SpentMag; //static mesh of the spent mag to be dropped
-var config bool bHasIRLaser;
-var config bool bHasVisibleLaser;
-var private bool bWantLaser;
-var IRLaser IRLaserClass;
-var private bool CanSeeLaser;
-
-var vector TraceStart;
-var vector HitLocation;
+var (Laser) config   bool bHasIRLaser;
+var (Laser) config   bool bHasVisibleLaser;
+var (Laser) private bool bWantLaser;
+var (Laser) IRLaser IRLaserClass;
+var (Laser) private bool CanSeeLaser;
 
 //offset
-var config vector IRLaserPosition_1stPerson;
-var config rotator IRLaserRotation_1stPerson;
-var config vector IRLaserPosition_3rdPerson;
-var config rotator IRLaserRotation_3rdPerson;
+var (Laser) config vector IRLaserPosition_1stPerson;
+var (Laser) config rotator IRLaserRotation_1stPerson;
+var (Laser) config vector IRLaserPosition_3rdPerson;
+var (Laser) config rotator IRLaserRotation_3rdPerson;
 
 replication
 {
@@ -85,8 +82,11 @@ simulated function LaserDraw()
 	local HandheldEquipmentModel WeaponModel;
 	local vector PositionOffset;
 	local rotator RotationOffset;
+    local vector TraceStart;
+	local vector HitLocation;
 	
-	assert(bWantLaser && ( bHasIRLaser || bHasVisibleLaser) );
+	if(bWantLaser && ( bHasIRLaser || bHasVisibleLaser) )
+	{
 	
 	//if (Pawn(Owner).Controller == Level.GetLocalPlayerController() )
 	if (Pawn(Owner).isA('SwatPlayer') || Pawn(Owner).isA('SwatOfficer'))
@@ -116,10 +116,10 @@ simulated function LaserDraw()
 	if ( bHasIRLaser )
 	{
 		//NVG assertion needed 
-		if( ! (SwatPLayer(Level.GetLocalPlayerController().Pawn).HasNVGActiveForLaser() && Level.GetLocalPlayerController().Pawn.IsFirstPerson() ) )
-			IrLaserClass.Hide();
-		else
+		if(SwatPlayer(Level.GetLocalPlayerController().Pawn).HasNVGActiveForLaser() && Level.GetLocalPlayerController().Pawn.IsFirstPerson() )
 			IrLaserClass.Show();
+		else
+			IrLaserClass.Hide();
     }
 	else
 	{
@@ -134,6 +134,10 @@ simulated function LaserDraw()
 	IrLaserClass.LaserLength(VDist(TraceStart , hitLocation));
 	//Level.GetLocalPlayerController().myHUD.AddDebugLine(traceStart, hitLocation,class'Engine.Canvas'.Static.MakeColor(255,0,0), 0.02);
 	}
+	
+	}
+	else
+		IrLaserClass.Hide();
 }
 
 function ServerSetLaser()
@@ -179,6 +183,12 @@ simulated function InitLaser()
     }
 	
 	IRLaserClass=Spawn(class'IRLaser',WeaponModel,,,);
+	
+	if (bHasIRLaser)
+		IRLaserClass.IRLaserColor();
+    else if (bHasVisibleLaser)
+		IRLaserClass.RedLaserColor();
+	
 	WeaponModel.Owner.AttachToBone(IRLaserClass, WeaponModel.EquippedSocket);
 	
 	IRLaserClass.SetRelativeLocation(PositionOffset);
