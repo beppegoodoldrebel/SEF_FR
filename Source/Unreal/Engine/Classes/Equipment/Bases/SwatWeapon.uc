@@ -172,9 +172,9 @@ var() public config bool PassableItem;	// can this item be passed from one playe
 
 var config vector DefaultLocationOffset;
 var config Rotator DefaultRotationOffset;
-var config vector IronSightLocationOffset;
+var (IronSight) config vector IronSightLocationOffset;
 var config vector PlayerViewOffset;
-var config Rotator IronSightRotationOffset;
+var (IronSight)config Rotator IronSightRotationOffset;
 //var config Rotator PlayerViewRotation;
 var config int IronSightLeanYawLeft; //lean adjustment for IronSightLocation
 var config int IronSightLeanYawRight; //lean adjustment for IronSightLocation
@@ -1457,22 +1457,22 @@ function bool ValidIdleCategory(EIdleWeaponStatus DesiredStatus)
 
 simulated function vector GetDefaultLocationOffset()
 {
-    return DefaultLocationOffset;
+	return DefaultLocationOffset;
 }
 
 simulated function Rotator GetDefaultRotationOffset()
 {
-    return DefaultRotationOffset;
+	return DefaultRotationOffset;
 }
 
 simulated function vector GetIronsightsLocationOffset()
 {
-    return IronSightLocationOffset;
+	return IronSightLocationOffset;
 }
 
 simulated function Rotator GetIronsightsRotationOffset()
 {
-    return IronSightRotationOffset;
+	return IronSightRotationOffset;
 }
 
 simulated function float GetViewInertia()

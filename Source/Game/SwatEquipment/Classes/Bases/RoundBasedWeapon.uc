@@ -1,1 +1,1 @@
-class RoundBasedWeapon extends Engine.SwatWeapon;
+class RoundBasedWeapon extends SwatWeaponFR;
