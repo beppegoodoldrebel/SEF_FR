@@ -471,7 +471,6 @@ simulated function bool WillHitIntendedTarget(Actor Target, bool MomentumMatters
     return false;
 }
 
-// Used by the OfficerAI - whether firing this weapon will not hit SwatHostage/Undercover/Guard
 simulated function bool WillOfficerAvoidBadShot(Actor Target, bool MomentumMatters, vector EndTrace, optional bool IgnoreStaticMeshes)
 {
     local vector PerfectFireStartLocation, HitLocation, StartTrace, ExitLocation, PreviousExitLocation;
@@ -483,8 +482,6 @@ simulated function bool WillOfficerAvoidBadShot(Actor Target, bool MomentumMatte
     local ESkeletalRegion HitRegion;
     local float Momentum, MtP;
 
-    GetPerfectFireStart(PerfectFireStartLocation, PerfectFireStartDirection);
-
     StartTrace = Pawn(Owner).GetEyeLocation();
     EndTrace = Pawn(Target).GetChestLocation();
 
@@ -495,10 +492,6 @@ simulated function bool WillOfficerAvoidBadShot(Actor Target, bool MomentumMatte
         return false; // We can't hit it because it is too far away.
     }
 
-    Momentum = MuzzleVelocity * Ammo.Mass;
-    PreviousExitLocation = ExitLocation;
-
-
     foreach TraceActors(
         class'Actor',
         Victim,
@@ -506,18 +499,9 @@ simulated function bool WillOfficerAvoidBadShot(Actor Target, bool MomentumMatte
         HitNormal,
         HitMaterial,
         EndTrace,
-        StartTrace,
-        /*optional extent*/,
-        true, //bSkeletalBoxTest
-        HitRegion,
-        true,   //bGetMaterial
-        true,   //bFindExitLocation
-        ExitLocation,
-        ExitNormal,
-        ExitMaterial )
+        StartTrace,,true
+         )
     {
-
-        MtP = Victim.GetMomentumToPenetrate(HitLocation, HitNormal, HitMaterial);
 		
 		if(Victim.IsA('LevelInfo'))
         { // LevelInfo is hidden AND blocks all bullets!
@@ -527,21 +511,9 @@ simulated function bool WillOfficerAvoidBadShot(Actor Target, bool MomentumMatte
         {
             continue; // Not something we need to worry about
         }
-        else if(!IgnoreStaticMeshes && Victim.DrawType == DT_StaticMesh && Ammo.RoundsNeverPenetrate)
-        {
-            // This might be redundant, but it doesn't seem to work otherwise.
-            return false;
-        }
         else if(!IgnoreStaticMeshes && Victim.DrawType == DT_StaticMesh)
         {
-            // The bullet hits a static mesh.
-            Momentum -= MtP;
             continue;
-        }
-        else if(Momentum <= 0 && MomentumMatters)
-        {
-            // The bullet lost all of its momentum
-            return false;
         }
 		else if (Victim.isa('ShieldEquip'))
 		{
@@ -553,8 +525,6 @@ simulated function bool WillOfficerAvoidBadShot(Actor Target, bool MomentumMatte
 		}
         else if(Victim != Target)
         {
-            Momentum -= MtP;
-
             // We hit something that isn't our target
             if(Victim.IsA('SwatHostage') || Victim.IsA('SwatGuard')  || Victim.IsA('SwatUndercover'))
             {
@@ -569,11 +539,12 @@ simulated function bool WillOfficerAvoidBadShot(Actor Target, bool MomentumMatte
         }
         else
         {
-            return true; //go
+            continue; //go
         }
     }
     return true; //might be a LevelInfo , missed shot but still a go , officers can miss a shot
 }
+
 
 // Used by the AI - whether a bullet fired from this weapon will hit the intended target with no interruptions.
 // Key areas where this is used: ThreatenHostageAction
@@ -2176,6 +2147,9 @@ simulated event Tick(float dTime)
 
     if (class'Pawn'.static.CheckDead(Pawn(Owner)))
     {
+		if ( IsLaserON() )
+			DestroyLaser();
+		
         //in this case, we might still be equipped, but we don't want to update stuff
         Disable('Tick');
         return;

@@ -527,9 +527,11 @@ function OfficerSawPawn(Pawn OfficerViewer, Pawn Seen)
 		if (! ISwatAI(Seen).IsCompliant() && 
 			! ISwatAI(Seen).IsArrested() && 
 			! Seen.IsIncapacitated() &&
-			(Seen.IsAThreat() || 
-			( ISwatAI(Seen).HasUsableWeapon() && !Seen.IsA('SwatUndercover') && !Seen.IsA('SwatGuard') ) || 
-			!ISwatAI(Seen).GetCommanderAction().IsIgnoringComplianceOrders()) &&
+			(Seen.IsAThreat() 
+			//|| ( ISwatAI(Seen).HasUsableWeapon() 
+			|| ( //ISwatAI(Seen).HasFiredWeaponEquipped()&& 
+			!Seen.IsA('SwatUndercover') && !Seen.IsA('SwatGuard') ) 
+			||!ISwatAI(Seen).GetCommanderAction().IsIgnoringComplianceOrders()) &&
 			CanAssignAnyOfficerToTarget(Seen))
 		{
 			// this may need to be moved because this will be called every time we see a Enemy or Hostage 

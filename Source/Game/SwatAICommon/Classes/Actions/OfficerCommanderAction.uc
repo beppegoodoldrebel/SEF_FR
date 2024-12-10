@@ -368,7 +368,7 @@ private function bool ShouldEngageTarget(Pawn Target)
 		return true;
 	}
 	else if (Target.IsA('SwatEnemy') && (CurrentAttackEnemyGoal == None) &&
-		( ( (ISwatEnemy(Target).IsAThreat() )&& !ISwatEnemy(Target).ThreatTimerIsOver()) || ShouldAttackRunner(Target)))
+		( ( (ISwatEnemy(Target).IsAThreat() || ISwatAI(Target).HasFiredWeaponEquipped() )&& !ISwatEnemy(Target).ThreatTimerIsOver()) || ShouldAttackRunner(Target)))
 	{
 		//attack if the suspect is a danger and we dont have less lethal
 		if (!ISwatAI(Target).HasFiredWeaponEquipped() && !FiredWeapon(m_Pawn.GetActiveItem()).islessLethal() && !ISwatPawn(target).IsNonlethaled() )

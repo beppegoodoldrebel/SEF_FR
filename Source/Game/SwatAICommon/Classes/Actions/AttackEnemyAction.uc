@@ -88,7 +88,7 @@ function goalNotAchievedCB( AI_Goal goal, AI_Action child, ACT_ErrorCodes errorC
 function bool ShouldMoveToAttackEnemy()
 {
 
-	if(IsMovingTo() || IsFallingIn() || IsMovingAndClearing() || ( Vsize(Enemy.Location - m_Pawn.Location )  > 500 ))
+	if(IsMovingTo() || IsFallingIn() || IsMovingAndClearing() )//|| ( Vsize(Enemy.Location - m_Pawn.Location )  > 500 ))
 		return false;
 	else
 		return true;

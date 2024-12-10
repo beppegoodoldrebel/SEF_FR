@@ -319,6 +319,7 @@ latent function ShootWeaponAt(Actor Target)
 		
 		if( DistanceFromTarget < 150  ) //melee range = 150 
 		{		
+			/*
 			if (m_Pawn.IsA('SwatOfficer') ) 
 			{
 				if (! SwatAIRepository(Level.AIRepo).IsOfficerMovingAndClearing(m_Pawn)) //when clearing just shoot , too late for hands!
@@ -334,7 +335,9 @@ latent function ShootWeaponAt(Actor Target)
 					}
 				}
 			}
-			else if (m_Pawn.IsA('SwatEnemy')  && !ISwatAICharacter(m_Pawn).IsFemale() ) //women cant melee cause missing animations
+			else 
+			*/
+			if (m_Pawn.IsA('SwatEnemy')  && !ISwatAICharacter(m_Pawn).IsFemale() ) //women cant melee cause missing animations
 			{
 				if (FRand() < 0.1 ) //chance of meleeing
 				{
@@ -354,6 +357,7 @@ latent function ShootWeaponAt(Actor Target)
 		if (m_pawn.IsA('SwatOfficer') )
 		{
 			EndTrace = Target.Location;
+			Level.GetLocalPlayerController().myHUD.AddDebugLine(m_pawn.GetEyeLocation(),Pawn(Target).GetChestLocation(),	class'Engine.Canvas'.Static.MakeColor(0,0,255), 15.0);
 			if (CurrentWeapon.WillOfficerAvoidBadShot(Target, !CurrentWeapon.bIsLessLethal, EndTrace , true) ) //make sure Officers will avoid unintended casualties as trained professionals
 			{ 
 			  ISwatAI(m_Pawn).SetWeaponTarget(Target);

@@ -821,7 +821,7 @@ function OnHeardNoise()
 				)
 			{
 				
-				if ( m_Pawn.CanSee(HeardPawn) || DoWeKnowAboutPawn(HeardPawn) )
+				if ( m_Pawn.LineOfSightTo(HeardPawn) || DoWeKnowAboutPawn(HeardPawn) )
 				{//		log(m_Pawn.Name $ " going to encounter enemy");
 					
 					ISwatAI(m_pawn).GetKnowledge().UpdateKnowledgeAboutPawn(HeardPawn);
@@ -1233,8 +1233,8 @@ private function bool ShouldEncounterNewEnemy(Pawn NewEnemy)
 		DistanceToNewEnemy     = VSize(NewEnemy.Location - m_Pawn.Location);
 
 		if (((DistanceToNewEnemy < DistanceToCurrentEnemy) && (DistanceToNewEnemy < class'EnemyCommanderActionConfig'.default.DeltaDistanceToSwitchEnemies)) ||
-			//(! m_Pawn.CanHit(CurrentEnemy) && m_Pawn.CanHit(NewEnemy)))
-			(! m_Pawn.CanSee(CurrentEnemy) && m_Pawn.CanSee(NewEnemy)))
+			(! m_Pawn.CanHit(CurrentEnemy) && m_Pawn.CanHit(NewEnemy)))
+			//(! m_Pawn.CanSee(CurrentEnemy) && m_Pawn.CanSee(NewEnemy)))
 		{
 			return true;
 		}
@@ -1276,6 +1276,13 @@ function EncounterEnemy(Pawn NewEnemy)
 	if (ShouldEncounterEnemy(NewEnemy))
 	{
 		SetCurrentEnemy(NewEnemy);
+		
+			//a threat before the animation
+		if ((m_Pawn.IsA('SwatEnemy')) && ((!m_Pawn.IsA('SwatUndercover')) || (!m_Pawn.IsA('SwatGuard'))) && !ISwatEnemy(m_Pawn).IsAThreat())
+		{
+			ISwatEnemy(m_Pawn).BecomeAThreat();
+		}	
+		
 
 		// we are now aware
         ISwatEnemy(m_Pawn).SetCurrentState(EnemyState_Aware);
@@ -1435,6 +1442,14 @@ latent function EngageCurrentEnemy()
 		//abort
 		return;
 	}
+	
+	//a threat before the animation
+	if ((m_Pawn.IsA('SwatEnemy')) && ((!m_Pawn.IsA('SwatUndercover')) || (!m_Pawn.IsA('SwatGuard'))) && !ISwatEnemy(m_Pawn).IsAThreat())
+	{
+		ISwatEnemy(m_Pawn).BecomeAThreat();
+		yield();
+	}	
+		
 	
 	// If we had an engagement goal, drop it
 	if(CurrentEngageOfficerGoal != None)
@@ -1731,8 +1746,8 @@ function FindBetterEnemy()
 	
 	if (CurrentEnemy != None)
 	{
-		//if (! m_Pawn.LineOfSightTo(CurrentEnemy))
-	    if (! m_Pawn.CanSee(CurrentEnemy))
+		//if (! m_Pawn.CanSee(CurrentEnemy))
+	    if (! m_Pawn.CanHit(CurrentEnemy))
 		{
 			NewEnemy = VisionSensor.GetVisibleConsciousPawnClosestTo(m_Pawn.Location);
 
@@ -1780,7 +1795,7 @@ latent function FinishedEngagingEnemies()
 
 function FinishedMovingEngageBehavior()
 {
-	if (!class'Pawn'.static.checkConscious(CurrentEnemy) || !m_Pawn.CanSee(CurrentEnemy))
+	if (!class'Pawn'.static.checkConscious(CurrentEnemy) || !m_Pawn.LineOfSightTo(CurrentEnemy))
 	{
 		SetCurrentEnemy(None);
 	}
