@@ -160,7 +160,7 @@ replication
 	
 	// replicated functions sent to server by owning client
 	reliable if( Role < ROLE_Authority )
-        ServerRequestQualify, ServerRequestUse, ServerSetIsUsingOptiwand, ServerSetForceCrouchWhileOptiwanding , ServerStartLeaning ;
+        ServerRequestQualify, ServerRequestUse, ServerSetIsUsingOptiwand, ServerSetForceCrouchWhileOptiwanding , ServerStartLeaning,ServerSetLaserState ;
 
     // replicated functions sent to client by server
     reliable if( Role == ROLE_Authority )
@@ -173,7 +173,8 @@ replication
         ClientDoFlashbangReaction, ClientDoGassedReaction, ClientDoStungReaction, ClientDoHitReaction, 
         ClientDoPepperSprayedReaction, ClientDoTasedReaction, ClientDoFlashbangShakeReaction ,
         bIsUsingOptiwand, bHasBeenReportedToTOC, ClientPlayEmptyFired, ArmInjuryFlags, 
-        ClientSetItemAvailableCount ; 
+        ClientSetItemAvailableCount ,
+		SetLaserState; 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -4854,6 +4855,31 @@ simulated function bool HasNVGActiveForLaser()
 {
 	return ProtectiveEquipment( GetLoadOut().GetItemAtPocket(Pocket.Pocket_HeadArmor)).GetCanSeeIRLaser();
 }
+
+exec function ToggleLaser()
+{
+    local FiredWeapon ActiveItem;
+
+    ActiveItem = FiredWeapon( self.GetActiveItem() );
+    
+	if (ActiveItem != None && ActiveItem.IsA('FiredWeapon'))
+	{
+		//ServerSetLaserState();
+		SetLaserState();
+	}	
+	
+}
+
+function ServerSetLaserState()
+{
+	FiredWeapon(GetActiveItem()).ServerSetLaser();
+}
+
+simulated function SetLaserState()
+{
+	FiredWeapon(GetActiveItem()).SetLaser(!FiredWeapon(GetActiveItem()).IsLaserOn());
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 defaultproperties

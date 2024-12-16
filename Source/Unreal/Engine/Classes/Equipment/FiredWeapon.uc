@@ -153,13 +153,18 @@ var(Damage) public config float OverrideArmDamageModifier;
 
 var(AI) config bool OfficerWontEquipAsPrimary					"If true Officer will use secondary weapon unless ordered otherwise";
 
-
+/*
 replication
 {    
   // replicated functions sent to server by owning client
   reliable if( Role < ROLE_Authority )
-	ServerSetLaser;
+  ServerSetLaser;
+
+  reliable if( Role == ROLE_Authority )
+		,SetLaser,IsLaserOn;
 }
+*/
+
 
 #define DONT_REQUIRE_PENETRATION_FOR_BLOOD_PROJECTORS 1
 
@@ -192,6 +197,8 @@ simulated event Destroyed()
 	// destroy orphaned actors later.
 	if (IsFlashlightInitialized())
 		DestroyFlashlight(ICanToggleWeaponFlashlight(Owner).GetDelayBeforeFlashlightShutoff());
+	
+	 DestroyLaser();
 
     if (Ammo != None)
     {
@@ -2084,7 +2091,7 @@ simulated function UnEquippedHook()
     }
 	
 	if (IsLaserON())
-		ServerSetLaser();
+		DestroyLaser();
 }
 
 //get the FiredWeapons standard AimError based on its Owner's current condition.
@@ -2145,6 +2152,9 @@ simulated event Tick(float dTime)
 		UpdateFlashlightLighting(dTime);
 	}
 
+	if ( IsLaserON() )
+		LaserDraw();
+
     if (class'Pawn'.static.CheckDead(Pawn(Owner)))
     {
 		if ( IsLaserON() )
@@ -2154,9 +2164,6 @@ simulated event Tick(float dTime)
         Disable('Tick');
         return;
     }
-	
-	if ( IsLaserON() )
-		LaserDraw();
 	
 	CheckTickEquipped();
 
@@ -2172,10 +2179,10 @@ simulated function CheckTickEquipped()
 }
 
 //LASER implementation to be expanded on childs
-function  ServerSetLaser();
+simulated function  ServerSetLaser();
 simulated function SetLaser(bool bForce); //AI 
 simulated function bool IsLaserON();
-simulated function LaserDraw();
+function LaserDraw();
 simulated function InitLaser();
 simulated function DestroyLaser();
 simulated function bool HasIrLaser();

@@ -6160,15 +6160,6 @@ exec function ToggleFlashlight()
     SwatPawn(Pawn).ToggleDesiredFlashlightState();
 }
 
-exec function ToggleLaser()
-{
-     local FiredWeapon ActiveItem;
-
-    ActiveItem = FiredWeapon( Pawn.GetActiveItem() );
-    if (ActiveItem != None && ActiveItem.IsA('FiredWeapon'))
-		ActiveItem.ServerSetLaser();
-}
-
 // Toggle the player's NVG
 exec function ToggleNVG()
 {
