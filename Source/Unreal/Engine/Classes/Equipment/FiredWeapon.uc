@@ -153,19 +153,6 @@ var(Damage) public config float OverrideArmDamageModifier;
 
 var(AI) config bool OfficerWontEquipAsPrimary					"If true Officer will use secondary weapon unless ordered otherwise";
 
-/*
-replication
-{    
-  // replicated functions sent to server by owning client
-  reliable if( Role < ROLE_Authority )
-  ServerSetLaser;
-
-  reliable if( Role == ROLE_Authority )
-		,SetLaser,IsLaserOn;
-}
-*/
-
-
 #define DONT_REQUIRE_PENETRATION_FOR_BLOOD_PROJECTORS 1
 
 simulated function PreBeginPlay()

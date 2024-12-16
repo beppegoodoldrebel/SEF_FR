@@ -15,13 +15,13 @@ var (Laser) config rotator IRLaserRotation_1stPerson;
 var (Laser) config vector IRLaserPosition_3rdPerson;
 var (Laser) config rotator IRLaserRotation_3rdPerson;
 
-
+/*
 replication
 {
   reliable if( Role == ROLE_Authority )
   	  bWantLaser;
 }
-
+*/
 
 //IR LASER
 function LaserDraw()
@@ -89,52 +89,6 @@ function LaserDraw()
 	}
 	else
 		IrLaserClass.Hide();
-}
-
-simulated function ServerSetLaser()
-{
-	
-	
-	if ( Level.NetMode == NM_Standalone )
-	{
-		log("ServerSetLaser() Stand alone " $ Level.GetLocalPlayerController().Pawn.name );
-		bWantLaser=!bWantLaser;
-		SetLaser(bWantLaser);	
-	}
-	else
-	{
-		
-		bWantLaser=!bWantLaser;
-		SetLaser(bWantLaser);	
-		/*
-		local SwatGamePlayerController current;
-		local Controller iController, LocalPC;
-		local NetPlayer theNetPlayer;
-		
-		log("ServerSetLaser() Net bWantLaser " $ bWantLaser $ " " $ Level.GetLocalPlayerController().Pawn.name );
-		
-		bWantLaser=!bWantLaser;
-		SetLaser(bWantLaser);
-		
-		for ( iController = Level.ControllerList; iController != None; iController = iController.NextController )
-		{
-			current = SwatGamePlayerController( iController );
-			if ( current != None && current != LocalPC )
-			{
-				theNetPlayer = NetPlayer( current.Pawn );
-				if ( theNetPlayer != None )
-				{
-					log( self$" on server: calling SetLaser() by "$theNetPlayer );
-					FiredWeapon(theNetPlayer.GetActiveItem()).SetLaser(bWantLaser);
-				}
-			}
-		}
-		*/
-		
-		
-	}
-	
-	
 }
 
 //client/AI laser use

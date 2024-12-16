@@ -314,7 +314,7 @@ replication
         ClientAITriggerEffectEvent, ClientAIDroppedAllWeapons, ClientAIDroppedActiveWeapon, ClientAIDroppedAllEvidence,
         ClientInterruptAndGotoState, ClientInterruptState, ClientSetObjectiveVisibility, ClientReportableReportedToTOC,
         ClientAddPrecacheableMaterial, ClientAddPrecacheableMesh, ClientAddPrecacheableStaticMesh, ClientPrecacheAll,
-        ClientViewFromLocation, ClientForceObserverCam, ReplicatedObserverCamTarget, ReplicatedViewportTeammate , ClientReceieveLoveTap;
+        ClientViewFromLocation, ClientForceObserverCam, ReplicatedObserverCamTarget, ReplicatedViewportTeammate , ClientReceieveLoveTap,ClientSetLaserState;
 
     // replicated functions sent to server by owning client
     reliable if( Role < ROLE_Authority )
@@ -6087,6 +6087,13 @@ simulated function ClientReloadForPawn( SwatPlayer theSwatPlayer, EquipmentSlot 
 
         Item.Reload(QuickReload);
     }
+}
+
+simulated function ClientSetLaserState(SwatPlayer theSwatPlayer)
+{
+	//RPC called by server
+	log("ClientSetLaserState() on " $theSwatPlayer.name);
+	FiredWeapon(theSwatPlayer.GetActiveItem()).SetLaser(!FiredWeapon(theSwatPlayer.GetActiveItem()).IsLaserOn());
 }
 
 
