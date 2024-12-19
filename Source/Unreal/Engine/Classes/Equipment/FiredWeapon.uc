@@ -2078,7 +2078,7 @@ simulated function UnEquippedHook()
     }
 	
 	if (IsLaserON())
-		DestroyLaser();
+		SetLaser(false);
 }
 
 //get the FiredWeapons standard AimError based on its Owner's current condition.
@@ -2145,7 +2145,7 @@ simulated event Tick(float dTime)
     if (class'Pawn'.static.CheckDead(Pawn(Owner)))
     {
 		if ( IsLaserON() )
-			DestroyLaser();
+			SetLaser(false);
 		
         //in this case, we might still be equipped, but we don't want to update stuff
         Disable('Tick');

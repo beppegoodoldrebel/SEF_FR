@@ -123,7 +123,9 @@ simulated function InitLaser()
 		RotationOffset = IRLaserRotation_3rdPerson;
     }
 	
-	//IRLaserClass=Spawn(class'IRLaser',WeaponModel,,,);
+	if ( IRLaserClass != None )
+		DestroyLaser();
+	
 	IRLaserClass=Spawn(class'IRLaser',WeaponModel);
 	
 	if (bHasIRLaser)
