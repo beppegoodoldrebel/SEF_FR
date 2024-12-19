@@ -15,14 +15,6 @@ var (Laser) config rotator IRLaserRotation_1stPerson;
 var (Laser) config vector IRLaserPosition_3rdPerson;
 var (Laser) config rotator IRLaserRotation_3rdPerson;
 
-/*
-replication
-{
-  reliable if( Role == ROLE_Authority )
-  	  bWantLaser;
-}
-*/
-
 //IR LASER
 function LaserDraw()
 {
@@ -36,32 +28,32 @@ function LaserDraw()
 	if(bWantLaser && ( bHasIRLaser || bHasVisibleLaser) )
 	{
 	
-	
-	//if (Pawn(Owner).Controller == Level.GetLocalPlayerController() )
 	if (Pawn(Owner).isA('SwatPlayer') || Pawn(Owner).isA('SwatOfficer'))
 	{
 	
-	log("LaserDraw() routine");
-	
 	if (InFirstPersonView())
     {
-		assertWithDescription(FirstPersonModel != None, "[ckline] Can't set up laser for "$self$", FirstPersonModel is None");
-		WeaponModel = FirstPersonModel;
 		PositionOffset = IRLaserPosition_1stPerson;
 		RotationOffset = IRLaserRotation_1stPerson;
+		WeaponModel = FirstPersonModel;
+		
+		IRLaserClass.SetRelativeLocation(PositionOffset);
+		IRLaserClass.SetRelativeRotation(RotationOffset);
+		WeaponModel.Owner.UpdateAttachmentLocations();
     }
-    else // todo: handle 3rd person flashlight, including when controller changes
+    else 
     {
-		assertWithDescription(ThirdPersonModel != None, "[ckline] Can't set up laser for "$self$", ThirdPersonModel is None");
-		WeaponModel = ThirdPersonModel;
 		PositionOffset = IRLaserPosition_3rdPerson;
 		RotationOffset = IRLaserRotation_3rdPerson;
+		WeaponModel = ThirdPersonModel;
+
+	    //cant use player's attachment location cause UpdateAttachmentLocations() doesnt work when player's model is outside FOV 
+		//and we want laser to start and be visible even when starting outside FOV
+		//workaround it's not perfect (some kink rotation when crouched) but it works!!
+		IrLaserClass.SetLocation(WeaponModel.Location + (positionoffset >> WeaponModel.Owner.GetBoneRotation('GripRHand')));
+		IrLaserClass.SetRotation(WeaponModel.Owner.GetBoneRotation('GripRHand') + RotationOffset );
+		
     }
-	
-	IRLaserClass.SetRelativeLocation(PositionOffset);
-	IRLaserClass.SetRelativeRotation(RotationOffset);
-	
-	WeaponModel.Owner.UpdateAttachmentLocations();
 	
 	//we draw only if local player is on NVGs
 	if ( bHasIRLaser )
@@ -79,11 +71,14 @@ function LaserDraw()
 	
 	TraceStart = IrLaserClass.Location;
 	TraceEnd = TraceStart + vector(IrLaserClass.Rotation) * 10000;
-	Trace(hitLocation, hitNormal, traceEnd, traceStart, true, , , , True);
+		
+	if ( IrLaserClass.Trace(hitLocation, hitNormal, traceEnd, traceStart, true, , , , True) != None)
+		IrLaserClass.LaserLength(VDist(TraceStart , hitLocation));
+	else
+		IrLaserClass.LaserLength(VDist(TraceStart , TraceEnd));
 	
-	
-	IrLaserClass.LaserLength(VDist(TraceStart , hitLocation));
-	//Level.GetLocalPlayerController().myHUD.AddDebugLine(traceStart, hitLocation,class'Engine.Canvas'.Static.MakeColor(255,0,0), 0.02);
+	//DEBUG
+	//Level.GetLocalPlayerController().myHUD.AddDebugLine(traceStart, hitLocation,class'Engine.Canvas'.Static.MakeColor(0,255,0), 0.02);
 	}
 	
 	}
@@ -97,7 +92,7 @@ simulated function SetLaser(bool bForce)
 	//assert(Level.NetMode != NM_DedicatedServer);
 	bWantLaser=bForce;
 	
-	log("SetLaser() bWantLaser " $ bWantLaser $ " " $ Level.GetLocalPlayerController().Pawn.name );
+	//log("SetLaser() bWantLaser " $ bWantLaser $ " " $ Level.GetLocalPlayerController().Pawn.name );
 	
 	if (bWantLaser)
 		InitLaser();
@@ -115,21 +110,21 @@ simulated function InitLaser()
 	//attach IRLaser class
 	if (InFirstPersonView())
     {
-		assertWithDescription(FirstPersonModel != None, "[ckline] Can't set up flashlight for "$self$", FirstPersonModel is None");
+		//assertWithDescription(FirstPersonModel != None, "[ckline] Can't set up flashlight for "$self$", FirstPersonModel is None");
 		WeaponModel = FirstPersonModel;
 		PositionOffset = IRLaserPosition_1stPerson;
 		RotationOffset = IRLaserRotation_1stPerson;
     }
     else
     {
-		assertWithDescription(ThirdPersonModel != None, "[ckline] Can't set up flashlight for "$self$", ThirdPersonModel is None");
+		//assertWithDescription(ThirdPersonModel != None, "[ckline] Can't set up flashlight for "$self$", ThirdPersonModel is None");
 		WeaponModel = ThirdPersonModel;
 		PositionOffset = IRLaserPosition_3rdPerson;
 		RotationOffset = IRLaserRotation_3rdPerson;
     }
 	
 	//IRLaserClass=Spawn(class'IRLaser',WeaponModel,,,);
-	IRLaserClass=Spawn(class'IRLaser');
+	IRLaserClass=Spawn(class'IRLaser',WeaponModel);
 	
 	if (bHasIRLaser)
 		IRLaserClass.IRLaserColor();

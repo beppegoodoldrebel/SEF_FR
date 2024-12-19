@@ -14,7 +14,6 @@ simulated function PreBeginPlay()
 simulated event PostNetBeginPlay()
 {
     super.PostNetBeginPlay();
-	
 	SetStaticMesh(SM);
 }
 
@@ -43,6 +42,7 @@ local vector Scale;
 defaultproperties
 {
 	bHidden=false
+	Physics=PHYS_None
     //RemoteRole=ROLE_SimulatedProxy
     DrawType=DT_StaticMesh
 	SM=StaticMesh'FR_Laser.IRLaser_sm'

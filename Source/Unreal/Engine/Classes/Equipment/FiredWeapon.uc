@@ -2710,12 +2710,13 @@ function OnPlayerViewChanged()
     }
     UpdateFlashlightState();
 	
+	DestroyLaser();
 	if (IsLaserON())
 	{
 		//reset laser creating a new one
-		DestroyLaser();
-		InitLaser();  
+		InitLaser();
 	}
+	
 }
 
 //
