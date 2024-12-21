@@ -34,6 +34,8 @@ simulated function bool HasShield();        //has shield
 ///////////////////////////////////////////////////////////////////////////////
 
 simulated function bool GetFlashlightState();
+simulated function bool GetNightvisionState();
+simulated function ToggleDesiredNVGState();
 simulated function ToggleDesiredFlashlightState();
 
 simulated function bool IsBeingArrestedNow();
