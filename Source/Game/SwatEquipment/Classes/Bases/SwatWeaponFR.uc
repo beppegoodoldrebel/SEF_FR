@@ -49,10 +49,9 @@ function LaserDraw()
 
 	    //cant use player's attachment location cause UpdateAttachmentLocations() doesnt work when player's model is outside FOV 
 		//and we want laser to start and be visible even when starting outside FOV
-		//workaround it's not perfect (some kink rotation when crouched) but it works!!
-		IrLaserClass.SetLocation(WeaponModel.Location + (positionoffset >> WeaponModel.Owner.GetBoneRotation('GripRHand')));
-		IrLaserClass.SetRotation(WeaponModel.Owner.GetBoneRotation('GripRHand') + RotationOffset );
-		
+		//workaround it's not perfect (some kink rotation when crouched/low ready) but it works!!
+		IrLaserClass.SetLocation(WeaponModel.Location + (positionoffset >> WeaponModel.Owner.GetBoneRotation('GripRHand') ));		
+		IrLaserClass.SetRotation( Rotator( IrLaserClass.Location - WeaponModel.Owner.GetBoneCoords('GripRHand').Origin ) + RotationOffset );		
     }
 	
 	//we draw only if local player is on NVGs
@@ -128,16 +127,18 @@ simulated function InitLaser()
 	
 	IRLaserClass=Spawn(class'IRLaser',WeaponModel);
 	
-	if (bHasIRLaser)
-		IRLaserClass.IRLaserColor();
-    else if (bHasVisibleLaser)
-		IRLaserClass.RedLaserColor();
-	
 	WeaponModel.Owner.AttachToBone(IRLaserClass, WeaponModel.EquippedSocket);
 	
 	IRLaserClass.SetRelativeLocation(PositionOffset);
 	IRLaserClass.SetRelativeRotation(RotationOffset);
 	WeaponModel.Owner.UpdateAttachmentLocations();
+	
+	if (bHasIRLaser)
+		IRLaserClass.IRLaserColor();
+    else if (bHasVisibleLaser)
+		IRLaserClass.RedLaserColor();
+	
+
 }
 
 simulated function bool IsLaserON()
