@@ -10,6 +10,39 @@ https://discord.gg/Vu4r7sv7uF
 
 
 # FEATURE LIST: #
+
+#### V0.68 Beta 1 ####
+WEAPONS:
+			 - OWN THE NIGHT: fully working Laser and Infrared Laser
+		     
+               M4 CQBs	   -> Infrared laser ( only visible with NVG )
+			   All Tasers  -> visible lasers
+			   More weapons to come in the next future!
+			    
+			   Toggle Laser command key is now settable under Game Controls/Interaction page
+			   
+GEAR:    	 
+             - Battering Ram
+			    - Doors resistance is based on material ( for example wooden doors are easier to open than metal )
+				- fully integrated with Officers AI. Ram commands are under OPEN DOOR page!
+				
+			 - MS2000 IR Strobe added to Mich + NVG  
+			    infrared strobe light is now on when player is using NVG. Can be seen by other players when using NVG.
+				  
+		     - Pockets under equipment page has been modified to be more user frilendly
+			    - Breaching Shotgun/Battering Ram/C2/Optiwand/Medic Pouch are now in Special Tool pocket.
+				- All breaching tools are now selectable with default key "7"
+					
+MULTIPLAYER:	 
+			 - PVP has been re-enabled and fully working.
+			      No modifications has been made to the gamemodes but they are now working with FRs features
+			 
+AI:          
+			 - reworked sensors and engage-to-shoot routines to improve Suspect and Officer AI to better respond to threats
+			 
+FIXED:       
+			 - Career COOP unlocked weapons are now correctly synced to clients
+			 
 #### V0.67 Patch 1 ####
 WEAPONS:    
 			- Added dedicated flashlight to Shield

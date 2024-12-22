@@ -25,6 +25,9 @@ function LaserDraw()
     local vector TraceStart;
 	local vector HitLocation;
 	
+	//Dedicated server doesnt care about your laser
+	assert(Level.Netmode != NM_DedicatedServer );
+	
 	if(bWantLaser && ( bHasIRLaser || bHasVisibleLaser) )
 	{
 	
