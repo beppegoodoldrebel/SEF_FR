@@ -801,8 +801,6 @@ function OnHeardNoise()
 
 //	log("OnHeardNoise - HeardActor: " $ HeardActor $ " SoundCategory: " $ SoundCategory $ " HeardPawn: " $ HeardPawn);
 
-	Distance = VSize(HeardActor.Location - m_Pawn.Location);
-
 	if (m_Pawn.IsCompliant() || m_Pawn.IsArrested())
 	{
 		if (HeardActor.IsA('Ammunition') && (VSize(HeardActor.Location - m_Pawn.Location) < MinReactToGunshotDistance) && m_Pawn.LineOfSightTo(HeardActor))
@@ -839,58 +837,63 @@ function OnHeardNoise()
 		}
 		else	
 		{
-			//
-			if ((HeardPawn != None) && ISwatAI(m_Pawn).IsOtherActorAThreat(HeardPawn) &&
+			Distance = VSize(HeardActor.Location - m_Pawn.Location);
+			if ((HeardPawn != None) && 
+			//ISwatAI(m_Pawn).IsOtherActorAThreat(HeardPawn) &&
 			(DoesSoundCauseUsToKnowAboutPawn(SoundCategory) || DoWeKnowAboutPawn(HeardPawn)))
 			{
 				
-				if ( m_Pawn.CanSee(HeardPawn) || Distance < 200  ) //sound sixth sense in close range
+				if ( m_Pawn.LineOfSightTo(HeardPawn) || Distance < 400  ) //sound sixth sense in close range
 				{
 					//		log(m_Pawn.Name $ " going to encounter enemy");
 					ISwatAI(m_pawn).GetKnowledge().UpdateKnowledgeAboutPawn(HeardPawn);
 					EncounterEnemy(HeardPawn);
+					return;
 				}
 				else 
 				{
-					if ( Distance < 400 )
+					if ( Distance < 800 )
 					{
 					  ISwatAI(m_pawn).GetKnowledge().UpdateKnowledgeAboutPawn(HeardPawn);
 					  RotateToFaceNoise(HeardPawn);
+					  return;
 					}
 				}
 			}
-		}
+		
 
-		if (SoundCategory == 'Footsteps')
-		{
-			HandleFootstepNoise(HeardPawn, SoundOrigin);
-		}
-		else if (SoundCategory == 'DoorInteraction')
-		{
-			assertWithDescription((HeardActor.IsA('SwatDoor')), "EnemyCommanderAction::OnHeardNoise - sound played by " $ HeardActor $ " with the Sound category 'DoorInteraction' is not a door!");
-
-			LastDoorInteractor = ISwatDoor(HeardActor).GetLastInteractor();
-
-			// if the other actor isn't a threat to us, ignore the door sound
-			// yes this is cheating...  so sue me.
-			if (ISwatAI(m_Pawn).IsOtherActorAThreat(LastDoorInteractor) && HasLineOfSightToDoor(Door(HeardActor)))
+			if (SoundCategory == 'Footsteps')
 			{
-				if (ISwatEnemy(m_Pawn).GetCurrentState() == EnemyState_Aware)
+				HandleFootstepNoise(HeardPawn, SoundOrigin);
+			}
+			else if (SoundCategory == 'DoorInteraction')
+			{
+				assertWithDescription((HeardActor.IsA('SwatDoor')), "EnemyCommanderAction::OnHeardNoise - sound played by " $ HeardActor $ " with the Sound category 'DoorInteraction' is not a door!");
+
+				LastDoorInteractor = ISwatDoor(HeardActor).GetLastInteractor();
+
+				// if the other actor isn't a threat to us, ignore the door sound
+				// yes this is cheating...  so sue me.
+				if (ISwatAI(m_Pawn).IsOtherActorAThreat(LastDoorInteractor) && HasLineOfSightToDoor(Door(HeardActor)))
 				{
-					EncounterEnemy(LastDoorInteractor);
-				}
-				else
-				{
-					BecomeSuspicious(SoundOrigin);
+					if (ISwatEnemy(m_Pawn).GetCurrentState() == EnemyState_Aware)
+					{
+						EncounterEnemy(LastDoorInteractor);
+					}
+					else
+					{
+						BecomeSuspicious(SoundOrigin);
+					}
 				}
 			}
-		}
-		else if (CurrentEnemy == None)	// if we're not currently pursuing an enemy, watch out
-		{
-	//		log(m_Pawn.Name $ " becoming suspicious - HeardPawn is a sniper: " $ ((HeardPawn != None) && HeardPawn.IsA('SniperPawn')));
+			else if (CurrentEnemy == None)	// if we're not currently pursuing an enemy, watch out
+			{
+				//log(m_Pawn.Name $ " becoming suspicious - HeardPawn is a sniper: " $ ((HeardPawn != None) && HeardPawn.IsA('SniperPawn')));
 
-			// if we heard sniper fire, we shouldn't investigate, otherwise we let BecomeSuspicious determine what we should do
-			BecomeSuspicious(SoundOrigin, ((HeardPawn != None) && HeardPawn.IsA('SniperPawn')));
+				// if we heard sniper fire, we shouldn't investigate, otherwise we let BecomeSuspicious determine what we should do
+				BecomeSuspicious(SoundOrigin, ((HeardPawn != None) && HeardPawn.IsA('SniperPawn')));
+			}
+		
 		}
 	}
 }

@@ -196,7 +196,7 @@ final latent function LatentAimAtActor(Actor Target, optional float MaxWaitTime)
 		// added here so server can spread information on suspect intentions before even aiming.
 //		if ( Level.NetMode != NM_Standalone )
 //		{
-			if( m_pawn.isa('SwatEnemy') )
+			if( m_pawn.isa('SwatEnemy') || m_pawn.isa('SwatOfficer') )
 			{
 				UpdateThreatToTarget(Target);
 				yield();
@@ -219,17 +219,17 @@ final latent function LatentAimAtActor(Actor Target, optional float MaxWaitTime)
 				if ( fdot > 0.707 )
 				{
 					//log ( m_pawn.name $ " quick scope added time on target 0.8" );
-					MaxWaitTime = MaxWaitTime + 1.2;
+					MaxWaitTime = MaxWaitTime + 0.8;
 				}
 				else if ( fdot > 0.0 && fdot <= 0.707 )
 				{
 					//log ( m_pawn.name $ " quick scope added time on target 0.4" );
-					MaxWaitTime = MaxWaitTime + 0.8;
+					MaxWaitTime = MaxWaitTime + 0.4;
 				}
 				else if ( fdot > -0.707 && fdot <= 0.0 )
 				{
 					//log ( m_pawn.name $ " quick scope added time on target 0.2" );
-					MaxWaitTime = MaxWaitTime + 0.6;
+					MaxWaitTime = MaxWaitTime + 0.2;
 				}
 			}
 		}
@@ -237,16 +237,18 @@ final latent function LatentAimAtActor(Actor Target, optional float MaxWaitTime)
 		ISwatAI(m_pawn).AimAtActor(Target);
 		
         // wait until we aim at what we want to
-        while ( (!ISwatAI(m_pawn).AnimIsAimedAtDesired() && !m_Pawn.CanshootTarget(Target) && HasWeaponEquipped() || ISwatAI(m_Pawn).AnimAreAimingChannelsMuted()) 
-			     || ( ( Level.TimeSeconds - StartTime ) < MaxWaitTime  ) )
+        while ( 
+				//0.68 removed any aim check... just wait the right time to do it
+				//(!ISwatAI(m_pawn).AnimIsAimedAtDesired() && 
+		        // !m_Pawn.CanshootTarget(Target) && 
+				// HasWeaponEquipped()) || //|| ISwatAI(m_Pawn).AnimAreAimingChannelsMuted() 
+			     ( ( Level.TimeSeconds - StartTime ) <= MaxWaitTime  ) )
         {
 //			log("aiming at actor update - AnimIsAimedAtDesired: " $ ISwatAI(m_pawn).AnimIsAimedAtDesired() $ " HasWeaponEquipped: " $ HasWeaponEquipped() $ " AnimAreAimingChannelsMuted: " $ ISwatAI(m_Pawn).AnimAreAimingChannelsMuted());
 			// See if we have waited past the threshold
 			UpdateThreatToTarget(Target);
             yield();
-			ISwatAI(m_pawn).AimAtActor(Target);
         }
-		UpdateThreatToTarget(Target);
     }
 }
 
