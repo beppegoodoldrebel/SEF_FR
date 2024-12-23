@@ -224,12 +224,12 @@ final latent function LatentAimAtActor(Actor Target, optional float MaxWaitTime)
 				else if ( fdot > 0.0 && fdot <= 0.707 )
 				{
 					//log ( m_pawn.name $ " quick scope added time on target 0.4" );
-					MaxWaitTime = MaxWaitTime + 0.4;
+					MaxWaitTime = MaxWaitTime + 0.6;
 				}
 				else if ( fdot > -0.707 && fdot <= 0.0 )
 				{
 					//log ( m_pawn.name $ " quick scope added time on target 0.2" );
-					MaxWaitTime = MaxWaitTime + 0.2;
+					MaxWaitTime = MaxWaitTime + 0.4;
 				}
 			}
 		}
@@ -366,7 +366,7 @@ latent function ShootWeaponAt(Actor Target)
 			  CurrentWeapon.LatentUse();
 			}
 			//else
-			//  Level.GetLocalPlayerController().myHUD.AddDebugLine(m_pawn.GetEyeLocation(),Pawn(Target).GetChestLocation(),	class'Engine.Canvas'.Static.MakeColor(255,0,0), 15.0);
+			//Level.GetLocalPlayerController().myHUD.AddDebugLine(m_pawn.GetEyeLocation(),Pawn(Target).GetChestLocation(),	class'Engine.Canvas'.Static.MakeColor(255,0,0), 15.0);
 		}
 		else
 		{

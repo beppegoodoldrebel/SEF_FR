@@ -501,7 +501,7 @@ simulated function bool WillOfficerAvoidBadShot(Actor Target, bool MomentumMatte
         { // LevelInfo is hidden AND blocks all bullets!
             continue;
         }
-        else if(Victim == Owner || Victim == Self || Victim.DrawType == DT_None  || Victim.bHidden)
+        else if(Victim == Owner || Victim.Owner == Self || Victim == Self || Victim.DrawType == DT_None  || Victim.bHidden)
         {
             continue; // Not something we need to worry about
         }

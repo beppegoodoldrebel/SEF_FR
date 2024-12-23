@@ -565,6 +565,25 @@ private latent function EngageAssignment()
 
 	// we should have an assignment here
 	assert (CurrentAssignment != None);
+	
+	//let officer decide if it's a threat before enemy moves
+	if (CurrentAssignment.IsA('SwatEnemy') && !ISwatEnemy(CurrentAssignment).IsAThreat())
+	{
+		//better be sure it's not a threat
+		if ( !ISwatAI(CurrentAssignment).IsCompliant() && 
+		     !ISwatAI(CurrentAssignment).IsArrested() && 
+			 !CurrentAssignment.IsA('SwatUndercover') &&
+			 !ISwatPawn(CurrentAssignment).IsNonlethaled() &&
+			 !ISwatAI(CurrentAssignment).HasFiredWeaponEquipped()
+			 ) 
+		{
+			if (RunnerIsThreat(CurrentAssignment))
+			{	
+				ISwatEnemy(m_Pawn).BecomeAThreat();
+				yield();
+			}			
+		}
+	}
 
 	log("EngageAssignment() for "$self.m_Pawn.name);
 	if(CurrentAssignment.IsA('SwatPlayer') || ShouldAttackRunner(CurrentAssignment) ||

@@ -200,41 +200,7 @@ function EnteredZone(ZoneInfo Zone)
 	}
 	
 }
-/*
-function FollowPlayerLightDiscipline()
-{
-	if (IsConscious())
-    {
-		
-		if (GetActiveItem().IsA('MagliteTorch') ) //do nothing if officer have a Maglite
-			return;
-		
-		if (  SwatPawn(Level.GetLocalPlayerController().Pawn).HasA('NVGogglesBase')  && HasA('NVGogglesBase')  )
-		{
-			if (SwatPawn(Level.GetLocalPlayerController().Pawn).GetNightvisionState() )
-			{
-				SetDesiredNightvisionState(true);
-				if (FiredWeapon(GetActiveItem()).HasIrLaser())
-					FiredWeapon(GetActiveItem()).SetLaser(true);
-			}
-			else
-			{
-				SetDesiredNightvisionState(false);
-				if (FiredWeapon(GetActiveItem()).HasIrLaser())
-					FiredWeapon(GetActiveItem()).SetLaser(false);
-			}
-			return;	
-		}
-	
-			
-		if ( SwatPawn(Level.GetLocalPlayerController().Pawn).GetFlashlightState() )
-			SetDesiredFlashlightState(true);	
-		else
-			SetDesiredFlashlightState(false);	
-		
-	}
-}
-*/
+
 protected function AddToSquads()		{ assert(false); }	// must be overridden
 protected function RemoveFromSquads()	{ assert(false); }	// must be overridden
 
