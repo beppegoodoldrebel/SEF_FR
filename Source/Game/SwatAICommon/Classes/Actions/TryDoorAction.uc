@@ -178,20 +178,29 @@ latent function TryDoor()
 		AnimName		   = SwatDoorTarget.GetTryDoorAnimation(m_Pawn, TryDoorUsageSide);
 		AnimSpecialChannel = m_Pawn.AnimPlaySpecial(AnimName);
 		
-		if (bPeekDoor)
+		if (bPeekDoor && !SwatDoorTarget.IsLocked())
 		{
-			while (frame < 0.30)
+			//check door is free
+			if ( SwatDoorTarget.GetPendingInteractor() == None )
 			{
-				m_Pawn.GetAnimParams(AnimSpecialChannel,AnimName,frame,rate);
-				yield();
-			}
 			
-			if (SwatDoorTarget.ActorIsToMyLeft(m_Pawn))
-				SwatDoorTarget.SetPositionForMove(DoorPosition_PartialOpenRight, MR_Interacted); 
-			else 
-				SwatDoorTarget.SetPositionForMove(DoorPosition_PartialOpenLeft, MR_Interacted); 
+				//book door opening
+				SwatDoorTarget.SetPendingInteractor(m_Pawn);	
+			
+				while (frame < 0.30)
+				{
+					m_Pawn.GetAnimParams(AnimSpecialChannel,AnimName,frame,rate);
+					yield();
+				}
+			
+				if (SwatDoorTarget.ActorIsToMyLeft(m_Pawn))
+					SwatDoorTarget.SetPositionForMove(DoorPosition_PartialOpenRight, MR_Interacted); 
+				else 
+					SwatDoorTarget.SetPositionForMove(DoorPosition_PartialOpenLeft, MR_Interacted); 
 		
-			SwatDoorTarget.Moved();
+				SwatDoorTarget.Moved();
+			
+			}
 		}
 		
 		m_Pawn.FinishAnim(AnimSpecialChannel);
@@ -249,7 +258,7 @@ Begin:
 			m_Pawn.EnableCollisionAvoidance();
 			ReportResultsToTeam();
 			
-			if (!bPeekDoor)
+			if (!bPeekDoor || TargetDoor.IsLocked() )
 				ReportPossibleTrap();
 		}
 	}
