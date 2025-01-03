@@ -828,9 +828,9 @@ function OnHeardNoise()
 				else
 				{
 					if (frand () < GetInvestigateSoundChance() )
-						BecomeSuspicious(SoundOrigin,false,true); 
+						BecomeSuspicious(SoundOrigin,false,false); //investigate only
 					else
-						RotateToFaceNoise(HeardPawn);
+						BecomeSuspicious(SoundOrigin,true,false); //barricade only
 				}
 			}
 				

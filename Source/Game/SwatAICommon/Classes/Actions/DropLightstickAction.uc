@@ -18,6 +18,8 @@ var private MoveToLocationGoal			CurrentMoveToLocationGoal;
 
 var private HandheldEquipment			Lightstick;
 
+var private float StartDrop;
+var private bool Dropped;
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Cleanup
@@ -34,6 +36,20 @@ function cleanup()
 		CurrentMoveToLocationGoal.Release();
 		CurrentMoveToLocationGoal = None;
 	}
+	
+	
+	
+	if ((Lightstick != None) && !Lightstick.IsIdle())
+	{
+		if ( (Level.TimeSeconds - StartDrop ) > 0.5 && !Dropped) 
+		{
+		log("DropLightstickAction aborted LatentUse() dropping stick");
+		Lightstick.OnUseKeyFrame();
+		}
+		Lightstick.AIInterrupt();
+	}
+	
+
 }
 
 
@@ -44,7 +60,7 @@ function cleanup()
 function goalNotAchievedCB( AI_Goal goal, AI_Action child, ACT_ErrorCodes errorCode )
 {
 	super.goalNotAchievedCB(goal, child, errorCode);
-
+	
 	// if our movement goal fails, we succeed so we don't get reposted!
 	if (goal == CurrentMoveToLocationGoal)
 	{
@@ -85,7 +101,10 @@ latent function DropLightstick()
 	if (DropLightstickGoal(achievingGoal).GetPlaySpeech()) {
 		ISwatOfficer(m_Pawn).GetOfficerSpeechManagerAction().TriggerDeployingLightstickSpeech();
 	}
+	
+	StartDrop = Level.TimeSeconds;
 	Lightstick.LatentUse();
+	Dropped = true;
 }
 
 state Running

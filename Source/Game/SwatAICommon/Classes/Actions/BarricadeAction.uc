@@ -141,7 +141,6 @@ function goalNotAchievedCB( AI_Goal goal, AI_Action child, ACT_ErrorCodes errorC
 //
 // Sensor notifications
 
-/*
 function OnSensorMessage( AI_Sensor sensor, AI_SensorData value, Object userData )
 {
 	super.OnSensorMessage(sensor, value, userData);
@@ -161,14 +160,7 @@ function OnSensorMessage( AI_Sensor sensor, AI_SensorData value, Object userData
 		}
 	}
 	
-	else if (Sensor == VisionSensor && isIdle() ) 
-	{
-		//barricade is failed
-		instantFail(ACT_INSUFFICIENT_RESOURCES_AVAILABLE);
-	}
-	
 }
-*/
 ///////////////////////////////////////////////////////////////////////////////
 //
 // State Code
@@ -662,19 +654,6 @@ Begin:
 		m_Pawn.ShouldCrouch(true);
 	}
 
-	while( !OutForThreat )
-	{
-		if (ThreatIsNear() )
-			OutForThreat = true;
-		
-		yield();
-	}
-	
-	if ( BarricadeThreat != None)
-		AimAtThreat();
-	
-	succeed();
-	/*
 	// wait for a door to start opening, if that ever happens
 	pause();
 
@@ -691,8 +670,6 @@ Begin:
 
 		if ((FRand() < ShootAtDoorsChance) && !m_Pawn.IsA('SwatUndercover'))
 		{
-
-			
 			ShootAtOpeningDoor();
 		}
 		else
@@ -704,7 +681,7 @@ Begin:
 		// aim around again
 		AimAround();
 	}
-    */
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
